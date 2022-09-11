@@ -9,6 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MediaModule } from './components/media/media.module';
 import { Product } from './components/product/product.entity';
 import { ProductsModule } from './components/product/products.module';
+import { DeviceModule } from './components/device/device.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ProductsModule } from './components/product/products.module';
       entities: [Product],
       synchronize: true,
     }),
+    DeviceModule,
     ProductsModule,
     MediaModule,
   ],
