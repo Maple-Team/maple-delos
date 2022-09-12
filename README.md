@@ -42,3 +42,5 @@ $ npm run test:cov
 - https://masteringjs.io/tutorials/mongoose/soft-delete
 - https://github.com/nour-karoui/mongoose-soft-delete/tree/main/src
 
+
+### Entity vs DTO

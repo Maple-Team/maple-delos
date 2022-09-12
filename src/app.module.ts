@@ -10,6 +10,10 @@ import { MediaModule } from './components/media/media.module';
 import { Product } from './components/product/product.entity';
 import { ProductsModule } from './components/product/products.module';
 import { DeviceModule } from './components/device/device.module';
+import { FictionModule } from './components/fiction/fiction.module';
+import { LabelModule } from './components/label/label.module';
+import { Fiction } from './components/fiction/entities/fiction.entity';
+import { Label } from './components/label/entities/label.entity';
 
 @Module({
   imports: [
@@ -30,12 +34,14 @@ import { DeviceModule } from './components/device/device.module';
       username: 'root',
       password: '',
       database: 'maple',
-      entities: [Product],
+      entities: [Product, Fiction, Label],
       synchronize: true,
     }),
     DeviceModule,
     ProductsModule,
     MediaModule,
+    FictionModule,
+    LabelModule,
   ],
   controllers: [AppController],
   providers: [AppService],

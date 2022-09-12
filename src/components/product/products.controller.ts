@@ -12,7 +12,10 @@ import { ProductService } from './products.service';
 
 import { HttpExceptionFilter } from 'src/http-exception.filter';
 
-@Controller('products')
+@Controller({
+  path: 'products',
+  version: 'v1', // controll level
+})
 @UseFilters(new HttpExceptionFilter())
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
