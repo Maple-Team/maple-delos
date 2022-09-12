@@ -18,7 +18,10 @@ export class DeviceService {
   async findAll(): Promise<Device[]> {
     return this.deviceModel.find().exec();
   }
-  async softDelete() {
-    return this.deviceModel.findOneAndRemove();
+  async remove(id: string) {
+    return this.deviceModel.findByIdAndRemove(id);
+  }
+  async insertMany(data: Device[]) {
+    return this.deviceModel.insertMany(data);
   }
 }

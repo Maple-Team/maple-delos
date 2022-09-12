@@ -3,7 +3,6 @@ import { Document } from 'mongoose';
 import { DeviceOS, DeviceType } from '../types/device';
 
 export type DeviceDocument = Device & Document;
-// ['smartphoe设备名称', '操作系统', '尺寸i', 'PPI', '纵横比', '宽x高dp', '宽x高px', '密度dpi']
 @Schema({ timestamps: true })
 export class Device {
   @Prop({ required: true })
@@ -25,7 +24,7 @@ export class Device {
   @Prop({ required: true })
   hpx: number;
   @Prop({ required: true })
-  dpi: string;
+  dpi: number;
   @Prop({ required: true })
   type: DeviceType;
 }
