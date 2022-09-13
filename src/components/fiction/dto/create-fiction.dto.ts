@@ -1,7 +1,8 @@
 export class CreateFictionDto {
-  readonly name: string;
-  readonly chapter: number;
-  readonly content: string;
+  readonly bookName: string;
+  readonly chapterTitle: string;
+  readonly chapterNo: number;
+  readonly chapterContent: string;
   readonly readCount: number;
   readonly label: FictionLabel[];
   readonly words: number;

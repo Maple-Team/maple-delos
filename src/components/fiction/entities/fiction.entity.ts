@@ -5,13 +5,18 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 export class Fiction {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
-  readonly name: string;
-  @Column()
-  readonly chapter: number;
-  @Column()
-  readonly content: string;
-  @Column()
+  @Column({ name: 'chapter_name' })
+  readonly chapterName: string;
+  @Column({ name: 'book_name' })
+  readonly bookName: string;
+  @Column({ name: 'chapter_no' })
+  readonly chapterNo: number;
+  @Column({ name: 'chapter_content' })
+  readonly chapterContent: string;
+  @Column({
+    comment: '阅读量',
+    name: 'read_count',
+  })
   readonly readCount: number;
   @Column()
   readonly words: number;

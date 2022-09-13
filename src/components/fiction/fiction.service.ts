@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateFictionDto } from './dto/create-fiction.dto';
 import { UpdateFictionDto } from './dto/update-fiction.dto';
+import { Fiction } from './entities/fiction.entity';
 
 @Injectable()
 export class FictionService {
+  constructor(
+    @InjectRepository(Fiction)
+    private repo: Repository<Fiction>,
+  ) {}
   create(createFictionDto: CreateFictionDto) {
-    return 'This action adds a new fiction';
+    return this.repo.save(createFictionDto);
   }
 
   findAll() {
-    return `This action returns all fiction`;
+    return this.repo.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} fiction`;
+    return this.repo.findOneBy({ id });
   }
 
   update(id: number, updateFictionDto: UpdateFictionDto) {
-    return `This action updates a #${id} fiction`;
+    return this.repo.update({ id }, updateFictionDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} fiction`;
+  async remove(id: number) {
+    const entity = await this.repo.findOneBy({ id });
+    return this.repo.softRemove(entity);
   }
 }
