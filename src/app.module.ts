@@ -14,6 +14,8 @@ import { FictionModule } from './components/fiction/fiction.module';
 import { LabelModule } from './components/label/label.module';
 import { Fiction } from './components/fiction/entities/fiction.entity';
 import { Label } from './components/label/entities/label.entity';
+import { EventsModule } from './events/events.module';
+// import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -37,11 +39,18 @@ import { Label } from './components/label/entities/label.entity';
       entities: [Product, Fiction, Label],
       synchronize: true,
     }),
+    // BullModule.forRoot({
+    //   redis: {
+    //     host: 'localhost',
+    //     port: 6379,
+    //   },
+    // }),
     DeviceModule,
     ProductsModule,
     MediaModule,
     FictionModule,
     LabelModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

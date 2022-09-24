@@ -11,11 +11,12 @@ export class Fiction {
   readonly bookName: string;
   @Column({ name: 'chapter_no' })
   readonly chapterNo: number;
-  @Column({ name: 'chapter_content' })
+  @Column({ name: 'chapter_content', type: 'text' })
   readonly chapterContent: string;
   @Column({
     comment: '阅读量',
     name: 'read_count',
+    nullable: true,
   })
   readonly readCount: number;
   @Column()
