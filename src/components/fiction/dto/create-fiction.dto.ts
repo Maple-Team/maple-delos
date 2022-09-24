@@ -4,11 +4,6 @@ export class CreateFictionDto {
   readonly chapterNo: number;
   readonly chapterContent: string;
   readonly readCount?: number;
-  readonly label?: FictionLabel[];
+  // readonly label?: Label[]; // 多对多 关联表
   readonly words: number;
-}
-
-export class FictionLabel {
-  readonly id: string;
-  readonly name: string;
 }

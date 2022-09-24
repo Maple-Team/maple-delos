@@ -16,6 +16,10 @@ import { Fiction } from './components/fiction/entities/fiction.entity';
 import { Label } from './components/label/entities/label.entity';
 import { EventsModule } from './events/events.module';
 // import { BullModule } from '@nestjs/bull';
+import { ImageModule } from './components/gallery/image/image.module';
+import { AlbumModule } from './components/gallery/album/album.module';
+import { Image } from './components/gallery/image/entities/image.entity';
+import { Album } from './components/gallery/album/entities/album.entity';
 
 @Module({
   imports: [
@@ -36,7 +40,7 @@ import { EventsModule } from './events/events.module';
       username: 'root',
       password: '',
       database: 'maple',
-      entities: [Product, Fiction, Label],
+      entities: [Product, Fiction, Label, Image, Album],
       synchronize: true,
     }),
     // BullModule.forRoot({
@@ -51,6 +55,8 @@ import { EventsModule } from './events/events.module';
     FictionModule,
     LabelModule,
     EventsModule,
+    AlbumModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,11 @@
 import { Label } from 'src/components/label/entities/label.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Fiction {
@@ -21,6 +27,9 @@ export class Fiction {
   readonly readCount: number;
   @Column()
   readonly words: number;
-  @OneToMany(() => Label, (label) => label.id)
+  @ManyToMany(() => Label)
+  @JoinTable({
+    name: 'fictions_labels',
+  })
   labels: Label[];
 }
