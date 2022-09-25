@@ -11,6 +11,7 @@ export class FictionService {
     @InjectRepository(Fiction)
     private repo: Repository<Fiction>,
   ) {}
+
   create(createFictionDto: CreateFictionDto) {
     return this.repo.save(createFictionDto);
   }
@@ -24,7 +25,7 @@ export class FictionService {
   }
 
   update(id: number, updateFictionDto: UpdateFictionDto) {
-    return this.repo.update({ id }, updateFictionDto);
+    return this.repo.update({ id }, {});
   }
 
   async remove(id: number) {

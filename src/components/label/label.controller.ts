@@ -6,15 +6,17 @@ import {
   Patch,
   Param,
   Delete,
-  Version,
+  UseInterceptors,
 } from '@nestjs/common';
 import { LabelService } from './label.service';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { UpdateLabelDto } from './dto/update-label.dto';
+import { TransformInterceptor } from 'src/interceptor/transform.interceptor';
 
+@UseInterceptors(TransformInterceptor)
 @Controller({
   path: 'label',
-  version: 'v1', // controll level
+  version: 'v1',
 })
 export class LabelController {
   constructor(private readonly labelService: LabelService) {}
@@ -24,8 +26,7 @@ export class LabelController {
     return this.labelService.create(createLabelDto);
   }
 
-  @Get()
-  @Version('v1') // route level
+  @Get('all')
   findAll() {
     return this.labelService.findAll();
   }

@@ -8,19 +8,37 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  Inject,
 } from '@nestjs/common';
 import { FictionService } from './fiction.service';
 import { CreateFictionDto } from './dto/create-fiction.dto';
 import { UpdateFictionDto } from './dto/update-fiction.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { LabelService } from '../label/label.service';
 
 @Controller('fiction')
 export class FictionController {
+  @Inject(LabelService)
+  private readonly labelService: LabelService;
+
   constructor(private readonly fictionService: FictionService) {}
 
   @Post()
-  create(@Body() createFictionDto: CreateFictionDto) {
-    return this.fictionService.create(createFictionDto);
+  create(
+    @Body()
+    data: Omit<CreateFictionDto, 'lables'> & {
+      labels: (number | string)[];
+    },
+  ) {
+    const isNumber = (input: string | number) => {
+      Object.prototype.toString.call(input) === '[object Number]'
+        ? true
+        : false;
+    };
+    const labelEntities = data.labels
+      .filter(isNumber)
+      .map((id) => this.labelService.findOne(+id));
+    // return this.fictionService.handle(data);
   }
 
   @Get()
@@ -46,11 +64,10 @@ export class FictionController {
   @Post('upload')
   @UseInterceptors(FilesInterceptor('fictions'))
   uploadFile(
-    @Body() body: Pick<CreateFictionDto, 'bookName'>,
+    @Body() body: { bookName: string; labels: (string | number)[] },
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    // TODO do it async to work queue
-    const { bookName } = body;
+    const { bookName, labels } = body;
     files.reduce(
       (p, f) =>
         p.then(() => {
@@ -63,18 +80,17 @@ export class FictionController {
           const chapterContent = f.buffer.toString();
           const words = chapterContent.length;
 
-          return this.fictionService.create({
-            bookName,
-            chapterContent,
-            words,
-            chapterNo,
-            chapterName,
-          });
+          // return this.fictionService.create({
+          //   bookName,
+          //   chapterContent,
+          //   words,
+          //   chapterNo,
+          //   chapterName,
+          //   labels: [],
+          // });
         }),
       Promise.resolve(),
     );
-
-    // TODO unique response
     return files.length;
   }
 }

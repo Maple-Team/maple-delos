@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@liutsing/utils": "^0.0.3",
     "@nestjs/bull": "^0.6.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
@@ -31,8 +32,8 @@
     "@nestjs/platform-socket.io": "^9.0.11",
     "@nestjs/typeorm": "^9.0.1",
     "@nestjs/websockets": "^9.0.11",
-    "@liutsing/utils": "^0.0.3",
     "bull": "^4.9.0",
+    "lodash-es": "^4.17.21",
     "mongoose": "^6.6.0",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
@@ -41,6 +42,8 @@
     "typeorm": "^0.3.7"
   },
   "devDependencies": {
+    "@liutsing/eslint-config-typescript": "^0.0.3",
+    "@liutsing/prettier-config": "^0.0.3",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
@@ -50,8 +53,6 @@
     "@types/jest": "28.1.4",
     "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
-    "@liutsing/prettier-config": "^0.0.3",
-    "@liutsing/eslint-config-typescript": "^0.0.3",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",

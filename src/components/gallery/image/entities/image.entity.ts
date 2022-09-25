@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Album } from '../../album/entities/album.entity';
 
@@ -41,6 +43,14 @@ export class Image {
   @ManyToOne(() => Album, (album) => album.images)
   @JoinColumn({
     name: 'album_id',
+    // referencedColumnName: 'albumName', FIXME
   })
   album: Album;
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: number;
+  @UpdateDateColumn({
+    nullable: true,
+    name: 'updated_at',
+  })
+  updatedAt: number;
 }

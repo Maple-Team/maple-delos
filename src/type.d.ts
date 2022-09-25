@@ -1,4 +1,5 @@
-interface BaseList<T> {
+// TODO move to base type lib
+declare interface BaseList<T> {
   pagination: {
     total: number;
     current: number;
@@ -6,3 +7,11 @@ interface BaseList<T> {
   };
   records: T[];
 }
+
+declare interface BaseResponse<T> {
+  status: number;
+  message: string;
+  data: T;
+}
+
+declare type LabelType = 'normal' | 'fiction' | 'image';

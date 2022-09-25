@@ -16,13 +16,16 @@ export class LabelService {
     return this.repository.save(createLabelDto);
     // TODO 时间转换
   }
+  async batchCreate(labels: Label[]) {
+    return this.repository.insert(labels);
+  }
 
   findAll() {
     return this.repository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} label`;
+    return this.repository.findOneBy({ id: `${id}` });
   }
 
   update(id: number, updateLabelDto: UpdateLabelDto) {
@@ -33,5 +36,3 @@ export class LabelService {
     return `This action removes a #${id} label`;
   }
 }
-
-//  mysql -e "SET GLOBAL time_zone = '+8:00';"

@@ -9,11 +9,11 @@ import {
 @Entity({})
 export class Label {
   @PrimaryGeneratedColumn()
-  readonly id: string;
+  id: string;
   @Column({ unique: true })
-  readonly name: string;
+  name: string;
   @Column({ unique: true })
-  readonly type: string;
+  type: LabelType;
   @CreateDateColumn({ name: 'created_at' })
   createdAt: number;
   @UpdateDateColumn({

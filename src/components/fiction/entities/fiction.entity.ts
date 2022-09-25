@@ -1,10 +1,12 @@
 import { Label } from 'src/components/label/entities/label.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -32,4 +34,11 @@ export class Fiction {
     name: 'fictions_labels',
   })
   labels: Label[];
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: number;
+  @UpdateDateColumn({
+    nullable: true,
+    name: 'updated_at',
+  })
+  updatedAt: number;
 }

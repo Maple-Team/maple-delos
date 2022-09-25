@@ -31,6 +31,7 @@ specifiers:
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
   jest: 28.1.2
+  lodash-es: ^4.17.21
   mongoose: ^6.6.0
   mysql2: ^2.3.3
   prettier: ^2.3.2
@@ -62,6 +63,7 @@ dependencies:
   '@nestjs/typeorm': 9.0.1_tq7xycdignr3g27t42km5o6vju
   '@nestjs/websockets': 9.0.11_lta74l7a56f7avmhvq6ggypouy
   bull: 4.9.0
+  lodash-es: 4.17.21
   mongoose: 6.6.0
   mysql2: 2.3.3
   reflect-metadata: 0.1.13
@@ -5748,6 +5750,10 @@ packages:
     dependencies:
       p-locate: 5.0.0
     dev: true
+
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
 
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
