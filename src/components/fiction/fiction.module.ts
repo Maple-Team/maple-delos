@@ -3,11 +3,15 @@ import { FictionService } from './fiction.service';
 import { FictionController } from './fiction.controller';
 import { Fiction } from './entities/fiction.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LabelModule } from '../label/label.module';
+import { Label } from '../label/entities/label.entity';
+import { LabelService } from '../label/label.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Fiction]), LabelModule],
+  imports: [
+    TypeOrmModule.forFeature([Fiction]),
+    TypeOrmModule.forFeature([Label]),
+  ],
   controllers: [FictionController],
-  providers: [FictionService],
+  providers: [FictionService, LabelService],
 })
 export class FictionModule {}

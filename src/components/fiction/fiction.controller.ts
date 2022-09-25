@@ -20,25 +20,38 @@ import { LabelService } from '../label/label.service';
 export class FictionController {
   @Inject(LabelService)
   private readonly labelService: LabelService;
-
   constructor(private readonly fictionService: FictionService) {}
 
   @Post()
-  create(
+  async create(
     @Body()
     data: Omit<CreateFictionDto, 'lables'> & {
       labels: (number | string)[];
     },
   ) {
-    const isNumber = (input: string | number) => {
-      Object.prototype.toString.call(input) === '[object Number]'
-        ? true
-        : false;
-    };
-    const labelEntities = data.labels
-      .filter(isNumber)
-      .map((id) => this.labelService.findOne(+id));
-    // return this.fictionService.handle(data);
+    // const isNumber = (input: string | number) => {
+    //   return Object.prototype.toString.call(input) === '[object Number]'
+    //     ? true
+    //     : false;
+    // };
+    // const labels: (number | string)[] = data.labels;
+    // const ids: number[] = labels.filter(isNumber) as number[];
+    // const strs: string[] = labels.filter((s) => !isNumber(s)) as string[];
+
+    // const { identifiers } = await this.labelService.batchCreate(
+    //   strs.map((str) => {
+    //     return {
+    //       name: str,
+    //       type: 'fiction',
+    //     };
+    //   }),
+    // );
+    // const insertIds = identifiers.map(({ id }) => id);
+
+    // const labelEntities = [...ids, ...insertIds].map(
+    //   async (id) => await this.labelService.findOne(+id),
+    // );
+    this.fictionService.create({ ...data, labels: [] });
   }
 
   @Get()
@@ -67,7 +80,7 @@ export class FictionController {
     @Body() body: { bookName: string; labels: (string | number)[] },
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    const { bookName, labels } = body;
+    const { bookName } = body;
     files.reduce(
       (p, f) =>
         p.then(() => {
@@ -80,14 +93,14 @@ export class FictionController {
           const chapterContent = f.buffer.toString();
           const words = chapterContent.length;
 
-          // return this.fictionService.create({
-          //   bookName,
-          //   chapterContent,
-          //   words,
-          //   chapterNo,
-          //   chapterName,
-          //   labels: [],
-          // });
+          return this.fictionService.create({
+            bookName,
+            chapterContent,
+            words,
+            chapterNo,
+            chapterName,
+            labels: [],
+          });
         }),
       Promise.resolve(),
     );

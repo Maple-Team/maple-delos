@@ -12,7 +12,7 @@ export class Label {
   id: string;
   @Column({ unique: true })
   name: string;
-  @Column({ unique: true })
+  @Column()
   type: LabelType;
   @CreateDateColumn({ name: 'created_at' })
   createdAt: number;

@@ -14,9 +14,8 @@ export class LabelService {
 
   async create(createLabelDto: CreateLabelDto) {
     return this.repository.save(createLabelDto);
-    // TODO 时间转换
   }
-  async batchCreate(labels: Label[]) {
+  async batchCreate(labels: CreateLabelDto[]) {
     return this.repository.insert(labels);
   }
 
