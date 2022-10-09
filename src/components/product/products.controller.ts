@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  Param,
-  Post,
-  Query,
-  UseFilters,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, UseFilters } from '@nestjs/common';
 import { ProductService } from './products.service';
 
 import { HttpExceptionFilter } from 'src/http-exception.filter';
@@ -23,7 +15,7 @@ export class ProductController {
   getProducts(@Query() query) {
     const size = +query['size'] || 10;
     const current = +query['page'] || 1;
-    return this.productService.findAll({ current, size });
+    return this.productService.findWithLimit({ current, size });
   }
 
   @Get(':id')
@@ -31,9 +23,9 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
-  @Post()
-  @HttpCode(200)
-  storePruducts() {
-    return this.productService.store();
-  }
+  // @Post()
+  // @HttpCode(200)
+  // storePruducts() {
+  //   return this.productService.store();
+  // }
 }

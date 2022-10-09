@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InsertResult, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Product } from './product.entity';
-import * as productData from './dummy.json';
+// import * as productData from './dummy.json';
 
 @Injectable()
 export class ProductService {
@@ -11,7 +11,7 @@ export class ProductService {
     private productsRepository: Repository<Product>,
   ) {}
 
-  async findAll({
+  async findWithLimit({
     current,
     size,
   }: {
@@ -42,13 +42,13 @@ export class ProductService {
   async remove(id: string): Promise<void> {
     await this.productsRepository.delete(id);
   }
-  store(): Promise<InsertResult> {
-    const productData2 = productData.map(({ images, ...rest }) => ({
-      images: images.join(','),
-      ...rest,
-    }));
-    return this.productsRepository.insert(productData2);
-  }
+  // store(): Promise<InsertResult> {
+  //   const productData2 = productData.map(({ id, images, ...rest }) => ({
+  //     images: images.join(','),
+  //     ...rest,
+  //   }));
+  //   return this.productsRepository.insert(productData2);
+  // }
 
   getList(): string[] {
     return [];

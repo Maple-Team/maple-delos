@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
@@ -28,8 +28,18 @@ import { Album } from './components/gallery/album/entities/album.entity';
       maxPoolSize: 10,
       dbName: 'maple',
     }),
+    // MongooseModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: async (config: ConfigService) => ({
+    //     uri: config.get<string>('MONGODB_URI'),
+    //     connectTimeoutMS: 1000 * 60,
+    //     maxPoolSize: 10,
+    //     dbName: 'maple',
+    //   }),
+    // }),
     ConfigModule.forRoot({
-      load: [configuration],
+      // load: [configuration],
       envFilePath: '.env',
       isGlobal: true,
     }),
@@ -43,6 +53,15 @@ import { Album } from './components/gallery/album/entities/album.entity';
       entities: [Product, Fiction, Label, Image, Album],
       synchronize: true,
     }),
+    // TypeOrmModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: async (config: ConfigService) => ({
+    //     url: config.get<string>('MYSQL_URI'),
+    //     username: 'root',
+    //     host: config.get<string>('MYSQL_URI'),
+    //   }),
+    // }),
     // BullModule.forRoot({
     //   redis: {
     //     host: 'localhost',

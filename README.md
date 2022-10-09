@@ -42,5 +42,22 @@ $ npm run test:cov
 - https://masteringjs.io/tutorials/mongoose/soft-delete
 - https://github.com/nour-karoui/mongoose-soft-delete/tree/main/src
 
+https://www.mmdaobaobei.com/xh/
 
+代码中接收docker传入的参数
+- sh写文件
+```yaml
+version: '2'
+services:
+  phpmyadmin:
+    image: docker.io/bitnami/phpmyadmin:5
+    ports:
+      - '9080:8080'
+    environment:
+      - DATABASE_HOST=maple-mysql
+      - PMA_HOST=maple-mysql
+networks:
+    default:
+        name: maple-network%
+```
 ### Entity vs DTO

@@ -17,11 +17,14 @@ export class FictionService {
   }
 
   findAll() {
-    return this.repo.find();
+    // return this.repo.find();
   }
 
   findOne(id: number) {
     return this.repo.findOneBy({ id });
+  }
+  list() {
+    return this.repo.find();
   }
 
   update(id: number, updateFictionDto: UpdateFictionDto) {

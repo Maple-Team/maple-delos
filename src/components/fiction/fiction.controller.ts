@@ -51,17 +51,35 @@ export class FictionController {
     // const labelEntities = [...ids, ...insertIds].map(
     //   async (id) => await this.labelService.findOne(+id),
     // );
-    this.fictionService.create({ ...data, labels: [] });
+    const { chapterContent, ...rest } = data;
+    this.fictionService.create({
+      ...rest,
+      chapterContent: chapterContent.replaceAll(
+        /<a.*>(.*)<\/a>/g,
+        (_, p1) => p1,
+      ),
+      labels: [],
+    });
   }
 
   @Get()
   findAll() {
     return this.fictionService.findAll();
   }
+  @Get('list')
+  async list() {
+    const list = await this.fictionService.list();
+    return `<ul style="display: flex; flex-wrap: wrap;">${list
+      .map(
+        (_) =>
+          `<li style="width: calc(100% / 3);"><a href='${_.id}'>第${_.chapterNo}章 ${_.chapterName}</a></li>`,
+      )
+      .join('\r\n')}</ul>`;
+  }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.fictionService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return (await this.fictionService.findOne(+id))?.chapterContent;
   }
 
   @Patch(':id')
@@ -86,16 +104,20 @@ export class FictionController {
         p.then(() => {
           const filename = decodeURIComponent(f.originalname);
           const chapterName = filename.replace(
-            /第(\d+)章\s+(.*).html/,
+            /.*第(\d+)章\s+(.*).html/,
             (_, p1, p2) => p2,
           );
-          const chapterNo = +filename.replace(/第(\d+)章(.*)/, (_, p1) => p1);
+          const chapterNo = +filename.replace(/.*第(\d+)章(.*)/, (_, p1) => p1);
           const chapterContent = f.buffer.toString();
-          const words = chapterContent.length;
+          const _content = chapterContent.replaceAll(
+            /<a.*>(.*)<\/a>/g,
+            (_, p1) => p1,
+          );
+          const words = _content.length;
 
           return this.fictionService.create({
             bookName,
-            chapterContent,
+            chapterContent: _content,
             words,
             chapterNo,
             chapterName,
