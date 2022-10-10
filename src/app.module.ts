@@ -22,7 +22,7 @@ import { Image } from './components/gallery/image/entities/image.entity';
 import { Album } from './components/gallery/album/entities/album.entity';
 import { getEnvPath } from './config/helper/env.help';
 
-// console.log(getEnvPath(`${__dirname}/config/envs`), '=====');
+console.log(getEnvPath(`${__dirname}/config/envs`), '=====');
 // console.log(process.env.NODE_ENV, 'env');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -32,14 +32,14 @@ const isProd = process.env.NODE_ENV === 'production';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => {
-        // console.log(config.get<string>('NODE_ENV'), '====', config);
+        console.log(config.get<string>('NODE_ENV'), '====');
         return {
           // uri:
           //   config.get<string>('NODE_ENV') === 'development'
           //     ? config.get<string>('MONGODB_URI')
           //     : 'mongodb://maple-mongodb:27017',
           uri: isProd
-            ? 'mongodb://maple-mongodb:27017'
+            ? 'mongodb://172.18.0.2:27017'
             : 'mongodb://localhost:27017',
           connectTimeoutMS: 1000 * 60,
           maxPoolSize: 10,
@@ -51,36 +51,36 @@ const isProd = process.env.NODE_ENV === 'production';
       envFilePath: getEnvPath(`${__dirname}/config/envs`),
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
-        return {
-          username: 'root',
-          type: 'mysql',
-          host: isProd ? 'maple-mysql' : 'localhost',
-          port: 3306,
-          database: 'maple',
-          password: '',
-          entities: [Product, Fiction, Label, Image, Album],
-          synchronize: true,
-        };
-      },
-    }),
-    // BullModule.forRoot({
-    //   redis: {
-    //     host: 'localhost',
-    //     port: 6379,
-    //   },
-    // }),
-    DeviceModule,
-    ProductsModule,
-    MediaModule,
-    FictionModule,
-    LabelModule,
-    EventsModule,
-    AlbumModule,
-    ImageModule,
+      // BullModule.forRoot({
+      //   redis: {
+      //     host: 'localhost',
+      //     port: 6379,
+      //   },
+      // }),
+      DeviceModule,
+      ProductsModule,
+      MediaModule,
+      FictionModule,
+      LabelModule,
+      EventsModule,
+      AlbumModule,
+      ImageModule,
+      TypeOrmModule.forRootAsync({
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: async (config: ConfigService) => {
+          return {
+            username: 'root',
+            type: 'mysql',
+            host: isProd ? '172.18.0.4' : 'localhost',
+            port: 3306,
+            database: 'maple',
+            password: '',
+            entities: [Product, Fiction, Label, Image, Album],
+            synchronize: true,
+          };
+        },
+      }),
   ],
   controllers: [AppController],
   providers: [AppService],
