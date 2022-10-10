@@ -1,8 +1,15 @@
 version: '3.2'
 services:
-  nest-project:
+  maple-delos:
     build:
       context: .
       dockerfile: 'Dockerfile'
+    # link:
+    #   - "maple-mysql"
+    #   - "maple-mongodb"
+    #   - "maple-redis"
     ports:
-      - '3000:3000'
+      - '3001:3090'
+networks:
+  external:
+    name: maple-network

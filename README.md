@@ -61,3 +61,14 @@ networks:
         name: maple-network%
 ```
 ### Entity vs DTO
+
+
+```sh
+docker build . -t liutsing/delos:latest
+docker run -itd -p 3000:3090 --name maple-delos --link maple-mysql --link maple-mongodb --net maple-network  liutsing/delos:latest
+```
+or
+
+```sh
+docker-compose up -d
+```
