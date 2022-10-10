@@ -20,48 +20,53 @@ import { ImageModule } from './components/gallery/image/image.module';
 import { AlbumModule } from './components/gallery/album/album.module';
 import { Image } from './components/gallery/image/entities/image.entity';
 import { Album } from './components/gallery/album/entities/album.entity';
+import { getEnvPath } from './config/helper/env.help';
 
+// console.log(getEnvPath(`${__dirname}/config/envs`), '=====');
+// console.log(process.env.NODE_ENV, 'env');
+
+const isProd = process.env.NODE_ENV === 'production';
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017', {
-      connectTimeoutMS: 1000 * 60,
-      maxPoolSize: 10,
-      dbName: 'maple',
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
+        // console.log(config.get<string>('NODE_ENV'), '====', config);
+        return {
+          // uri:
+          //   config.get<string>('NODE_ENV') === 'development'
+          //     ? config.get<string>('MONGODB_URI')
+          //     : 'mongodb://maple-mongodb:27017',
+          uri: isProd
+            ? 'mongodb://maple-mongodb:27017'
+            : 'mongodb://localhost:27017',
+          connectTimeoutMS: 1000 * 60,
+          maxPoolSize: 10,
+          dbName: 'maple',
+        };
+      },
     }),
-    // MongooseModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: async (config: ConfigService) => ({
-    //     uri: config.get<string>('MONGODB_URI'),
-    //     connectTimeoutMS: 1000 * 60,
-    //     maxPoolSize: 10,
-    //     dbName: 'maple',
-    //   }),
-    // }),
     ConfigModule.forRoot({
-      // load: [configuration],
-      envFilePath: '.env',
+      envFilePath: getEnvPath(`${__dirname}/config/envs`),
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '',
-      database: 'maple',
-      entities: [Product, Fiction, Label, Image, Album],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
+        return {
+          username: 'root',
+          type: 'mysql',
+          host: isProd ? 'maple-mysql' : 'localhost',
+          port: 3306,
+          database: 'maple',
+          password: '',
+          entities: [Product, Fiction, Label, Image, Album],
+          synchronize: true,
+        };
+      },
     }),
-    // TypeOrmModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: async (config: ConfigService) => ({
-    //     url: config.get<string>('MYSQL_URI'),
-    //     username: 'root',
-    //     host: config.get<string>('MYSQL_URI'),
-    //   }),
-    // }),
     // BullModule.forRoot({
     //   redis: {
     //     host: 'localhost',
