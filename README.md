@@ -44,24 +44,27 @@ $ npm run test:cov
 
 https://www.mmdaobaobei.com/xh/
 
-代码中接收docker传入的参数
-- sh写文件
-```yaml
-version: '2'
-services:
-  phpmyadmin:
-    image: docker.io/bitnami/phpmyadmin:5
-    ports:
-      - '9080:8080'
-    environment:
-      - DATABASE_HOST=maple-mysql
-      - PMA_HOST=maple-mysql
-networks:
-    default:
-        name: maple-network%
-```
+
 ### Entity vs DTO
 
+## deploy
+> 传入host等信息
+
+> 参考yml配置示例
+  ```yml
+  version: '2'
+  services:
+    phpmyadmin:
+      image: docker.io/bitnami/phpmyadmin:5
+      ports:
+        - '9080:8080'
+      environment:
+        - DATABASE_HOST=maple-mysql
+        - PMA_HOST=maple-mysql
+  networks:
+      default:
+          name: maple-network
+  ```
 
 ```sh
 docker build . -t liutsing/delos:latest

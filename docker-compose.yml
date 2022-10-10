@@ -1,15 +1,15 @@
-version: '3.2'
+version: '2'
+
+networks:
+  maple-network:
+    external:
+      name: maple-network
 services:
   maple-delos:
     build:
       context: .
       dockerfile: 'Dockerfile'
-    # link:
-    #   - "maple-mysql"
-    #   - "maple-mongodb"
-    #   - "maple-redis"
     ports:
-      - '3001:3090'
-networks:
-  external:
-    name: maple-network
+        - 3000:3090
+    networks:
+        - maple-network
