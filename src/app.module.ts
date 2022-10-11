@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -22,9 +21,6 @@ import { Image } from './components/gallery/image/entities/image.entity';
 import { Album } from './components/gallery/album/entities/album.entity';
 import { getEnvPath } from './config/helper/env.help';
 
-// console.log(getEnvPath(`${__dirname}/config/envs`), '=====');
-// console.log(process.env.NODE_ENV, 'env');
-
 const isProd = process.env.NODE_ENV === 'production';
 @Module({
   imports: [
@@ -32,12 +28,7 @@ const isProd = process.env.NODE_ENV === 'production';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => {
-        console.log(config.get<string>('NODE_ENV'), '====');
         return {
-          // uri:
-          //   config.get<string>('NODE_ENV') === 'development'
-          //     ? config.get<string>('MONGODB_URI')
-          //     : 'mongodb://maple-mongodb:27017',
           uri: isProd
             ? 'mongodb://maple-mongodb:27017'
             : 'mongodb://localhost:27017',
