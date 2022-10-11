@@ -20,5 +20,6 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 
 ENV NODE_ENV=production
+EXPOSE 3000
 
 CMD [ "sh", "-c", "npm run start:prod"]

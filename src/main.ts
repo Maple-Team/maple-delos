@@ -10,7 +10,7 @@ async function bootstrap() {
     type: VersioningType.HEADER,
     header: 'X-API-VERSION', // 不同的版本类型 https://docs.nestjs.com/techniques/versioning
   });
-  await app.listen(3090);
+  await app.listen(3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

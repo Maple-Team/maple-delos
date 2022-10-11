@@ -42,9 +42,6 @@ $ npm run test:cov
 - https://masteringjs.io/tutorials/mongoose/soft-delete
 - https://github.com/nour-karoui/mongoose-soft-delete/tree/main/src
 
-https://www.mmdaobaobei.com/xh/
-
-
 ### Entity vs DTO
 
 ## deploy
@@ -68,7 +65,7 @@ https://www.mmdaobaobei.com/xh/
 
 ```sh
 docker build . -t liutsing/delos:latest
-docker run -itd -p 3000:3090 --name maple-delos --link maple-mysql --link maple-mongodb --net maple-network  liutsing/delos:latest
+docker run -itd -p 3001:3000 --name maple-delos --link maple-mysql --link maple-mongodb --net maple-network  liutsing/delos:latest
 ```
 or
 
