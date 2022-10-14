@@ -6,51 +6,60 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Album } from '../../album/entities/album.entity';
+} from 'typeorm'
+import { Album } from '../../album/entities/album.entity'
 
 @Entity()
 export class Image {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
+
   @Column({
     name: 'image_name',
   })
-  readonly imageName: string;
+  readonly imageName: string
+
   @Column({
     name: 'image_width',
   })
-  readonly width: number;
+  readonly width: number
+
   @Column({
     name: 'image_height',
   })
-  readonly height: number;
+  readonly height: number
+
   @Column({
     name: 'image_description',
   })
-  readonly description?: string;
+  readonly description?: string
+
   @Column({
     name: 'image_likes',
     default: 0,
   })
-  readonly imageLikes?: number;
+  readonly imageLikes?: number
+
   @Column({
     name: 'image_views',
     default: 0,
     nullable: true,
   })
-  readonly imageViews: number;
+  readonly imageViews: number
+
   @ManyToOne(() => Album, (album) => album.images)
   @JoinColumn({
     name: 'album_id',
     // referencedColumnName: 'albumName', FIXME
   })
-  album: Album;
+  album: Album
+
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: number;
+  createdAt: number
+
   @UpdateDateColumn({
     nullable: true,
     name: 'updated_at',
   })
-  updatedAt: number;
+  updatedAt: number
 }

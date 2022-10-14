@@ -1,19 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateFictionDto } from './dto/create-fiction.dto';
-import { UpdateFictionDto } from './dto/update-fiction.dto';
-import { Fiction } from './entities/fiction.entity';
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { CreateFictionDto } from './dto/create-fiction.dto'
+import { UpdateFictionDto } from './dto/update-fiction.dto'
+import { Fiction } from './entities/fiction.entity'
 
 @Injectable()
 export class FictionService {
   constructor(
     @InjectRepository(Fiction)
-    private repo: Repository<Fiction>,
+    private repo: Repository<Fiction>
   ) {}
 
   create(createFictionDto: CreateFictionDto) {
-    return this.repo.save(createFictionDto);
+    return this.repo.save(createFictionDto)
   }
 
   findAll() {
@@ -21,18 +21,19 @@ export class FictionService {
   }
 
   findOne(id: number) {
-    return this.repo.findOneBy({ id });
+    return this.repo.findOneBy({ id })
   }
+
   list() {
-    return this.repo.find();
+    return this.repo.find()
   }
 
   update(id: number, updateFictionDto: UpdateFictionDto) {
-    return this.repo.update({ id }, {});
+    return this.repo.update({ id }, {})
   }
 
   async remove(id: number) {
-    const entity = await this.repo.findOneBy({ id });
-    return this.repo.softRemove(entity);
+    const entity = await this.repo.findOneBy({ id })
+    return this.repo.softRemove(entity)
   }
 }

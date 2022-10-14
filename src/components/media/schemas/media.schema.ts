@@ -1,32 +1,42 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document } from 'mongoose'
 
-export type MediaDocument = Media & Document;
+export type MediaDocument = Media & Document
 
 @Schema()
 export class Media {
   @Prop({ required: true })
-  name: string;
+  name: string
+
   @Prop()
-  intro: string;
+  intro: string
+
   @Prop({ required: true })
-  cover: string;
+  cover: string
+
   @Prop({ required: true })
-  bv_id: string;
+  bv_id: string
+
   @Prop({ required: true })
-  duration: number;
+  duration: number
+
   @Prop({ required: true })
-  pubtime: number;
+  pubtime: number
+
   @Prop({ required: true })
-  pubtime2: Date;
+  pubtime2: Date
+
   @Prop({ required: true })
-  title: string;
+  title: string
+
   @Prop({ required: true })
-  short_link: string;
+  short_link: string
+
   @Prop({ required: true })
-  face: string;
+  face: string
+
   @Prop({ required: true })
-  mid: number;
+  mid: number
 }
 
-export const MediaSchema = SchemaFactory.createForClass(Media);
+export const MediaSchema = SchemaFactory.createForClass(Media)

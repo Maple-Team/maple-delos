@@ -1,32 +1,42 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { DeviceOS, DeviceType } from '../types/device';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document } from 'mongoose'
+import { DeviceOS, DeviceType } from '../types/device'
 
-export type DeviceDocument = Device & Document;
+export type DeviceDocument = Device & Document
 @Schema({ timestamps: true })
 export class Device {
   @Prop({ required: true })
-  name: string;
+  name: string
+
   @Prop({ required: true })
-  os: DeviceOS;
+  os: DeviceOS
+
   @Prop({ required: true })
-  size: number;
+  size: number
+
   @Prop({ required: true })
-  PPI: number;
+  PPI: number
+
   @Prop({ required: true })
-  ratio: string;
+  ratio: string
+
   @Prop({ required: true })
-  wdp: number;
+  wdp: number
+
   @Prop({ required: true })
-  hdp: number;
+  hdp: number
+
   @Prop({ required: true })
-  wpx: number;
+  wpx: number
+
   @Prop({ required: true })
-  hpx: number;
+  hpx: number
+
   @Prop({ required: true })
-  dpi: number;
+  dpi: number
+
   @Prop({ required: true })
-  type: DeviceType;
+  type: DeviceType
 }
 
-export const DeviceSchema = SchemaFactory.createForClass(Device);
+export const DeviceSchema = SchemaFactory.createForClass(Device)

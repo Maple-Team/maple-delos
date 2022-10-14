@@ -1,4 +1,4 @@
-import { Label } from 'src/components/label/entities/label.entity';
+import { Label } from 'src/components/label/entities/label.entity'
 import {
   Column,
   CreateDateColumn,
@@ -7,38 +7,47 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from 'typeorm'
 
 @Entity()
 export class Fiction {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
+
   @Column({ name: 'chapter_name' })
-  readonly chapterName: string;
+  readonly chapterName: string
+
   @Column({ name: 'book_name' })
-  readonly bookName: string;
+  readonly bookName: string
+
   @Column({ name: 'chapter_no' })
-  readonly chapterNo: number;
+  readonly chapterNo: number
+
   @Column({ name: 'chapter_content', type: 'mediumtext' })
-  readonly chapterContent: string;
+  readonly chapterContent: string
+
   @Column({
     comment: '阅读量',
     name: 'read_count',
     nullable: true,
   })
-  readonly readCount: number;
+  readonly readCount: number
+
   @Column()
-  readonly words: number;
+  readonly words: number
+
   @ManyToMany(() => Label)
   @JoinTable({
     name: 'fictions_labels',
   })
-  labels: Label[];
+  labels: Label[]
+
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: number;
+  createdAt: number
+
   @UpdateDateColumn({
     nullable: true,
     name: 'updated_at',
   })
-  updatedAt: number;
+  updatedAt: number
 }

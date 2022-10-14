@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { MediaService } from './media.service';
+import { Controller, Get } from '@nestjs/common'
+import { MediaService } from './media.service'
 
 @Controller('media')
 export class MediaController {
@@ -7,6 +7,6 @@ export class MediaController {
 
   @Get('/all')
   findAll() {
-    return this.mediaService.findAll();
+    return this.mediaService.findAll()
   }
 }

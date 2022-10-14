@@ -1,24 +1,22 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity({})
 export class Label {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: string
+
   @Column({ unique: true })
-  name: string;
+  name: string
+
   @Column()
-  type: LabelType;
+  type: LabelType
+
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: number;
+  createdAt: number
+
   @UpdateDateColumn({
     nullable: true,
     name: 'updated_at',
   })
-  updatedAt: number;
+  updatedAt: number
 }

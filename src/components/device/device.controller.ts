@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { DeviceService } from './device.service';
-import { CreateDeviceDto } from './dto/create-device.dto';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
+import { DeviceService } from './device.service'
+import { CreateDeviceDto } from './dto/create-device.dto'
 
 @Controller('device')
 export class DeviceController {
@@ -8,8 +8,9 @@ export class DeviceController {
 
   @Get('/all')
   findAll() {
-    return this.deviceService.findAll();
+    return this.deviceService.findAll()
   }
+
   @Post('/add')
   add() {
     return this.deviceService.create({
@@ -24,15 +25,17 @@ export class DeviceController {
       hpx: 2436,
       dpi: 3.0,
       type: 'Phone',
-    });
+    })
   }
+
   @Post('/batch')
   insertMany(@Body() body: CreateDeviceDto[]) {
-    return this.deviceService.insertMany(body);
+    return this.deviceService.insertMany(body)
   }
+
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    const deleted = await this.deviceService.remove(id);
-    return deleted;
+    const deleted = await this.deviceService.remove(id)
+    return deleted
   }
 }

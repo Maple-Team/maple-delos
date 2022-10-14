@@ -1,38 +1,38 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column()
-  title: string;
+  title: string
 
   @Column()
-  description: string;
+  description: string
 
   @Column()
-  price: number;
+  price: number
 
   @Column()
-  discountPercentage: number;
+  discountPercentage: number
 
   @Column()
-  rating: number;
+  rating: number
 
   @Column()
-  stock: number;
+  stock: number
 
   @Column()
-  brand: string;
+  brand: string
 
   @Column()
-  category: string;
+  category: string
 
   @Column()
-  thumbnail: string;
+  thumbnail: string
 
   @Column({ length: 1000 })
-  images: string; // TODO 读取时添加处理
+  images: string // TODO 读取时添加处理
   // TODO mysql事件
 }

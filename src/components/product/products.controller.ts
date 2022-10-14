@@ -1,7 +1,7 @@
-import { Controller, Get, Param, Query, UseFilters } from '@nestjs/common';
-import { ProductService } from './products.service';
+import { Controller, Get, Param, Query, UseFilters } from '@nestjs/common'
+import { ProductService } from './products.service'
 
-import { HttpExceptionFilter } from 'src/http-exception.filter';
+import { HttpExceptionFilter } from 'src/http-exception.filter'
 
 @Controller({
   path: 'products',
@@ -13,14 +13,14 @@ export class ProductController {
 
   @Get()
   getProducts(@Query() query) {
-    const size = +query['size'] || 10;
-    const current = +query['page'] || 1;
-    return this.productService.findWithLimit({ current, size });
+    const size = +query.size || 10
+    const current = +query.page || 1
+    return this.productService.findWithLimit({ current, size })
   }
 
   @Get(':id')
   getProduct(@Param('id') id) {
-    return this.productService.findOne(id);
+    return this.productService.findOne(id)
   }
 
   // @Post()
