@@ -9,18 +9,18 @@ import { HttpExceptionFilter } from 'src/http-exception.filter'
 })
 @UseFilters(new HttpExceptionFilter())
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly service: ProductService) {}
 
   @Get()
   getProducts(@Query() query) {
     const size = +query.size || 10
     const current = +query.page || 1
-    return this.productService.findWithLimit({ current, size })
+    return this.service.findWithLimit({ current, size })
   }
 
   @Get(':id')
   getProduct(@Param('id') id) {
-    return this.productService.findOne(id)
+    return this.service.findOne(id)
   }
 
   // @Post()

@@ -20,6 +20,7 @@ import { AlbumModule } from './components/gallery/album/album.module'
 import { Image } from './components/gallery/image/entities/image.entity'
 import { Album } from './components/gallery/album/entities/album.entity'
 import { getEnvPath } from './config/helper/env.help'
+import { BlogModule } from './components/zyc/blog.module'
 
 const isProd = process.env.NODE_ENV === 'production'
 @Module({
@@ -27,7 +28,7 @@ const isProd = process.env.NODE_ENV === 'production'
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
+      useFactory: async () => {
         return {
           uri: isProd ? 'mongodb://maple-mongodb:27017' : 'mongodb://localhost:27017',
           connectTimeoutMS: 1000 * 60,
@@ -54,6 +55,7 @@ const isProd = process.env.NODE_ENV === 'production'
     EventsModule,
     AlbumModule,
     ImageModule,
+    BlogModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
