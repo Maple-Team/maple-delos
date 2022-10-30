@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "preinstall":"pnpm install husky -D",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -20,6 +21,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky install",
+    "predeploy": "pnpm run build",
     "deploy": "node scripts/deploy.js",
     "prettier": "prettier . -w"
   },
@@ -47,7 +49,7 @@
     "typeorm": "^0.3.7"
   },
   "devDependencies": {
-    "@liutsing/eslint-config": "^0.0.5",
+    "@liutsing/eslint-config": "^0.0.7",
     "@liutsing/prettier-config": "^0.0.4",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
