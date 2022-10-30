@@ -1,12 +1,12 @@
 {
   "name": "@maple/delos",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "preinstall":"pnpm install husky -D",
+    "preinstall": "pnpm install husky -D",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
