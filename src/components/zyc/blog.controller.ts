@@ -16,7 +16,7 @@ export class BlogController {
   @Get()
   findWithLimit(@Query() query) {
     const { current = 1, pageSize = 10, ...rest } = query
-    return this.service.findWithLimit({ current, size: pageSize, ...rest })
+    return this.service.findWithLimit({ current: +current, size: +pageSize, ...rest })
   }
 
   @Post('/add')

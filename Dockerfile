@@ -1,23 +1,11 @@
-FROM node:16-alpine AS builder
+FROM node:16 AS builder
 
-WORKDIR "/app"
+WORKDIR app
 COPY . .
-RUN npm install --registry=https://registry.npmmirror.com/
-RUN npm run build
-RUN npm prune --production
 
-# RUN npm install -g pnpm
-# RUN pnpm install
-# RUN pnpm run build
-# RUN pnpm prune --prod
-
-FROM node:16-alpine AS production
-
-WORKDIR "/app"
-COPY --from=builder /app/package.json ./package.json
-# COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
+RUN npm install -g pnpm --registry=https://registry.npmmirror.com/
+RUN pnpm install --registry=https://registry.npmmirror.com/
+RUN pnpm run build
 
 ENV NODE_ENV=production
 EXPOSE 3000
