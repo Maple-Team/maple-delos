@@ -7,7 +7,7 @@ import { Server } from 'socket.io'
   cors: {
     origin: '*',
   },
-  namespace: 'events',
+  namespace: '/events/',
 })
 export class EventsGateway {
   constructor() {
@@ -22,6 +22,7 @@ export class EventsGateway {
   @SubscribeMessage('register')
   register(@MessageBody() id: string) {
     this.ids.push(id)
+    console.log('id', id)
     return from([1, 2]).pipe(
       map((num) => ({
         event: num === 1 ? 'onRegister' : id,
@@ -37,6 +38,7 @@ export class EventsGateway {
 
   @SubscribeMessage('unRegister')
   unRegister(@MessageBody() id: string) {
+    console.log('unRegister', id)
     this.ids.splice(this.ids.indexOf(id) >>> 1, 1)
     return from([1]).pipe(
       map(() => ({
@@ -47,7 +49,8 @@ export class EventsGateway {
   }
 
   @SubscribeMessage('broadcast')
-  broadcast(@MessageBody() msg: string) {
+  broadcast(@MessageBody() _msg: string) {
+    console.log('broadcast')
     return {
       event: 'broadcast',
       msg: 'hello all',

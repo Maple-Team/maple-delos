@@ -21,6 +21,9 @@ import { Image } from './components/gallery/image/entities/image.entity'
 import { Album } from './components/gallery/album/entities/album.entity'
 import { getEnvPath } from './config/helper/env.help'
 import { BlogModule } from './components/zyc/blog.module'
+import { MockModule } from './components/mock/mock.module'
+import { RedisModule } from './components/redis/redis.module'
+// import { RedisModule } from 'nestjs-redis'
 
 const isProd = process.env.NODE_ENV === 'production'
 @Module({
@@ -37,16 +40,12 @@ const isProd = process.env.NODE_ENV === 'production'
         }
       },
     }),
+    RedisModule,
     ConfigModule.forRoot({
+      // eslint-disable-next-line n/no-path-concat
       envFilePath: getEnvPath(`${__dirname}/config/envs`),
       isGlobal: true,
     }),
-    // BullModule.forRoot({
-    //   redis: {
-    //     host: 'localhost',
-    //     port: 6379,
-    //   },
-    // }),
     DeviceModule,
     ProductsModule,
     MediaModule,
@@ -56,10 +55,11 @@ const isProd = process.env.NODE_ENV === 'production'
     AlbumModule,
     ImageModule,
     BlogModule,
+    MockModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
+      useFactory: async () => {
         return {
           username: 'root',
           type: 'mysql',

@@ -12,13 +12,15 @@ specifiers:
   '@nestjs/mapped-types': '*'
   '@nestjs/mongoose': ^9.2.0
   '@nestjs/platform-express': ^9.0.0
-  '@nestjs/platform-socket.io': ^9.0.11
+  '@nestjs/platform-socket.io': ^9.1.6
   '@nestjs/schematics': ^9.0.0
   '@nestjs/testing': ^9.0.0
   '@nestjs/typeorm': ^9.0.1
-  '@nestjs/websockets': ^9.0.11
+  '@nestjs/websockets': ^9.1.6
   '@socket.io/redis-adapter': ^7.2.0
   '@types/bull': ^3.15.9
+  '@types/cache-manager': ^4.0.2
+  '@types/cache-manager-redis-store': ^2.0.1
   '@types/express': ^4.17.13
   '@types/jest': 28.1.4
   '@types/lodash': ^4.14.186
@@ -26,6 +28,8 @@ specifiers:
   '@types/node': ^16.0.0
   '@types/supertest': ^2.0.11
   bull: ^4.9.0
+  cache-manager: ^5.1.4
+  cache-manager-redis-store: ^3.0.1
   husky: ^8.0.1
   jest: 28.1.2
   lodash: ^4.17.21
@@ -48,7 +52,7 @@ specifiers:
 dependencies:
   '@liutsing/utils': 0.0.3
   '@nestjs/bull': 0.6.1_ygnceeodtesnwlfhhob2uf5uju
-  '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+  '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
   '@nestjs/config': 2.2.0_yjxybkvltbh2d3oivnq5etx3oi
   '@nestjs/core': 9.1.6_eiqpoj6egdfzegnwdx574ucemu
   '@nestjs/mapped-types': 1.2.0_baolvlqsqmhkyjeld7q44n44k4
@@ -75,12 +79,16 @@ devDependencies:
   '@nestjs/schematics': 9.0.3_typescript@4.8.4
   '@nestjs/testing': 9.1.6_ymrbmmkpvmejpm3rdaw5glgevq
   '@types/bull': 3.15.9
+  '@types/cache-manager': 4.0.2
+  '@types/cache-manager-redis-store': 2.0.1
   '@types/express': 4.17.14
   '@types/jest': 28.1.4
   '@types/lodash': 4.14.186
   '@types/multer': 1.4.7
   '@types/node': 16.18.2
   '@types/supertest': 2.0.12
+  cache-manager: 5.1.4
+  cache-manager-redis-store: 3.0.1
   husky: 8.0.1
   jest: 28.1.2_pfxkpkvs62uiwmbcnbb432f4n4
   rimraf: 3.0.2
@@ -2583,7 +2591,7 @@ packages:
       '@nestjs/common': ^6.10.11 || ^7.0.0 || ^8.0.0 || ^9.0.0
       '@nestjs/core': ^6.10.11 || ^7.0.0 || ^8.0.0 || ^9.0.0
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 9.1.6_eiqpoj6egdfzegnwdx574ucemu
       tslib: 2.4.0
     dev: false
@@ -2596,7 +2604,7 @@ packages:
       bull: ^3.3 || ^4.0.0
     dependencies:
       '@nestjs/bull-shared': 0.1.1_6whalgrsvisgjemghedgkfq7dm
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 9.1.6_eiqpoj6egdfzegnwdx574ucemu
       bull: 4.10.1
       tslib: 2.4.0
@@ -2637,7 +2645,7 @@ packages:
       - webpack-cli
     dev: true
 
-  /@nestjs/common/9.1.6_yzt46al3aifnexifjjdb4dxxja:
+  /@nestjs/common/9.1.6_2zg6knnfmllxmxienlo5ktibxe:
     resolution: {integrity: sha512-9Ttk9va/BwEab36RSXLZdRoPUX3DZHUpzseKEfqHVhnaUIsIMt7lVd79GQ1FroQ2FZqoCwcLyBowevXhrE1Wnw==}
     peerDependencies:
       cache-manager: <=5
@@ -2653,6 +2661,7 @@ packages:
       class-validator:
         optional: true
     dependencies:
+      cache-manager: 5.1.4
       iterare: 1.2.1
       reflect-metadata: 0.1.13
       rxjs: 7.5.7
@@ -2666,7 +2675,7 @@ packages:
       reflect-metadata: ^0.1.13
       rxjs: ^6.0.0 || ^7.2.0
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       dotenv: 16.0.1
       dotenv-expand: 8.0.3
       lodash: 4.17.21
@@ -2693,7 +2702,7 @@ packages:
       '@nestjs/websockets':
         optional: true
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/platform-express': 9.1.6_6whalgrsvisgjemghedgkfq7dm
       '@nestjs/websockets': 9.1.6_q7oeefvfo2joyojxllcrmxhtve
       '@nuxtjs/opencollective': 0.3.2
@@ -2721,7 +2730,7 @@ packages:
       class-validator:
         optional: true
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       reflect-metadata: 0.1.13
     dev: false
 
@@ -2734,7 +2743,7 @@ packages:
       reflect-metadata: ^0.1.12
       rxjs: ^7.0.0
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 9.1.6_eiqpoj6egdfzegnwdx574ucemu
       mongoose: 6.7.0
       reflect-metadata: 0.1.13
@@ -2747,7 +2756,7 @@ packages:
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 9.1.6_eiqpoj6egdfzegnwdx574ucemu
       body-parser: 1.20.1
       cors: 2.8.5
@@ -2764,7 +2773,7 @@ packages:
       '@nestjs/websockets': ^9.0.0
       rxjs: ^7.1.0
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/websockets': 9.1.6_q7oeefvfo2joyojxllcrmxhtve
       rxjs: 7.5.7
       socket.io: 4.5.3
@@ -2817,7 +2826,7 @@ packages:
       '@nestjs/platform-express':
         optional: true
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 9.1.6_eiqpoj6egdfzegnwdx574ucemu
       '@nestjs/platform-express': 9.1.6_6whalgrsvisgjemghedgkfq7dm
       tslib: 2.4.0
@@ -2832,7 +2841,7 @@ packages:
       rxjs: ^7.2.0
       typeorm: ^0.3.0
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 9.1.6_eiqpoj6egdfzegnwdx574ucemu
       reflect-metadata: 0.1.13
       rxjs: 7.5.7
@@ -2852,7 +2861,7 @@ packages:
       '@nestjs/platform-socket.io':
         optional: true
     dependencies:
-      '@nestjs/common': 9.1.6_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 9.1.6_eiqpoj6egdfzegnwdx574ucemu
       '@nestjs/platform-socket.io': 9.1.6_vzp54junx56nuwta7cdfyezrwy
       iterare: 1.2.1
@@ -2905,7 +2914,6 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
-    dev: false
 
   /@redis/client/1.3.0:
     resolution: {integrity: sha512-XCFV60nloXAefDsPnYMjHGtvbtHR8fV5Om8cQ0JYqTNbWcQo/4AryzJ2luRj4blveWazRK/j40gES8M7Cp6cfQ==}
@@ -2914,7 +2922,6 @@ packages:
       cluster-key-slot: 1.1.0
       generic-pool: 3.8.2
       yallist: 4.0.0
-    dev: false
 
   /@redis/graph/1.0.1_@redis+client@1.3.0:
     resolution: {integrity: sha512-oDE4myMCJOCVKYMygEMWuriBgqlS5FqdWerikMoJxzmmTUErnTRRgmIDa2VcgytACZMFqpAOWDzops4DOlnkfQ==}
@@ -2922,7 +2929,6 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
-    dev: false
 
   /@redis/json/1.0.4_@redis+client@1.3.0:
     resolution: {integrity: sha512-LUZE2Gdrhg0Rx7AN+cZkb1e6HjoSKaeeW8rYnt89Tly13GBI5eP4CwDVr+MY8BAYfCg4/N15OUrtLoona9uSgw==}
@@ -2930,7 +2936,6 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
-    dev: false
 
   /@redis/search/1.1.0_@redis+client@1.3.0:
     resolution: {integrity: sha512-NyFZEVnxIJEybpy+YskjgOJRNsfTYqaPbK/Buv6W2kmFNaRk85JiqjJZA5QkRmWvGbyQYwoO5QfDi2wHskKrQQ==}
@@ -2938,7 +2943,6 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
-    dev: false
 
   /@redis/time-series/1.0.3_@redis+client@1.3.0:
     resolution: {integrity: sha512-OFp0q4SGrTH0Mruf6oFsHGea58u8vS/iI5+NpYdicaM+7BgqBZH8FFvNZ8rYYLrUO/QRqMq72NpXmxLVNcdmjA==}
@@ -2946,7 +2950,6 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
-    dev: false
 
   /@sinclair/typebox/0.24.51:
     resolution: {integrity: sha512-1P1OROm/rdubP5aFDSZQILU0vrLCJ4fvHt6EoqHEM+2D/G5MK3bIaymUKLit8Js9gbns5UyJnkP/TZROLw4tUA==}
@@ -3038,6 +3041,17 @@ packages:
       '@types/redis': 2.8.32
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@types/cache-manager-redis-store/2.0.1:
+    resolution: {integrity: sha512-8QuccvcPieh1xM/5kReE76SfdcIdEB0ePc+54ah/NBuK2eG+6O50SX4WKoJX81UxGdW3sh/WlDaDNqjnqxWNsA==}
+    dependencies:
+      '@types/cache-manager': 4.0.2
+      '@types/redis': 2.8.32
+    dev: true
+
+  /@types/cache-manager/4.0.2:
+    resolution: {integrity: sha512-fT5FMdzsiSX0AbgnS5gDvHl2Nco0h5zYyjwDQy4yPC7Ww6DeGMVKPRqIZtg9HOXDV2kkc18SL1B0N8f0BecrCA==}
     dev: true
 
   /@types/connect/3.4.35:
@@ -3192,7 +3206,7 @@ packages:
     dev: true
 
   /@types/superagent/4.1.15:
-    resolution: {integrity: sha512-iiXaOL2wSbnSY4qg0mFPWJHL9iwyEsoNYwaHF2w58/fsVAQJlj+KUfFAFZu+nzbz+b7dUprJEAc+O9vhHHhQTA==, tarball: '@types/superagent/-/superagent-4.1.14.tgz'}
+    resolution: {integrity: sha512-iiXaOL2wSbnSY4qg0mFPWJHL9iwyEsoNYwaHF2w58/fsVAQJlj+KUfFAFZu+nzbz+b7dUprJEAc+O9vhHHhQTA==, tarball: '@types/superagent/-/superagent-4.1.15.tgz'}
     deprecated: '[WARNING] Use 4.1.14 instead of 4.1.15, reason: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/58445'
     dependencies:
       '@types/cookiejar': 2.1.2
@@ -3921,6 +3935,19 @@ packages:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
 
+  /cache-manager-redis-store/3.0.1:
+    resolution: {integrity: sha512-o560kw+dFqusC9lQJhcm6L2F2fMKobJ5af+FoR2PdnMVdpQ3f3Bz6qzvObTGyvoazQJxjQNWgMQeChP4vRTuXQ==}
+    engines: {node: '>= 16.18.0'}
+    dependencies:
+      redis: 4.3.1
+    dev: true
+
+  /cache-manager/5.1.4:
+    resolution: {integrity: sha512-beXzzuboV6I0AkU25udrd8tRxFbU6c5m7+3eOdmznSVNkyKe0+uTK8EtcuhTwqc/wAYrAGl62w3s58rjKnrO6g==}
+    dependencies:
+      lodash.clonedeep: 4.5.0
+      lru-cache: 7.14.1
+
   /call-bind/1.0.2:
     resolution: {integrity: sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==}
     dependencies:
@@ -4070,7 +4097,6 @@ packages:
   /cluster-key-slot/1.1.0:
     resolution: {integrity: sha512-2Nii8p3RwAPiFwsnZvukotvow2rIHM+yQ6ZcBXGHdniadkYGZYiGmkHJIbZPIV9nfv7m/U1IPMVVcAhoWFeklw==}
     engines: {node: '>=0.10.0'}
-    dev: false
 
   /cluster-key-slot/1.1.1:
     resolution: {integrity: sha512-rwHwUfXL40Chm1r08yrhU3qpUvdVlgkKNeyeGPOxnW8/SyVDvgRaed/Uz54AqWNaTCAThlj6QAs3TZcKI0xDEw==}
@@ -5194,7 +5220,6 @@ packages:
   /generic-pool/3.8.2:
     resolution: {integrity: sha512-nGToKy6p3PAbYQ7p1UlWl6vSPwfwU6TMSWK7TTu+WUY4ZjyZQGniGGt2oNVvyNSpyZYSB43zMXVLcBm08MTMkg==}
     engines: {node: '>= 4'}
-    dev: false
 
   /gensync/1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -6270,6 +6295,9 @@ packages:
       p-locate: 5.0.0
     dev: true
 
+  /lodash.clonedeep/4.5.0:
+    resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
+
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
     dev: true
@@ -6326,6 +6354,10 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+
+  /lru-cache/7.14.1:
+    resolution: {integrity: sha512-ysxwsnTKdAx96aTRdhDOCQfDgbHnt8SK0KY8SEjO0wHinhWOFTESbjVCMPbU1uGXg/ch4lifqx0wfjOawU2+WA==}
+    engines: {node: '>=12'}
 
   /luxon/3.0.4:
     resolution: {integrity: sha512-aV48rGUwP/Vydn8HT+5cdr26YYQiUZ42NM6ToMoaGKwYfWbfLeRkEu1wXWMHBZT6+KyLfcbbtVcoQFCbbPjKlw==}
@@ -7077,7 +7109,6 @@ packages:
       '@redis/json': 1.0.4_@redis+client@1.3.0
       '@redis/search': 1.1.0_@redis+client@1.3.0
       '@redis/time-series': 1.0.3_@redis+client@1.3.0
-    dev: false
 
   /reflect-metadata/0.1.13:
     resolution: {integrity: sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==}
