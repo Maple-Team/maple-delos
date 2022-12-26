@@ -2,6 +2,7 @@ import { Module, CacheModule, CacheStore } from '@nestjs/common'
 import { redisStore } from 'cache-manager-redis-store'
 import type { RedisClientOptions } from 'redis'
 
+const isProd = process.env.NODE_ENV === 'production'
 @Module({
   imports: [
     CacheModule.registerAsync<RedisClientOptions>({
@@ -10,7 +11,7 @@ import type { RedisClientOptions } from 'redis'
         // @https://blog.logrocket.com/add-redis-cache-nestjs-app/
         const store = await redisStore({
           socket: {
-            host: 'localhost',
+            host: isProd ? 'maple-redis' : 'localhost',
             port: 6379,
             // NOTE default databases: 0
           },
