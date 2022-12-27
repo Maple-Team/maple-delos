@@ -3,7 +3,6 @@ import { redisStore } from 'cache-manager-redis-store'
 import type { RedisClientOptions } from 'redis'
 
 const isProd = process.env.NODE_ENV === 'production'
-console.log(isProd, 'isProd', 'redis module')
 @Module({
   imports: [
     CacheModule.registerAsync<RedisClientOptions>({

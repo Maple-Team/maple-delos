@@ -6,14 +6,14 @@ import { CreateMediaDto } from './dto/create-media.dto'
 
 @Injectable()
 export class MediaService {
-  constructor(@InjectModel(Media.name) private mediaModel: Model<MediaDocument>) {}
+  constructor(@InjectModel(Media.name) private MediaModel: Model<MediaDocument>) {}
 
   async create(createMediaDto: CreateMediaDto): Promise<Media> {
-    const createdMedia = new this.mediaModel(createMediaDto)
+    const createdMedia = new this.MediaModel(createMediaDto)
     return createdMedia.save()
   }
 
   async findAll(): Promise<Media[]> {
-    return this.mediaModel.find().exec()
+    return this.MediaModel.find().exec()
   }
 }
