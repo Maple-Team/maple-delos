@@ -1,13 +1,14 @@
-import { Controller, Get, Param, Query, UseFilters } from '@nestjs/common'
+import { Controller, Get, Param, Query, UseFilters, UseInterceptors } from '@nestjs/common'
+import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
+import { HttpExceptionFilter } from '../../http-exception.filter'
 import { ProductService } from './products.service'
-
-import { HttpExceptionFilter } from 'src/http-exception.filter'
 
 @Controller({
   path: 'products',
   version: 'v1', // controll level
 })
 @UseFilters(new HttpExceptionFilter())
+@UseInterceptors(TransformInterceptor)
 export class ProductController {
   constructor(private readonly service: ProductService) {}
 

@@ -24,7 +24,8 @@ import { BlogModule } from './components/zyc/blog.module'
 import { MockModule } from './components/mock/mock.module'
 import { RedisModule } from './components/redis/redis.module'
 // import { RedisModule } from 'nestjs-redis'
-import { SonyoonjooModule } from './sonyoonjoo/sonyoonjoo.module'
+import { SonyoonjooModule } from './components/sonyoonjoo/sonyoonjoo.module'
+import { MeituluModule } from './components/meitulu/meitulu.module'
 
 const isProd = process.env.NODE_ENV === 'production'
 @Module({
@@ -74,6 +75,7 @@ const isProd = process.env.NODE_ENV === 'production'
       },
     }),
     SonyoonjooModule,
+    MeituluModule,
   ],
   controllers: [AppController],
   providers: [AppService],
