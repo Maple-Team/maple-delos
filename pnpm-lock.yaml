@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@liutsing/eslint-config': ^0.0.7
   '@liutsing/prettier-config': ^0.0.4
-  '@liutsing/utils': ^0.0.3
+  '@liutsing/utils': ^0.0.7
   '@nestjs/bull': ^0.6.1
   '@nestjs/cli': ^9.0.0
   '@nestjs/common': ^9.0.0
@@ -31,7 +31,6 @@ specifiers:
   bull: ^4.9.0
   cache-manager: ^5.1.4
   cache-manager-redis-store: ^3.0.1
-  husky: ^8.0.1
   jest: 28.1.2
   lodash: ^4.17.21
   mongoose: ^6.6.0
@@ -51,7 +50,7 @@ specifiers:
   typescript: ^4.3.5
 
 dependencies:
-  '@liutsing/utils': 0.0.3
+  '@liutsing/utils': 0.0.7
   '@nestjs/bull': 0.6.1_ygnceeodtesnwlfhhob2uf5uju
   '@nestjs/common': 9.1.6_2zg6knnfmllxmxienlo5ktibxe
   '@nestjs/config': 2.2.0_yjxybkvltbh2d3oivnq5etx3oi
@@ -65,6 +64,8 @@ dependencies:
   '@nestjs/websockets': 9.1.6_q7oeefvfo2joyojxllcrmxhtve
   '@socket.io/redis-adapter': 7.2.0
   bull: 4.10.1
+  cache-manager: 5.1.4
+  cache-manager-redis-store: 3.0.1
   lodash: 4.17.21
   mongoose: 6.7.0
   mysql2: 2.3.3
@@ -89,9 +90,6 @@ devDependencies:
   '@types/multer': 1.4.7
   '@types/node': 16.18.2
   '@types/supertest': 2.0.12
-  cache-manager: 5.1.4
-  cache-manager-redis-store: 3.0.1
-  husky: 8.0.1
   jest: 28.1.2_pfxkpkvs62uiwmbcnbb432f4n4
   rimraf: 3.0.2
   source-map-support: 0.5.21
@@ -2535,8 +2533,10 @@ packages:
       prettier: 2.7.1
     dev: true
 
-  /@liutsing/utils/0.0.3:
-    resolution: {integrity: sha512-+pVtdNrioO8s2DsD91NRbl0KhIYXT/91TIuXeCR9WL1h885MCct+6O2raoySbN6nGX73wrqbUlrAe9vTHrjBmQ==}
+  /@liutsing/utils/0.0.7:
+    resolution: {integrity: sha512-d4YBW4qPgO+Yb/T19kCnnM1PJaXrFyeyN7oxpDk5ARorGGS8uWVc5TwhuRbCNjd0NNmCMxY33yWY6SPjwboqeg==}
+    dependencies:
+      lodash-es: 4.17.21
     dev: false
 
   /@msgpackr-extract/msgpackr-extract-darwin-arm64/2.1.2:
@@ -2943,6 +2943,7 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
+    dev: false
 
   /@redis/client/1.3.0:
     resolution: {integrity: sha512-XCFV60nloXAefDsPnYMjHGtvbtHR8fV5Om8cQ0JYqTNbWcQo/4AryzJ2luRj4blveWazRK/j40gES8M7Cp6cfQ==}
@@ -2951,6 +2952,7 @@ packages:
       cluster-key-slot: 1.1.0
       generic-pool: 3.8.2
       yallist: 4.0.0
+    dev: false
 
   /@redis/graph/1.0.1_@redis+client@1.3.0:
     resolution: {integrity: sha512-oDE4myMCJOCVKYMygEMWuriBgqlS5FqdWerikMoJxzmmTUErnTRRgmIDa2VcgytACZMFqpAOWDzops4DOlnkfQ==}
@@ -2958,6 +2960,7 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
+    dev: false
 
   /@redis/json/1.0.4_@redis+client@1.3.0:
     resolution: {integrity: sha512-LUZE2Gdrhg0Rx7AN+cZkb1e6HjoSKaeeW8rYnt89Tly13GBI5eP4CwDVr+MY8BAYfCg4/N15OUrtLoona9uSgw==}
@@ -2965,6 +2968,7 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
+    dev: false
 
   /@redis/search/1.1.0_@redis+client@1.3.0:
     resolution: {integrity: sha512-NyFZEVnxIJEybpy+YskjgOJRNsfTYqaPbK/Buv6W2kmFNaRk85JiqjJZA5QkRmWvGbyQYwoO5QfDi2wHskKrQQ==}
@@ -2972,6 +2976,7 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
+    dev: false
 
   /@redis/time-series/1.0.3_@redis+client@1.3.0:
     resolution: {integrity: sha512-OFp0q4SGrTH0Mruf6oFsHGea58u8vS/iI5+NpYdicaM+7BgqBZH8FFvNZ8rYYLrUO/QRqMq72NpXmxLVNcdmjA==}
@@ -2979,6 +2984,7 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.3.0
+    dev: false
 
   /@sinclair/typebox/0.24.51:
     resolution: {integrity: sha512-1P1OROm/rdubP5aFDSZQILU0vrLCJ4fvHt6EoqHEM+2D/G5MK3bIaymUKLit8Js9gbns5UyJnkP/TZROLw4tUA==}
@@ -3969,7 +3975,7 @@ packages:
     engines: {node: '>= 16.18.0'}
     dependencies:
       redis: 4.3.1
-    dev: true
+    dev: false
 
   /cache-manager/5.1.4:
     resolution: {integrity: sha512-beXzzuboV6I0AkU25udrd8tRxFbU6c5m7+3eOdmznSVNkyKe0+uTK8EtcuhTwqc/wAYrAGl62w3s58rjKnrO6g==}
@@ -4126,6 +4132,7 @@ packages:
   /cluster-key-slot/1.1.0:
     resolution: {integrity: sha512-2Nii8p3RwAPiFwsnZvukotvow2rIHM+yQ6ZcBXGHdniadkYGZYiGmkHJIbZPIV9nfv7m/U1IPMVVcAhoWFeklw==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /cluster-key-slot/1.1.1:
     resolution: {integrity: sha512-rwHwUfXL40Chm1r08yrhU3qpUvdVlgkKNeyeGPOxnW8/SyVDvgRaed/Uz54AqWNaTCAThlj6QAs3TZcKI0xDEw==}
@@ -5249,6 +5256,7 @@ packages:
   /generic-pool/3.8.2:
     resolution: {integrity: sha512-nGToKy6p3PAbYQ7p1UlWl6vSPwfwU6TMSWK7TTu+WUY4ZjyZQGniGGt2oNVvyNSpyZYSB43zMXVLcBm08MTMkg==}
     engines: {node: '>= 4'}
+    dev: false
 
   /gensync/1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -5423,12 +5431,6 @@ packages:
   /human-signals/2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
-    dev: true
-
-  /husky/8.0.1:
-    resolution: {integrity: sha512-xs7/chUH/CKdOCs7Zy0Aev9e/dKOMZf3K1Az1nar3tzlv0jfqnYtu235bstsWTmXOR0EfINrPa97yy4Lz6RiKw==}
-    engines: {node: '>=14'}
-    hasBin: true
     dev: true
 
   /iconv-lite/0.4.24:
@@ -6324,6 +6326,10 @@ packages:
       p-locate: 5.0.0
     dev: true
 
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
+
   /lodash.clonedeep/4.5.0:
     resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
 
@@ -7138,6 +7144,7 @@ packages:
       '@redis/json': 1.0.4_@redis+client@1.3.0
       '@redis/search': 1.1.0_@redis+client@1.3.0
       '@redis/time-series': 1.0.3_@redis+client@1.3.0
+    dev: false
 
   /reflect-metadata/0.1.13:
     resolution: {integrity: sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==}
