@@ -3,7 +3,6 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { DataSource } from 'typeorm'
 import { MongooseModule } from '@nestjs/mongoose'
 import { MediaModule } from './components/media/media.module'
 import { Product } from './components/product/product.entity'
@@ -14,7 +13,6 @@ import { LabelModule } from './components/label/label.module'
 import { Fiction } from './components/fiction/entities/fiction.entity'
 import { Label } from './components/label/entities/label.entity'
 import { EventsModule } from './events/events.module'
-// import { BullModule } from '@nestjs/bull';
 import { ImageModule } from './components/gallery/image/image.module'
 import { AlbumModule } from './components/gallery/album/album.module'
 import { Image } from './components/gallery/image/entities/image.entity'
@@ -23,14 +21,32 @@ import { getEnvPath } from './config/helper/env.help'
 import { BlogModule } from './components/zyc/blog.module'
 import { MockModule } from './components/mock/mock.module'
 import { RedisModule } from './components/redis/redis.module'
-// import { RedisModule } from 'nestjs-redis'
 import { SonyoonjooModule } from './components/sonyoonjoo/sonyoonjoo.module'
 import { MeituluModule } from './components/meitulu/meitulu.module'
 import { TimelineModule } from './components/timeline/timeline.module'
+import { ClientsModule, Transport } from '@nestjs/microservices'
 
 const isProd = process.env.NODE_ENV === 'production'
 @Module({
   imports: [
+    ClientsModule.register([
+      {
+        name: 'CALC_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: '192.168.130.12', // microservices host
+          port: 8888, // microservices port
+        },
+      },
+      {
+        name: 'LOG_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: '192.168.130.12',
+          port: 9999,
+        },
+      },
+    ]),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -82,6 +98,4 @@ const isProd = process.env.NODE_ENV === 'production'
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  constructor(private dataSource: DataSource) {}
-}
+export class AppModule {}

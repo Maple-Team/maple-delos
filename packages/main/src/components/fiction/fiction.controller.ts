@@ -105,7 +105,7 @@ export class FictionController {
           const _content = chapterContent.replaceAll(/<a.*>(.*)<\/a>/g, (_, p1) => p1)
           const words = _content.length
 
-          return this.fictionService.create({
+          this.fictionService.create({
             bookName,
             chapterContent: _content,
             words,
