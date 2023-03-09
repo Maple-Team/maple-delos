@@ -1,3 +1,4 @@
+# building
 FROM node:16 AS development
 
 WORKDIR app
@@ -12,6 +13,7 @@ COPY . .
 
 RUN pnpm run build
 
+# running
 FROM node:16 AS production
 
 WORKDIR app

@@ -1,7 +1,7 @@
 // 1. 读取package.json的version
 // 2. docker build
 // 3. docker run
-const { version } = require('../main/package.json')
+const { version } = require('../package.json')
 const { exec } = require('child_process')
 const name = 'liutsing/delos'
 const dockerProcss = exec(`docker build . -t ${name}:latest -t ${name}:${version}`)

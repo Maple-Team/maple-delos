@@ -34,7 +34,7 @@ const isProd = process.env.NODE_ENV === 'production'
         name: 'CALC_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: '192.168.130.12', // microservices host
+          // host: '192.168.108.188', // microservices host
           port: 8888, // microservices port
         },
       },
@@ -42,7 +42,7 @@ const isProd = process.env.NODE_ENV === 'production'
         name: 'LOG_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: '192.168.130.12',
+          // host: '192.168.108.188',
           port: 9999,
         },
       },
