@@ -68,8 +68,8 @@
     "typeorm": "^0.3.7"
   },
   "devDependencies": {
-    "@liutsing/eslint-config": "^0.0.7",
-    "@liutsing/prettier-config": "^0.0.4",
+    "@liutsing/eslint-config": "^0.0.9",
+    "@liutsing/prettier-config": "^0.0.5",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
