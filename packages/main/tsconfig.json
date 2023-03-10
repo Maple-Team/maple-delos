@@ -4,13 +4,14 @@
     "baseUrl": "./",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "incremental": true,
     "module": "commonjs",
+    "target": "ESnext",
     "outDir": "./dist",
     "rootDir": ".",
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"

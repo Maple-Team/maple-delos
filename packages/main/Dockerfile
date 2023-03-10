@@ -1,25 +1,26 @@
 # building
-FROM node:16 AS development
+FROM node:lts-alpine AS development
 
 WORKDIR app
 
 COPY package.json ./
-COPY tsconfig.json ./
+COPY tsconfig.build.json ./
 
 RUN npm install -g pnpm --registry=https://registry.npmmirror.com/ 
 RUN pnpm install --registry=https://registry.npmmirror.com/ 
 
 COPY . .
 
+
 RUN pnpm run build
 
 # running
-FROM node:16 AS production
+FROM node:lts-alpine AS production
 
 WORKDIR app
 
 COPY package.json ./
-
+COPY tsconfig.build.json ./
 
 # RUN npm install --omit=dev --registry=https://registry.npmmirror.com/
 
