@@ -11,7 +11,6 @@ RUN pnpm install --registry=https://registry.npmmirror.com/
 
 COPY . .
 
-
 RUN pnpm run build
 
 # running
