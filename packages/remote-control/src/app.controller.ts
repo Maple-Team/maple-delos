@@ -8,13 +8,13 @@ import type {
 
 export class AppController {
   constructor(private service: AppService) {
-    console.log(service);
+    // console.log(service);
   }
 
   @MessagePattern('sendCmd')
   onSendCmd(_params: SendCommandParams) {
     // 返回commandId等信息
-    return '';
+    return '123';
   }
 
   @MessagePattern('getVehConResult')

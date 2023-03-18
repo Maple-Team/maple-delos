@@ -12,11 +12,12 @@ import { EventPattern } from '@nestjs/microservices';
 @Controller()
 export class AppController {
   constructor(private service: AppService) {
-    console.log(service);
+    // console.log(service);
   }
 
   @EventPattern('log')
-  log(text: string): void {
-    console.log(text);
+  log(text: unknown): void {
+    console.log(JSON.stringify(text));
+    //TODO 写到mongoDB
   }
 }

@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common'
 import { ClientsModule, Transport } from '@nestjs/microservices'
+import { ControlController } from './control.control'
+
+const isProd = process.env.NODE_ENV === 'production'
 
 @Module({
   imports: [
@@ -8,7 +11,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices'
         name: 'REMOTE_CONTROL_SERVICE',
         transport: Transport.TCP,
         options: {
-          // host: '192.168.108.188', // microservices host
+          host: isProd ? 'control-microservice' : 'localhost', // microservices host
           port: 8800, // microservices port
         },
       },
@@ -16,11 +19,12 @@ import { ClientsModule, Transport } from '@nestjs/microservices'
         name: 'LOG_SERVICE',
         transport: Transport.TCP,
         options: {
-          // host: '192.168.108.188',
+          host: isProd ? 'log-microservice' : 'localhost',
           port: 8801,
         },
       },
     ]),
   ],
+  controllers: [ControlController],
 })
 export class ControlModule {}

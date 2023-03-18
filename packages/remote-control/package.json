@@ -28,6 +28,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "^9.3.9",
     "reflect-metadata": "^0.1.13",
+    "tslib": "^2.5.0",
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
@@ -55,7 +56,6 @@
     "ts-jest": "29.0.3",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
-    "tslib": "^2.5.0",
     "tsconfig-paths": "4.1.1",
     "typescript": "^4.7.4"
   },

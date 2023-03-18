@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Query, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Query, UseInterceptors, Post } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
 import type { SendCommandParams } from '@liutsing/types-utils'
 import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
@@ -11,21 +11,21 @@ export class ControlController {
     @Inject('LOG_SERVICE') private logClient: ClientProxy
   ) {}
 
-  @Get('/sendCmd')
+  @Post('/sendCmd')
   sendCmd(@Body() payload: SendCommandParams) {
-    this.logClient.emit('sendCmd', payload)
+    this.logClient.emit('log', payload)
     return this.controlClient.send('sendCmd', payload)
   }
 
   @Get('/getVehConResult')
   getVehConResult(@Body() payload: SendCommandParams) {
-    this.logClient.emit('getVehConResult', payload)
+    this.logClient.emit('log', payload)
     return this.controlClient.send('getVehConResult', payload)
   }
 
   @Get('/getLatestTracking')
   getLatestTracking(@Query('vin') vin: string) {
-    this.logClient.emit('getLatestTracking', vin)
+    this.logClient.emit('log', vin)
     return this.controlClient.send('getLatestTracking', vin)
   }
 }

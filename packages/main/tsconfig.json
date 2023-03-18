@@ -1,5 +1,5 @@
 {
-  "extends":"@liutsing/tsconfig",
+  "extends": "@liutsing/tsconfig",
   "compilerOptions": {
     "baseUrl": "./",
     "emitDecoratorMetadata": true,
