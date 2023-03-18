@@ -75,3 +75,8 @@ or
 ```sh
 docker-compose up -d
 ```
+
+## TODO
+
+- mqtt ?
+- ws microservice

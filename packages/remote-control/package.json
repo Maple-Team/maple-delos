@@ -1,5 +1,5 @@
 {
-  "name": "@liutsing/delos-calc",
+  "name": "@liutsing/delos-remote-control",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -7,6 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build --config tsconfig.build.json",
+    "predeploy": "pnpm run build",
+    "deploy": "node scripts/deploy.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -24,12 +26,13 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "reflect-metadata": "^0.1.13",
+    "@nestjs/cli": "^9.0.0",
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
+    "@liutsing/types-utils": "^0.0.6",
     "@types/express": "^4.17.13",
     "@types/jest": "29.2.4",
     "@types/node": "18.11.18",

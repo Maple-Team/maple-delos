@@ -24,29 +24,11 @@ import { RedisModule } from './components/redis/redis.module'
 import { SonyoonjooModule } from './components/sonyoonjoo/sonyoonjoo.module'
 import { MeituluModule } from './components/meitulu/meitulu.module'
 import { TimelineModule } from './components/timeline/timeline.module'
-import { ClientsModule, Transport } from '@nestjs/microservices'
+import { ControlModule } from './components/remote-control/control.module'
 
 const isProd = process.env.NODE_ENV === 'production'
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'CALC_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          // host: '192.168.108.188', // microservices host
-          port: 8888, // microservices port
-        },
-      },
-      {
-        name: 'LOG_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          // host: '192.168.108.188',
-          port: 9999,
-        },
-      },
-    ]),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -94,6 +76,7 @@ const isProd = process.env.NODE_ENV === 'production'
     SonyoonjooModule,
     MeituluModule,
     TimelineModule,
+    ControlModule,
   ],
   controllers: [AppController],
   providers: [AppService],
