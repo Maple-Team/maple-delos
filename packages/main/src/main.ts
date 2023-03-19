@@ -2,6 +2,7 @@ import { VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import { WsAdapter } from '@nestjs/platform-ws'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true })
@@ -14,7 +15,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api', app, document)
-
+  app.useWebSocketAdapter(new WsAdapter(app)) // NOTE 重要
   app.setGlobalPrefix('api')
   app.enableVersioning({
     // type: VersioningType.URI,
