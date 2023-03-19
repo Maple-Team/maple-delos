@@ -8,13 +8,19 @@ import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 export class ControlController {
   constructor(
     @Inject('REMOTE_CONTROL_SERVICE') private controlClient: ClientProxy,
-    @Inject('LOG_SERVICE') private logClient: ClientProxy
+    @Inject('LOG_SERVICE') private logClient: ClientProxy,
+    @Inject('MQTT_SERVICE') private mqttClient: ClientProxy
   ) {}
 
   @Post('/sendCmd')
   sendCmd(@Body() payload: SendCommandParams) {
     this.logClient.emit('log', payload)
     return this.controlClient.send('sendCmd', payload)
+  }
+
+  @Get('/notifications')
+  getNotifications() {
+    return this.mqttClient.send('notification_channel', "It's a Message From Client")
   }
 
   @Get('/getVehConResult')

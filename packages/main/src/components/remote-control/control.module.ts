@@ -23,6 +23,13 @@ const isProd = process.env.NODE_ENV === 'production'
           port: 8801,
         },
       },
+      {
+        name: 'MQTT_SERVICE',
+        transport: Transport.MQTT,
+        options: {
+          url: isProd ? 'mqtt://mqtt-server:1883' : 'mqtt://localhost:1883',
+        },
+      },
     ]),
   ],
   controllers: [ControlController],

@@ -1,6 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
-import { EventPattern } from '@nestjs/microservices';
+import {
+  Ctx,
+  MessagePattern,
+  MqttContext,
+  Payload,
+} from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
@@ -8,9 +13,15 @@ export class AppController {
     // console.log(service);
   }
 
-  @EventPattern('log')
-  log(text: unknown): void {
-    console.log(JSON.stringify(text));
-    //TODO 写到mongoDB
+  @MessagePattern('sendCmd')
+  onSendCmd(@Payload() data: number[], @Ctx() context: MqttContext) {
+    console.log(`Topic: ${context.getTopic()}`);
+    return `I Got Message From Client: ${data}`;
+  }
+
+  @MessagePattern('notification_channel')
+  getNotifications2(@Payload() data: number[], @Ctx() context: MqttContext) {
+    console.log(`Topic: ${context.getTopic()}`);
+    return `I Got Message From Client: ${data}`;
   }
 }

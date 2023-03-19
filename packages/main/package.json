@@ -74,7 +74,7 @@
   "devDependencies": {
     "@liutsing/eslint-config": "^0.0.9",
     "@liutsing/prettier-config": "^0.0.5",
-    "@liutsing/types-utils": "^0.0.6",
+    "@liutsing/types-utils": "^0.0.7",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
