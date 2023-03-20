@@ -28,6 +28,7 @@ const isProd = process.env.NODE_ENV === 'production'
         transport: Transport.MQTT,
         options: {
           url: isProd ? 'mqtt://mqtt-server:1883' : 'mqtt://localhost:1883',
+          clientId: isProd ? 'nestjs-rc-client' : 'nestjs-dev-rc-client',
         },
       },
     ]),

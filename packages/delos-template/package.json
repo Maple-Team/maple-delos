@@ -1,5 +1,5 @@
 {
-  "name": "@liutsing/delos-logs",
+  "name": "@liutsing/delos-template",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build --config tsconfig.build.json",
     "predeploy": "pnpm run build",
-    "deploy": "node scripts/deploy.js",
+    "deploy-template": "node scripts/deploy.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

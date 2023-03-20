@@ -10,6 +10,7 @@ const isProd = process.env.NODE_ENV === 'production';
       isGlobal: true,
       useFactory: async () => {
         // @https://blog.logrocket.com/add-redis-cache-nestjs-app/
+        // @ts-ignore
         const store = await redisStore({
           socket: {
             host: isProd ? 'maple-redis' : 'localhost',

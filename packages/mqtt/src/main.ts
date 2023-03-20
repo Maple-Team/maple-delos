@@ -11,6 +11,7 @@ async function bootstrap() {
       transport: Transport.MQTT,
       options: {
         url: isProd ? 'mqtt://mqtt-server:1883' : 'mqtt://localhost:1883',
+        clientId: isProd ? 'nestjs-mqtt-client' : 'nestjs-dev-mqtt-client',
       },
     },
   );

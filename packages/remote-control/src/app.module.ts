@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { RedisModule } from './redis.module';
+import * as mqtt from 'mqtt';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -22,6 +23,9 @@ const isProd = process.env.NODE_ENV === 'production';
         transport: Transport.MQTT,
         options: {
           url: isProd ? 'mqtt://mqtt-server:1883' : 'mqtt://localhost:1883',
+          clientId: isProd
+            ? 'nestjs-control-client'
+            : 'nestjs-dev-control-client',
         },
       },
     ]),

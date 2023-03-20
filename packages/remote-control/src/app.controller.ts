@@ -5,9 +5,10 @@ import type {
   VehicleResult,
   ControlExecuteCode,
 } from '@liutsing/types-utils';
-import snowflakeId from 'snowflake-id';
 import { Inject, CACHE_MANAGER } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import { uuid } from '@liutsing/utils';
+
 type RtInfo = VehicleResult['deviceStatusData'] & VehicleResult['driveData'];
 export class AppController {
   constructor(
@@ -19,15 +20,14 @@ export class AppController {
   @MessagePattern('sendCmd')
   async onSendCmd(params: SendCommandParams) {
     // mock to PUSH TO DEVICE
-    console.log(params);
     this.logClient.emit('log', JSON.stringify(params));
     const { vin, instructionDtoList } = params;
     const key = `rc_cmd_${vin}`;
-    const commandId = snowflakeId();
+    const commandId = uuid(12);
     await this.cacheService.store.set(key, params);
     await this.cacheService.set(commandId, vin);
     const resultKey = `rc_result_${commandId}`;
-    const executeCode: ControlExecuteCode = '1'; // <------ // NOTE MOCK THIS
+    const executeCode: ControlExecuteCode = '1'; // <------ // NOTE 执行状态: MOCK THIS
     await this.cacheService.set(resultKey, executeCode);
 
     const commandType = instructionDtoList[0].commandType;
@@ -37,8 +37,9 @@ export class AppController {
       const resultCode = (await this.cacheService.get(
         resultKey,
       )) as ControlExecuteCode;
+
       const ret: RemoteControlResult = {
-        vehicleId: snowflakeId(),
+        vehicleId: uuid(12),
         vin,
         commandId,
         controlResultList: [
@@ -51,7 +52,24 @@ export class AppController {
           },
         ],
       };
-      this.mqttClient.send('topic-ecar-remote-control', JSON.stringify(ret));
+      // const res = await this.mqttClient
+      //   .send('topic-ecar-remote-control', JSON.stringify(ret))
+      //   .toPromise();
+
+      this.mqttClient
+        .send('topic-ecar-remote-control', JSON.stringify(ret))
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+      // const res = await this.mqttClient
+      //   .send('send-cmd', JSON.stringify(ret))
+      //   .toPromise();
+      // console.log(res);
     }, 5 * 1000);
 
     setTimeout(async () => {
@@ -68,9 +86,11 @@ export class AppController {
         majorLight: 0,
         drivingState: 1,
       };
-      const ret: RtInfo =
+      const currentVehicleInfo: RtInfo =
         (await this.cacheService.store.get(`rt_${vin}`)) || defaultValue;
-      this.logClient.emit('log', JSON.stringify(ret));
+        
+      this.logClient.emit('log', JSON.stringify(currentVehicleInfo));
+
       let key = 'pictureSerial';
       switch (commandType) {
         case '01':
@@ -98,12 +118,12 @@ export class AppController {
           break;
       }
       if (key === 'drivingState') {
-        ret[key] = executeCode === '1' ? 4 : 5;
+        currentVehicleInfo[key] = executeCode === '1' ? 4 : 5;
       } else {
-        ret[key] = executeCode === '1' ? 1 : 0;
+        currentVehicleInfo[key] = executeCode === '1' ? 1 : 0;
       }
-      this.logClient.emit('log', JSON.stringify(ret));
-      await this.cacheService.store.set(`rt_${vin}`, ret);
+      this.logClient.emit('log', JSON.stringify(currentVehicleInfo));
+      await this.cacheService.store.set(`rt_${vin}`, currentVehicleInfo);
     }, 6 * 1000);
     return commandId;
   }
@@ -119,10 +139,10 @@ export class AppController {
     const resultKey = `rc_result_${commandId}`;
     const resultCode = (await this.cacheService.get(
       resultKey,
-    )) as ControlExecuteCode; // <------ // NOTE MOCK THIS
+    )) as ControlExecuteCode; // <------ // NOTE 执行状态 MOCK THIS
 
     return {
-      vehicleId: snowflakeId(),
+      vehicleId: uuid(12),
       vin,
       commandId,
       controlResultList: [

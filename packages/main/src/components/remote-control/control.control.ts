@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Inject, UseInterceptors, Post } from '@nestjs/common'
+import { Body, Controller, Get, Inject, UseInterceptors, Post, HttpCode } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
 import type { SendCommandParams } from '@liutsing/types-utils'
 import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
+import { Query } from '@nestjs/common'
 
 @Controller('vehicle-control')
 @UseInterceptors(TransformInterceptor)
@@ -13,19 +14,23 @@ export class ControlController {
   ) {}
 
   @Post('/sendCmd')
+  @HttpCode(200)
   sendCmd(@Body() payload: SendCommandParams) {
     this.logClient.emit('log', payload)
     return this.controlClient.send('sendCmd', payload)
   }
 
-  @Get('/notifications')
-  getNotifications() {
-    return this.mqttClient.send('notification_channel', "It's a Message From Client")
+  @Get('/mqtt-test')
+  test() {
+    return this.mqttClient.send('mqtt-test', `It's a Message From Client: ${new Date().toLocaleTimeString()}`)
   }
 
   @Get('/getVehConResult')
-  getVehConResult(@Body() payload: SendCommandParams) {
-    this.logClient.emit('log', payload)
-    return this.controlClient.send('getVehConResult', payload)
+  getVehConResult(@Query('commandId') commandId: string) {
+    if (!commandId) {
+      throw new Error('commandId not be null')
+    }
+    this.logClient.emit('log', commandId)
+    return this.controlClient.send('getVehConResult', commandId)
   }
 }

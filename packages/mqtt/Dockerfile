@@ -30,6 +30,4 @@ COPY --from=development /app/dist ./dist
 
 ENV NODE_ENV=production
 
-EXPOSE 8801
-
 CMD [ "sh", "-c", "npm run start:prod"]

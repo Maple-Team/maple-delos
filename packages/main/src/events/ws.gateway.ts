@@ -1,7 +1,15 @@
-import { WebSocketGateway, WebSocketServer, SubscribeMessage, WsResponse } from '@nestjs/websockets'
+import {
+  WebSocketGateway,
+  WebSocketServer,
+  SubscribeMessage,
+  WsResponse,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+} from '@nestjs/websockets'
 import { from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { Server } from 'ws'
+import { Server, WebSocket } from 'ws'
 
 @WebSocketGateway(8080, {
   cors: {
@@ -10,15 +18,33 @@ import { Server } from 'ws'
   // namespace: '/events/', //NOTE 命名空间仅socket.io库支持
   transports: ['websocket'],
 })
-export class EventsGateway {
-  constructor() {
-    this.ids = []
-  }
-
+export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   @WebSocketServer()
   server: Server
 
-  ids: string[]
+  wsClients: WebSocket[] = []
+
+  handleConnection(client: WebSocket) {
+    this.wsClients.push(client)
+  }
+
+  handleDisconnect(client: WebSocket) {
+    const index = this.wsClients.indexOf(client)
+    this.wsClients.splice(index >>> 0, 1)
+
+    this.broadcast('disconnect', client)
+  }
+
+  private broadcast(event, message: unknown) {
+    const broadCastMessage = JSON.stringify(message)
+    for (const c of this.wsClients) {
+      c.send(broadCastMessage)
+    }
+  }
+
+  afterInit() {
+    this.server.emit('testing', { do: 'stuff' })
+  }
 
   @SubscribeMessage('events')
   onEvent(client: unknown, data: unknown): Observable<WsResponse<number>> {
