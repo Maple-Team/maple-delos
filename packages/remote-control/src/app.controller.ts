@@ -30,6 +30,9 @@ export class AppController {
     const executeCode: ControlExecuteCode = '1'; // <------ // NOTE MOCK THIS
     await this.cacheService.set(resultKey, executeCode);
 
+    const commandType = instructionDtoList[0].commandType;
+
+    // 丢给mqtt去通过ws推送
     setTimeout(async () => {
       const resultCode = (await this.cacheService.get(
         resultKey,
@@ -40,7 +43,7 @@ export class AppController {
         commandId,
         controlResultList: [
           {
-            commandType: instructionDtoList[0].commandType,
+            commandType,
             resultCode,
             resultMsg: '',
             errorDetailCode: '',
@@ -50,6 +53,58 @@ export class AppController {
       };
       this.mqttClient.send('topic-ecar-remote-control', JSON.stringify(ret));
     }, 5 * 1000);
+
+    setTimeout(async () => {
+      // 更新redis rt 数据
+      const defaultValue: RtInfo = {
+        alarmWhistle: 0,
+        audioSerial: '',
+        locker1: 0,
+        locker2: 0,
+        warningLamp: 0,
+        remoteCall: '0',
+        videoSerial: '',
+        pictureSerial: '',
+        majorLight: 0,
+        drivingState: 1,
+      };
+      const ret: RtInfo =
+        (await this.cacheService.store.get(`rt_${vin}`)) || defaultValue;
+      this.logClient.emit('log', JSON.stringify(ret));
+      let key = 'pictureSerial';
+      switch (commandType) {
+        case '01':
+          key = 'majorLight';
+          break;
+        case '02':
+          key = 'warningLamp';
+          break;
+        case '03':
+          key = 'alarmWhistle';
+          break;
+        case '04':
+          key = 'drivingState';
+          break;
+        case '05':
+          key = 'drivingState';
+          break;
+        case '0601':
+          key = 'locker1';
+          break;
+        case '0602':
+          key = 'locker2';
+          break;
+        default:
+          break;
+      }
+      if (key === 'drivingState') {
+        ret[key] = executeCode === '1' ? 4 : 5;
+      } else {
+        ret[key] = executeCode === '1' ? 1 : 0;
+      }
+      this.logClient.emit('log', JSON.stringify(ret));
+      await this.cacheService.store.set(`rt_${vin}`, ret);
+    }, 6 * 1000);
     return commandId;
   }
 
@@ -79,79 +134,6 @@ export class AppController {
           errorDetailMsg: '',
         },
       ],
-    };
-  }
-
-  // TODO after ws connect to invoke ws send rt message
-  @MessagePattern('getLatestTracking')
-  async onLatestTracking(vin: string): Promise<VehicleResult> {
-    const exampleValue: RtInfo = {
-      alarmWhistle: 0,
-      audioSerial: '',
-      locker1: 0,
-      locker2: 0,
-      warningLamp: 0,
-      remoteCall: '0',
-      videoSerial: '',
-      pictureSerial: '',
-      majorLight: 0,
-      drivingState: 1,
-    };
-    await this.cacheService.store.set(`rt_example`, exampleValue);
-
-    const {
-      alarmWhistle,
-      audioSerial,
-      locker1,
-      locker2,
-      warningLamp,
-      remoteCall,
-      videoSerial,
-      pictureSerial,
-      majorLight,
-      drivingState,
-    } = (await this.cacheService.store.get(`rt_${vin}`)) as RtInfo; // <------ // NOTE MOCK THIS
-
-    return {
-      collectionTime: '',
-      deviceStatusData: {
-        alarmWhistle,
-        locker1,
-        locker2,
-        majorLight,
-        warningLamp,
-        audioSerial,
-        pictureSerial,
-        remoteCall,
-        videoSerial,
-      },
-      driveData: {
-        drivingState,
-      },
-      gpsData: {
-        gpsAlt: '',
-        gpsLat: '',
-        gpsLng: '',
-        gpsMileage: '',
-        turningAngle: '',
-        gpsSpeed: '0',
-      },
-      receiveTime: '',
-      terminalCode: '',
-      terminalTime: '',
-      todayMiles: 0,
-      totalMiles: 0,
-      vehicleData: {
-        batteryTemperature: 0,
-        chargeStatus: 0,
-        mileage: '',
-        motorTemperature: 0,
-        soc: '',
-        vehicleSpeed: '',
-        workStats: 0,
-      },
-      vehicleId: snowflakeId(),
-      vin,
     };
   }
 }
