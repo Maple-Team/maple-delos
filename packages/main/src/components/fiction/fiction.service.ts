@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { CreateFictionDto } from './dto/create-fiction.dto'
-import { UpdateFictionDto } from './dto/update-fiction.dto'
 import { Fiction } from './entities/fiction.entity'
-
+import { groupBy, values } from 'lodash'
 @Injectable()
 export class FictionService {
   constructor(
@@ -24,11 +23,12 @@ export class FictionService {
     return this.repo.findOneBy({ id })
   }
 
-  list() {
-    return this.repo.find()
+  async list() {
+    const data = await this.repo.find({})
+    return groupBy(data, 'bookName')
   }
 
-  update(id: number, updateFictionDto: UpdateFictionDto) {
+  update(id: number) {
     return this.repo.update({ id }, {})
   }
 

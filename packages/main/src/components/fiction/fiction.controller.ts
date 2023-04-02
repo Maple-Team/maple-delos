@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common'
 import { FictionService } from './fiction.service'
 import { CreateFictionDto } from './dto/create-fiction.dto'
-import { UpdateFictionDto } from './dto/update-fiction.dto'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { LabelService } from '../label/label.service'
 
@@ -67,10 +66,20 @@ export class FictionController {
 
   @Get('list')
   async list() {
-    const list = await this.fictionService.list()
-    return `<ul style="display: flex; flex-wrap: wrap;">${list
-      .map((_) => `<li style="width: calc(100% / 3);"><a href='${_.id}'>第${_.chapterNo}章 ${_.chapterName}</a></li>`)
-      .join('\r\n')}</ul>`
+    const booksObj = await this.fictionService.list()
+    const books = Object.keys(booksObj)
+    return `
+    ${books.map((bookName) => {
+      return `
+      <div>
+      <h2>${bookName}</h2>
+      <ul style="display: flex; flex-wrap: wrap;">${booksObj[bookName]
+        .sort((a, b) => a.chapterNo - b.chapterNo)
+        .map((_) => `<li style="width: calc(100% / 3);"><a href='${_.id}'>第${_.chapterNo}章 ${_.chapterName}</a></li>`)
+        .join('\r\n')}</ul></div>`
+    })}
+    
+    `
   }
 
   @Get(':id')
@@ -79,8 +88,8 @@ export class FictionController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFictionDto: UpdateFictionDto) {
-    return this.fictionService.update(+id, updateFictionDto)
+  update(@Param('id') id: string) {
+    return this.fictionService.update(+id)
   }
 
   @Delete(':id')
