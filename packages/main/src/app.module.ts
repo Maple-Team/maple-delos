@@ -25,6 +25,7 @@ import { SonyoonjooModule } from './components/sonyoonjoo/sonyoonjoo.module'
 import { MeituluModule } from './components/meitulu/meitulu.module'
 import { TimelineModule } from './components/timeline/timeline.module'
 import { ControlModule } from './components/remote-control/control.module'
+import { LzzModule } from './components/lzz/lzz.module'
 
 const isProd = process.env.NODE_ENV === 'production'
 @Module({
@@ -77,6 +78,7 @@ const isProd = process.env.NODE_ENV === 'production'
     MeituluModule,
     TimelineModule,
     ControlModule,
+    LzzModule,
   ],
   controllers: [AppController],
   providers: [AppService],

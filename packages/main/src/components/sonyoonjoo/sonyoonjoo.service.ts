@@ -17,7 +17,9 @@ export class SonyoonjooService {
   ): Promise<BaseList<SonYoonJoo>> {
     const filterKeys: {
       year?: number
-      path?: any
+      path?: {
+        $regex: RegExp
+      }
     } = {}
     if (rest.year) {
       filterKeys.year = rest.year
