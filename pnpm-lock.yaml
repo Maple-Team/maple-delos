@@ -9,11 +9,11 @@ importers:
       '@liutsing/prettier-config': ^0.0.6
       '@liutsing/tsconfig': ^0.0.6
       '@liutsing/types-utils': ^0.0.9
-      '@liutsing/utils': ^0.0.7
+      '@liutsing/utils': ^0.0.9
       nx: ^15.8.7
       rimraf: ^3.0.2
     dependencies:
-      '@liutsing/utils': 0.0.7
+      '@liutsing/utils': 0.0.9
     devDependencies:
       '@babel/preset-env': 7.20.2
       '@liutsing/eslint-config': 0.0.10
@@ -177,7 +177,7 @@ importers:
       reflect-metadata: ^0.1.13
       rimraf: ^3.0.2
       rxjs: ^7.2.0
-      socket.io: ^4.5.2
+      socket.io: ^4.7.0
       source-map-support: ^0.5.20
       supertest: ^6.1.3
       ts-jest: 28.0.5
@@ -214,7 +214,7 @@ importers:
       redis: 4.6.5
       reflect-metadata: 0.1.13
       rxjs: 7.8.0
-      socket.io: 4.6.1
+      socket.io: 4.7.0
       typeorm: 0.3.12_wlwdno6arbmjtwghrwx5fxz2te
       ws: 8.13.0
     devDependencies:
@@ -4041,6 +4041,12 @@ packages:
       lodash-es: 4.17.21
     dev: false
 
+  /@liutsing/utils/0.0.9:
+    resolution: {integrity: sha512-F0xiaV/aBlunuyDM2NIYM/2xnnu4fhXHdqe7duT6tsjrutIdZMp1CEbdHDAub66wHmVDdAlsflRj/k0+zYVo/w==}
+    dependencies:
+      lodash-es: 4.17.21
+    dev: false
+
   /@lukeed/csprng/1.0.1:
     resolution: {integrity: sha512-uSvJdwQU5nK+Vdf6zxcWAY2A8r7uqe+gePwLWzJ+fsQehq18pc0I2hJKwypZ2aLM90+Er9u1xn4iLJPZ+xlL4g==}
     engines: {node: '>=8'}
@@ -5443,7 +5449,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/eslint-plugin': 5.54.1_mlk7dnz565t663n4razh6a6v6i
+      '@typescript-eslint/eslint-plugin': 5.60.1_mlk7dnz565t663n4razh6a6v6i
       '@typescript-eslint/parser': 5.54.1_ycpbpc6yetojsgtrx3mwntkhsu
       eslint: 8.35.0
       eslint-plugin-vue: 9.9.0_eslint@8.35.0
@@ -6663,6 +6669,11 @@ packages:
     engines: {node: '>=10.0.0'}
     dev: false
 
+  /engine.io-parser/5.1.0:
+    resolution: {integrity: sha512-enySgNiK5tyZFynt3z7iqBR+Bto9EVVVvDFuTT0ioHCGbzirZVGDGiQjZzEp8hWl6hd5FSVytJGuScX1C1C35w==}
+    engines: {node: '>=10.0.0'}
+    dev: false
+
   /engine.io/6.4.1:
     resolution: {integrity: sha512-JFYQurD/nbsA5BSPmbaOSLa3tSVj8L6o4srSwXXY3NqE+gGUNmmPTbhn8tjzcCtSqhFgIeqef81ngny8JM25hw==}
     engines: {node: '>=10.0.0'}
@@ -6676,6 +6687,26 @@ packages:
       cors: 2.8.5
       debug: 4.3.4
       engine.io-parser: 5.0.6
+      ws: 8.11.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
+
+  /engine.io/6.5.1:
+    resolution: {integrity: sha512-mGqhI+D7YxS9KJMppR6Iuo37Ed3abhU8NdfgSvJSDUafQutrN+sPTncJYTyM9+tkhSmWodKtVYGPPHyXJEwEQA==}
+    engines: {node: '>=10.0.0'}
+    dependencies:
+      '@types/cookie': 0.4.1
+      '@types/cors': 2.8.13
+      '@types/node': 16.18.14
+      accepts: 1.3.8
+      base64id: 2.0.0
+      cookie: 0.4.2
+      cors: 2.8.5
+      debug: 4.3.4
+      engine.io-parser: 5.1.0
       ws: 8.11.0
     transitivePeerDependencies:
       - bufferutil
@@ -10481,8 +10512,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /socket.io-parser/4.2.2:
-    resolution: {integrity: sha512-DJtziuKypFkMMHCm2uIshOYC7QaylbtzQwiMYDuCKy3OPkjLzu4B2vAhTlqipRHHzrI0NJeBAizTK7X+6m1jVw==}
+  /socket.io-parser/4.2.4:
+    resolution: {integrity: sha512-/GbIKmo8ioc+NIWIhwdecY0ge+qVBSMdgxGygevmdHj24bsfgtCmcUUcQ5ZzcylGFHsN3k4HB4Cgkl96KVnuew==}
     engines: {node: '>=10.0.0'}
     dependencies:
       '@socket.io/component-emitter': 3.1.0
@@ -10500,23 +10531,24 @@ packages:
       debug: 4.3.4
       engine.io: 6.4.1
       socket.io-adapter: 2.5.2
-      socket.io-parser: 4.2.2
+      socket.io-parser: 4.2.4
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
     dev: false
 
-  /socket.io/4.6.1:
-    resolution: {integrity: sha512-KMcaAi4l/8+xEjkRICl6ak8ySoxsYG+gG6/XfRCPJPQ/haCRIJBTL4wIl8YCsmtaBovcAXGLOShyVWQ/FG8GZA==}
+  /socket.io/4.7.0:
+    resolution: {integrity: sha512-eOpu7oCNiPGBHn9Falg0cAGivp6TpDI3Yt596fbsf+vln8kRLFWxXKrecFrybn/xNYVn9HcdJNAkYToCmTjsyg==}
     engines: {node: '>=10.0.0'}
     dependencies:
       accepts: 1.3.8
       base64id: 2.0.0
+      cors: 2.8.5
       debug: 4.3.4
-      engine.io: 6.4.1
+      engine.io: 6.5.1
       socket.io-adapter: 2.5.2
-      socket.io-parser: 4.2.2
+      socket.io-parser: 4.2.4
     transitivePeerDependencies:
       - bufferutil
       - supports-color

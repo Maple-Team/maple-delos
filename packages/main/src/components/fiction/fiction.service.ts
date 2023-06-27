@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { CreateFictionDto } from './dto/create-fiction.dto'
 import { Fiction } from './entities/fiction.entity'
-import { groupBy, values } from 'lodash'
+import { groupBy } from 'lodash'
 @Injectable()
 export class FictionService {
   constructor(
