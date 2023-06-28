@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { TimelineDocument, Timeline } from './schemas/timeline.schema'
+import { BaseList } from '@liutsing/types-utils'
 
 interface RestParams {
   type?: Timeline['type']

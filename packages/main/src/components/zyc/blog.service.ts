@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Blog, BlogDocument } from './schemas/blog.schema'
 import { CreateBlogDto } from './dto/create-blogdto'
+import { BaseList } from '@liutsing/types-utils'
 
 @Injectable()
 export class BlogService {

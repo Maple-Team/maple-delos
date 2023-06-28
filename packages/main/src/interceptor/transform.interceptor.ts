@@ -1,6 +1,7 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
+import { BaseResponse } from '@liutsing/types-utils'
 
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor<T, BaseResponse<T>> {
