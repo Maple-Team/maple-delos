@@ -1,26 +1,36 @@
-FROM node:16 AS builder
+# building
+FROM node:18-alpine3.14 AS development
 
 WORKDIR app
+
+COPY package.json ./
+COPY tsconfig.build.json ./
+
+RUN npm config --global set registry https://registry.npmmirror.com/ 
+RUN npm install -g pnpm
+RUN pnpm install --registry=https://registry.npmmirror.com/ 
+
 COPY . .
-# RUN npm install
-# RUN npm install pnpm -g  --registry=https://registry.npmmirror.com/
-# RUN npm run build
-# RUN npm prune --production
 
-RUN npm install -g pnpm --registry=https://registry.npmmirror.com/
-RUN pnpm install --registry=https://registry.npmmirror.com/
 RUN pnpm run build
-RUN pnpm prune --prod
 
-FROM node:16 AS production
+# running
+FROM node:18-alpine3.14 AS production
 
 WORKDIR app
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
+
+COPY package.json ./
+COPY tsconfig.build.json ./
+
+COPY --from=development /app/dist ./dist
+
+# RUN npm install --omit=dev --registry=https://registry.npmmirror.com/
+RUN npm config --global set registry https://registry.npmmirror.com/ 
+RUN npm install --location=global pnpm
+RUN pnpm install --only=production
 
 ENV NODE_ENV=production
+
 EXPOSE 3000
 
 CMD [ "sh", "-c", "npm run start:prod"]
