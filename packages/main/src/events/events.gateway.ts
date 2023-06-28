@@ -1,18 +1,33 @@
-import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
+import {
+  ConnectedSocket,
+  MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets'
 import { from } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { Server } from 'socket.io'
+import { Server, Socket } from 'socket.io'
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
-  namespace: '/events/',
+  // namespace: 'socket.io', // FIXME 命名空间自定义不起作用，待测试
 })
-export class EventsGateway {
+export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   constructor() {
     this.ids = []
   }
+
+  handleConnection() {}
+
+  handleDisconnect() {}
+
+  afterInit() {}
 
   @WebSocketServer()
   server: Server
@@ -20,9 +35,10 @@ export class EventsGateway {
   ids: string[]
 
   @SubscribeMessage('register')
-  register(@MessageBody() id: string) {
+  register(@MessageBody() id: string, @ConnectedSocket() client: Socket) {
     this.ids.push(id)
-    console.log('id', id)
+
+    console.log('id', id, client.id)
     return from([1, 2]).pipe(
       map((num) => ({
         event: num === 1 ? 'onRegister' : id,

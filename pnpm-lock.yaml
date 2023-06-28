@@ -150,7 +150,7 @@ importers:
       '@nestjs/microservices': ^9.3.9
       '@nestjs/mongoose': ^9.2.0
       '@nestjs/platform-express': ^9.0.0
-      '@nestjs/platform-socket.io': ^9.1.6
+      '@nestjs/platform-socket.io': ^9.3.9
       '@nestjs/platform-ws': ^9.3.10
       '@nestjs/schematics': ^9.0.0
       '@nestjs/swagger': ^6.1.4
