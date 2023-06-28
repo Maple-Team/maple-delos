@@ -8,7 +8,7 @@ importers:
       '@liutsing/eslint-config': ^0.0.10
       '@liutsing/prettier-config': ^0.0.6
       '@liutsing/tsconfig': ^0.0.6
-      '@liutsing/types-utils': ^0.0.9
+      '@liutsing/types-utils': ^0.1.0
       '@liutsing/utils': ^0.0.9
       nx: ^15.8.7
       rimraf: ^3.0.2
@@ -19,7 +19,7 @@ importers:
       '@liutsing/eslint-config': 0.0.10
       '@liutsing/prettier-config': 0.0.6
       '@liutsing/tsconfig': 0.0.6
-      '@liutsing/types-utils': 0.0.9
+      '@liutsing/types-utils': 0.1.0
       nx: 15.8.7
       rimraf: 3.0.2
 
@@ -28,6 +28,7 @@ importers:
       '@liutsing/eslint-config': ^0.0.9
       '@liutsing/prettier-config': ^0.0.5
       '@liutsing/tsconfig': ^0.0.6
+      '@liutsing/types-utils': ^0.1.0
       '@nestjs/cli': ^9.0.0
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
@@ -62,6 +63,7 @@ importers:
       '@liutsing/eslint-config': 0.0.9
       '@liutsing/prettier-config': 0.0.5
       '@liutsing/tsconfig': 0.0.6
+      '@liutsing/types-utils': 0.1.0
       '@nestjs/cli': 9.2.0
       '@nestjs/schematics': 9.0.4_typescript@4.9.5
       '@nestjs/testing': 9.3.9_cxzk3mfpwtv2pzfdoj4lpmi7pa
@@ -83,6 +85,7 @@ importers:
       '@liutsing/eslint-config': ^0.0.9
       '@liutsing/prettier-config': ^0.0.5
       '@liutsing/tsconfig': ^0.0.6
+      '@liutsing/types-utils': ^0.1.0
       '@nestjs/cli': ^9.0.0
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
@@ -117,6 +120,7 @@ importers:
       '@liutsing/eslint-config': 0.0.9
       '@liutsing/prettier-config': 0.0.5
       '@liutsing/tsconfig': 0.0.6
+      '@liutsing/types-utils': 0.1.0
       '@nestjs/cli': 9.2.0
       '@nestjs/schematics': 9.0.4_typescript@4.9.5
       '@nestjs/testing': 9.3.9_cxzk3mfpwtv2pzfdoj4lpmi7pa
@@ -137,6 +141,7 @@ importers:
     specifiers:
       '@liutsing/eslint-config': ^0.0.9
       '@liutsing/prettier-config': ^0.0.5
+      '@liutsing/types-utils': ^0.1.0
       '@liutsing/utils': ^0.0.7
       '@nestjs/bull': ^0.6.1
       '@nestjs/cli': ^9.0.0
@@ -220,6 +225,7 @@ importers:
     devDependencies:
       '@liutsing/eslint-config': 0.0.9
       '@liutsing/prettier-config': 0.0.5
+      '@liutsing/types-utils': 0.1.0
       '@nestjs/cli': 9.2.0
       '@nestjs/schematics': 9.0.4_typescript@4.9.5
       '@nestjs/testing': 9.3.9_cxzk3mfpwtv2pzfdoj4lpmi7pa
@@ -249,6 +255,7 @@ importers:
       '@liutsing/eslint-config': ^0.0.9
       '@liutsing/prettier-config': ^0.0.5
       '@liutsing/tsconfig': ^0.0.6
+      '@liutsing/types-utils': ^0.1.0
       '@nestjs/cli': ^9.0.0
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
@@ -285,6 +292,7 @@ importers:
       '@liutsing/eslint-config': 0.0.9
       '@liutsing/prettier-config': 0.0.5
       '@liutsing/tsconfig': 0.0.6
+      '@liutsing/types-utils': 0.1.0
       '@nestjs/cli': 9.2.0
       '@nestjs/schematics': 9.0.4_typescript@4.9.5
       '@nestjs/testing': 9.3.9_cxzk3mfpwtv2pzfdoj4lpmi7pa
@@ -307,6 +315,7 @@ importers:
       '@liutsing/eslint-config': ^0.0.9
       '@liutsing/prettier-config': ^0.0.5
       '@liutsing/tsconfig': ^0.0.5
+      '@liutsing/types-utils': ^0.1.0
       '@liutsing/utils': ^0.0.8
       '@nestjs/cli': ^9.0.0
       '@nestjs/common': ^9.0.0
@@ -361,6 +370,7 @@ importers:
       '@liutsing/eslint-config': 0.0.9_prettier@2.8.4
       '@liutsing/prettier-config': 0.0.5
       '@liutsing/tsconfig': 0.0.5
+      '@liutsing/types-utils': 0.1.0
       '@nestjs/cli': 9.2.0
       '@nestjs/schematics': 9.0.4_typescript@4.9.5
       '@nestjs/testing': 9.3.9_cxzk3mfpwtv2pzfdoj4lpmi7pa
@@ -4025,8 +4035,8 @@ packages:
       tslib: 2.5.0
     dev: true
 
-  /@liutsing/types-utils/0.0.9:
-    resolution: {integrity: sha512-75WhHqqFYY+tu2Dt50F/2/i+w7TtlWbTweD/53bNPkfica0uRLijPjRkaydh7CA65WKvMNwLgnXofSPQdLTKhA==}
+  /@liutsing/types-utils/0.1.0:
+    resolution: {integrity: sha512-NkrfW0ysIviMXKI2ZtwPNM8eDVU5YhyEuzWB4O2Q4e2P2g6hXlOO+PebWShvSSBYoWgNslSSbZgA1TiGywYrbw==}
     dev: true
 
   /@liutsing/utils/0.0.7:
