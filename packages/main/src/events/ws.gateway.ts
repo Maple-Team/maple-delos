@@ -1,15 +1,9 @@
-import {
-  WebSocketGateway,
-  WebSocketServer,
-  SubscribeMessage,
-  WsResponse,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  OnGatewayInit,
-} from '@nestjs/websockets'
-import { from, Observable } from 'rxjs'
+import type { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, WsResponse } from '@nestjs/websockets'
+import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
+import { Observable, from } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { Server, WebSocket } from 'ws'
+import type { WebSocket } from 'ws'
+import { Server } from 'ws'
 
 @WebSocketGateway(8080, {
   cors: {
@@ -37,9 +31,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, 
 
   private broadcast(event, message: unknown) {
     const broadCastMessage = JSON.stringify(message)
-    for (const c of this.wsClients) {
-      c.send(broadCastMessage)
-    }
+    for (const c of this.wsClients) c.send(broadCastMessage)
   }
 
   afterInit() {

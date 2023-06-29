@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Inject, UseInterceptors, Post, HttpCode } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Inject, Post, Query, UseInterceptors } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
-import type { SendCommandParams } from '@liutsing/types-utils'
+import { SendCommandParams } from '@liutsing/types-utils'
 import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
-import { Query } from '@nestjs/common'
 
 @Controller('vehicle-control')
 @UseInterceptors(TransformInterceptor)
@@ -27,9 +26,8 @@ export class ControlController {
 
   @Get('/getVehConResult')
   getVehConResult(@Query('commandId') commandId: string) {
-    if (!commandId) {
-      throw new Error('commandId not be null')
-    }
+    if (!commandId) throw new Error('commandId not be null')
+
     this.logClient.emit('log', commandId)
     return this.controlClient.send('getVehConResult', commandId)
   }

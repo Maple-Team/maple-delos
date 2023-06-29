@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
+import { MongooseModule } from '@nestjs/mongoose'
 import { TimelineService } from './timeline.service'
 import { Timeline, TimelineSchema } from './schemas/timeline.schema'
-import { MongooseModule } from '@nestjs/mongoose'
 import { TimelineController } from './timeline.controller'
 
 @Module({

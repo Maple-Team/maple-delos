@@ -1,4 +1,4 @@
-import { DeviceOS, DeviceType } from '../types/device'
+import type { DeviceOS, DeviceType } from '../types/device'
 
 export class CreateDeviceDto {
   readonly name: string

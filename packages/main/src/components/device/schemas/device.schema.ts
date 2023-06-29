@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import type { Document } from 'mongoose'
 import { DeviceOS, DeviceType } from '../types/device'
 
 export type DeviceDocument = Device & Document

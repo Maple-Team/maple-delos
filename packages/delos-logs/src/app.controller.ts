@@ -1,6 +1,6 @@
-import { Controller } from '@nestjs/common';
-import { AppService } from './app.service';
-import { EventPattern } from '@nestjs/microservices';
+import { Controller } from '@nestjs/common'
+import { AppService } from './app.service'
+import { EventPattern } from '@nestjs/microservices'
 
 /**
  * TODO
@@ -17,7 +17,7 @@ export class AppController {
 
   @EventPattern('log')
   log(text: unknown): void {
-    console.log(JSON.stringify(text));
+    console.log(JSON.stringify(text))
     //TODO 写到mongoDB
   }
 }

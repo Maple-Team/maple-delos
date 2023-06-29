@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { SonYoonJooDocument, SonYoonJoo } from './schemas/sonyoonjoo.schema'
-import { BaseList } from '@liutsing/types-utils'
+import type { BaseList } from '@liutsing/types-utils'
+import type { SonYoonJooDocument } from './schemas/sonyoonjoo.schema'
+import { SonYoonJoo } from './schemas/sonyoonjoo.schema'
 
 @Injectable()
 export class SonyoonjooService {
@@ -22,9 +23,8 @@ export class SonyoonjooService {
         $regex: RegExp
       }
     } = {}
-    if (rest.year) {
-      filterKeys.year = rest.year
-    }
+    if (rest.year) filterKeys.year = rest.year
+
     if (rest.path) {
       filterKeys.path = {
         $regex: new RegExp(rest.path),

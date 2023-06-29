@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { CreateLabelDto } from './dto/create-label.dto'
-import { UpdateLabelDto } from './dto/update-label.dto'
+import type { CreateLabelDto } from './dto/create-label.dto'
+import type { UpdateLabelDto } from './dto/update-label.dto'
 import { Label } from './entities/label.entity'
 
 @Injectable()

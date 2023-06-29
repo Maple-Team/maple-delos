@@ -1,5 +1,5 @@
-import { CreateDeviceDto } from './dto/create-device.dto'
-import { DeviceOS, DeviceType } from './types/device'
+import type { CreateDeviceDto } from './dto/create-device.dto'
+import type { DeviceOS, DeviceType } from './types/device'
 
 // Array.from(document.querySelectorAll('tbody tr')).map(tr=>Array.from(tr.children).map(td=>td.innerText))
 export const phones = [

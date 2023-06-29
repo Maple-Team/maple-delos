@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import type { Document } from 'mongoose'
 
 export type BlogDocument = Blog & Document
 @Schema({ timestamps: true, collection: '曾咏春博文' })

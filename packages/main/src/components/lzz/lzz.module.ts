@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
+import { MongooseModule } from '@nestjs/mongoose'
 import { LzzService } from './lzz.service'
 import { LzzController } from './lzz.controller'
-import { LzzSchema, Lzz } from './schemas/lzz.schemas'
-import { MongooseModule } from '@nestjs/mongoose'
+import { Lzz, LzzSchema } from './schemas/lzz.schemas'
 
 @Module({
   controllers: [LzzController],

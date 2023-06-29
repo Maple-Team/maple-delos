@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { Meitulu, MeituluDocument } from './schemas/meitulu.schemas'
-import { BaseList } from '@liutsing/types-utils'
+import type { BaseList } from '@liutsing/types-utils'
+import type { MeituluDocument } from './schemas/meitulu.schemas'
+import { Meitulu } from './schemas/meitulu.schemas'
 
 export interface MeituluFilterKey {
   modelName?: AnyToFix

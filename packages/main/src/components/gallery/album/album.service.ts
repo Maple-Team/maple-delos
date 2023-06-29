@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { CreateAlbumDto } from './dto/create-album.dto'
-import { UpdateAlbumDto } from './dto/update-album.dto'
+import type { CreateAlbumDto } from './dto/create-album.dto'
+import type { UpdateAlbumDto } from './dto/update-album.dto'
 
 @Injectable()
 export class AlbumService {
@@ -9,7 +9,7 @@ export class AlbumService {
   }
 
   findAll() {
-    return `This action returns all album`
+    return 'This action returns all album'
   }
 
   findOne(id: number) {

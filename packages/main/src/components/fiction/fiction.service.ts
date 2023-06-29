@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { CreateFictionDto } from './dto/create-fiction.dto'
-import { Fiction } from './entities/fiction.entity'
 import { groupBy } from 'lodash'
+import type { CreateFictionDto } from './dto/create-fiction.dto'
+import { Fiction } from './entities/fiction.entity'
+
 @Injectable()
 export class FictionService {
   constructor(

@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common'
 import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
-import { MeituluFilterKey, MeituluService } from './meitulu.service'
+import type { MeituluFilterKey } from './meitulu.service'
+import { MeituluService } from './meitulu.service'
 
 @Controller('meitulu')
 @UseInterceptors(TransformInterceptor)

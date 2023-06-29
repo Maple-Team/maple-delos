@@ -1,9 +1,9 @@
 {
-  "extends":"@liutsing/tsconfig",
+  "extends": "@liutsing/tsconfig",
   "compilerOptions": {
     "baseUrl": "./",
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true, 
+    "experimentalDecorators": true,
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": ".",
@@ -11,7 +11,5 @@
     "strictBindCallApply": false,
     "strictNullChecks": false
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

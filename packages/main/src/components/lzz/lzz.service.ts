@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { Lzz, LzzDocument } from './schemas/lzz.schemas'
-import { BaseList } from '@liutsing/types-utils'
+import type { BaseList } from '@liutsing/types-utils'
+import type { LzzDocument } from './schemas/lzz.schemas'
+import { Lzz } from './schemas/lzz.schemas'
 
 @Injectable()
 export class LzzService {

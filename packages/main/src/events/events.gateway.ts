@@ -1,13 +1,5 @@
-import {
-  ConnectedSocket,
-  MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  OnGatewayInit,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets'
+import type { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@nestjs/websockets'
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 import { from } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { Server, Socket } from 'socket.io'
@@ -125,9 +117,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, 
       map((num) => ({
         event: num === 1 ? 'onRegister' : id,
         data:
-          num === 1
-            ? JSON.stringify({ msg: 'register success', ids: this.ids })
-            : JSON.stringify({ msg: `welcome ${id}` }),
+          num === 1? JSON.stringify({ msg: 'register success', ids: this.ids }): JSON.stringify({ msg: `welcome ${id}` }),
       }))
     )
   }
@@ -189,13 +179,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, 
     @ConnectedSocket() client: Socket<ClientToServerEvents, ServerToClientEvents>
   ) {
     const [message, toId, room] = data
-    if (toId) {
-      this.server.to(toId).emit('message', message, client.id) // 向特定用户发送
-    } else if (room) {
-      client.broadcast.to(room).emit('message', message, client.id) // 客户端在房间内广播数据
-    } else {
-      client.broadcast.emit('message', message, client.id) // 客户端广播消息
-    }
+    if (toId) this.server.to(toId).emit('message', message, client.id) // 向特定用户发送
+    else if (room) client.broadcast.to(room).emit('message', message, client.id) // 客户端在房间内广播数据
+    else client.broadcast.emit('message', message, client.id) // 客户端广播消息
   }
 
   @SubscribeMessage('kickout')

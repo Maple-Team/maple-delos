@@ -1,9 +1,10 @@
-import { Model } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Blog, BlogDocument } from './schemas/blog.schema'
-import { CreateBlogDto } from './dto/create-blogdto'
-import { BaseList } from '@liutsing/types-utils'
+import type { BaseList } from '@liutsing/types-utils'
+import type { Model } from 'mongoose'
+import type { BlogDocument } from './schemas/blog.schema'
+import { Blog } from './schemas/blog.schema'
+import type { CreateBlogDto } from './dto/create-blogdto'
 
 @Injectable()
 export class BlogService {
@@ -49,9 +50,8 @@ export class BlogService {
   }): Promise<BaseList<Blog>> {
     const query = {}
     const keys = Object.keys(rest).filter((k) => !!rest[k])
-    for (const k of keys) {
-      query[k] = rest[k]
-    }
+    for (const k of keys) query[k] = rest[k]
+
     // 模糊查找 非空处理
     const [total, records] = await Promise.all([
       this.Model.find(query).count(),

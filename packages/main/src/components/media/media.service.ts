@@ -1,8 +1,9 @@
 import { Model } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Media, MediaDocument } from './schemas/media.schema'
-import { CreateMediaDto } from './dto/create-media.dto'
+import type { MediaDocument } from './schemas/media.schema'
+import { Media } from './schemas/media.schema'
+import type { CreateMediaDto } from './dto/create-media.dto'
 
 @Injectable()
 export class MediaService {

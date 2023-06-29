@@ -1,11 +1,8 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { RedisModule } from './redis.module';
-import * as mqtt from 'mqtt';
-
-const isProd = process.env.NODE_ENV === 'production';
+import { Module } from '@nestjs/common'
+import { ClientsModule, Transport } from '@nestjs/microservices'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { RedisModule } from './redis.module'
 
 @Module({
   imports: [
@@ -14,7 +11,7 @@ const isProd = process.env.NODE_ENV === 'production';
         name: 'LOG_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: isProd ? 'log-microservice' : 'localhost',
+          host: process.env.LOG_SERVICE,
           port: 8801,
         },
       },
@@ -22,10 +19,8 @@ const isProd = process.env.NODE_ENV === 'production';
         name: 'MQTT_SERVICE',
         transport: Transport.MQTT,
         options: {
-          url: isProd ? 'mqtt://mqtt-server:1883' : 'mqtt://localhost:1883',
-          clientId: isProd
-            ? 'nestjs-control-client'
-            : 'nestjs-dev-control-client',
+          url: `mqtt://${process.env.MQTT_SERVICE}`,
+          clientId: process.env.MQTT_SERVICE_CLIENT_ID,
         },
       },
     ]),

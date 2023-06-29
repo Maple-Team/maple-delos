@@ -1,6 +1,4 @@
-import { Controller, Get, Inject, Query, UseInterceptors } from '@nestjs/common'
-import { ClientProxy } from '@nestjs/microservices'
-import { Observable } from 'rxjs'
+import { Controller, Get, Query, UseInterceptors } from '@nestjs/common'
 import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 import { TimelineService } from './timeline.service'
 

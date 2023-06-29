@@ -1,8 +1,9 @@
 import { Model } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Device, DeviceDocument } from './schemas/device.schema'
-import { CreateDeviceDto } from './dto/create-device.dto'
+import type { DeviceDocument } from './schemas/device.schema'
+import { Device } from './schemas/device.schema'
+import type { CreateDeviceDto } from './dto/create-device.dto'
 
 @Injectable()
 export class DeviceService {

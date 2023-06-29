@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { TimelineDocument, Timeline } from './schemas/timeline.schema'
-import { BaseList } from '@liutsing/types-utils'
+import type { BaseList } from '@liutsing/types-utils'
+import type { TimelineDocument } from './schemas/timeline.schema'
+import { Timeline } from './schemas/timeline.schema'
 
 interface RestParams {
   type?: Timeline['type']
@@ -13,9 +14,8 @@ export class TimelineService {
 
   async findWithPagination(page: number, pageSize: number, rest: RestParams): Promise<BaseList<Timeline>> {
     const filterKeys: RestParams = {}
-    if (rest.type) {
-      filterKeys.type = rest.type
-    }
+    if (rest.type) filterKeys.type = rest.type
+
     const total = await this.model.find({ ...filterKeys }).count()
 
     const data = await this.model

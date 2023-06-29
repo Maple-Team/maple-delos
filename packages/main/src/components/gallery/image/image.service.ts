@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { CreateImageDto } from './dto/create-image.dto'
-import { UpdateImageDto } from './dto/update-image.dto'
+import type { CreateImageDto } from './dto/create-image.dto'
+import type { UpdateImageDto } from './dto/update-image.dto'
 
 @Injectable()
 export class ImageService {
@@ -9,7 +9,7 @@ export class ImageService {
   }
 
   findAll() {
-    return `This action returns all image`
+    return 'This action returns all image'
   }
 
   findOne(id: number) {

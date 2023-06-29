@@ -1,19 +1,19 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseInterceptors,
-  UploadedFiles,
+  Get,
   Inject,
+  Param,
+  Patch,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common'
-import { FictionService } from './fiction.service'
-import { CreateFictionDto } from './dto/create-fiction.dto'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { LabelService } from '../label/label.service'
+import { FictionService } from './fiction.service'
+import type { CreateFictionDto } from './dto/create-fiction.dto'
 
 @Controller('fiction')
 export class FictionController {

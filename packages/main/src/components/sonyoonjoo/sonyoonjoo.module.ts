@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
+import { MongooseModule } from '@nestjs/mongoose'
 import { SonyoonjooService } from './sonyoonjoo.service'
 import { SonyoonjooController } from './sonyoonjoo.controller'
 import { SonYoonJoo, SonYoonJooSchema } from './schemas/sonyoonjoo.schema'
-import { MongooseModule } from '@nestjs/mongoose'
 
 @Module({
   controllers: [SonyoonjooController],
