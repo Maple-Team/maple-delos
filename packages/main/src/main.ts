@@ -2,6 +2,7 @@ import { VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import { ConfigService } from '@nestjs/config'
 // import { WsAdapter } from '@nestjs/platform-ws'
 
 async function bootstrap() {
@@ -22,7 +23,10 @@ async function bootstrap() {
     type: VersioningType.HEADER,
     header: 'X-API-VERSION', // 不同的版本类型 https://docs.nestjs.com/techniques/versioning
   })
-  await app.listen(3000)
+  const configService = app.get(ConfigService)
+  const port = configService.get<number>('PORT')
+
+  await app.listen(port)
   console.log(`Application is running on: ${await app.getUrl()}`)
 }
 bootstrap()

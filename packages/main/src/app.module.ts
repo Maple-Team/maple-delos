@@ -17,7 +17,6 @@ import { ImageModule } from './components/gallery/image/image.module'
 import { AlbumModule } from './components/gallery/album/album.module'
 import { Image } from './components/gallery/image/entities/image.entity'
 import { Album } from './components/gallery/album/entities/album.entity'
-import { getEnvPath } from './config/helper/env.help'
 import { BlogModule } from './components/zyc/blog.module'
 import { MockModule } from './components/mock/mock.module'
 import { RedisModule } from './components/redis/redis.module'
@@ -27,15 +26,17 @@ import { TimelineModule } from './components/timeline/timeline.module'
 import { ControlModule } from './components/remote-control/control.module'
 import { LzzModule } from './components/lzz/lzz.module'
 
-const isProd = process.env.NODE_ENV === 'production'
+const envFiles = {
+  development: '.env.development',
+  production: '.env.production',
+}
+
 @Module({
   imports: [
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
       useFactory: async () => {
         return {
-          uri: isProd ? 'mongodb://maple-mongodb:27017' : 'mongodb://localhost:27017',
+          uri: `mongodb://${process.env.MONGODB_HOST}`,
           connectTimeoutMS: 1000 * 60,
           maxPoolSize: 10,
           dbName: 'maple',
@@ -44,9 +45,7 @@ const isProd = process.env.NODE_ENV === 'production'
     }),
     RedisModule,
     ConfigModule.forRoot({
-      // eslint-disable-next-line n/no-path-concat
-      envFilePath: getEnvPath(`${__dirname}/config/envs`),
-      isGlobal: true,
+      envFilePath: envFiles[process.env.NODE_ENV] || '.env',
     }),
     DeviceModule,
     ProductsModule,
@@ -65,7 +64,7 @@ const isProd = process.env.NODE_ENV === 'production'
         return {
           username: 'root',
           type: 'mysql',
-          host: isProd ? 'maple-mysql' : 'localhost',
+          host: process.env.MYSQL_HOST,
           port: 3306,
           database: 'maple',
           password: '',
