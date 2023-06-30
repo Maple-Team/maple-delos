@@ -3,5 +3,7 @@
  */
 module.exports = {
   extends: '@liutsing/eslint-config',
-  ignorePatterns: ['.eslintrc.js'],
+  rules: {
+    '@typescript-eslint/require-await': 'off',
+  },
 }

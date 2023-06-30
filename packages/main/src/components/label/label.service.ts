@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import type { Repository } from 'typeorm'
 import type { CreateLabelDto } from './dto/create-label.dto'
-import type { UpdateLabelDto } from './dto/update-label.dto'
 import { Label } from './entities/label.entity'
 
 @Injectable()
@@ -28,7 +27,7 @@ export class LabelService {
     return this.repository.findOneBy({ id: `${id}` })
   }
 
-  update(id: number, updateLabelDto: UpdateLabelDto) {
+  update(id: number) {
     return `This action updates a #${id} label`
   }
 

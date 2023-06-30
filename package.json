@@ -7,18 +7,19 @@
   "author": "",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prettier": "prettier . -w",
-    "deploy:all": "nx run-many --target=deploy --all"
+    "deploy": "nx run-many --target=deploy --all",
+    "lint": "nx run-many --target=deploy --all"
   },
   "prettier": "@liutsing/prettier-config",
   "devDependencies": {
     "@babel/preset-env": "^7.22.5",
-    "@liutsing/eslint-config": "^0.0.10",
+    "@liutsing/eslint-config": "^0.0.11",
     "@liutsing/prettier-config": "^0.0.6",
     "@liutsing/tsconfig": "^0.0.6",
-    "nx": "^16.4.0",
     "@liutsing/types-utils": "^0.1.0",
+    "@types/jest": "29.5.2",
+    "nx": "^16.4.0",
     "rimraf": "^5.0.1"
   },
   "dependencies": {

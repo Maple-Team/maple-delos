@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.5",
-    "@liutsing/eslint-config": "^0.0.10",
+    "@liutsing/eslint-config": "^0.0.11",
     "@liutsing/prettier-config": "^0.0.6",
     "@liutsing/tsconfig": "^0.0.6",
     "@liutsing/types-utils": "^0.1.0",

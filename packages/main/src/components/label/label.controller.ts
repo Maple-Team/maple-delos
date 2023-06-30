@@ -1,8 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
 import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 import { LabelService } from './label.service'
-import { CreateLabelDto } from './dto/create-label.dto'
-import { UpdateLabelDto } from './dto/update-label.dto'
+import type { CreateLabelDto } from './dto/create-label.dto'
 
 @UseInterceptors(TransformInterceptor)
 @Controller({
@@ -28,8 +27,8 @@ export class LabelController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLabelDto: UpdateLabelDto) {
-    return this.labelService.update(+id, updateLabelDto)
+  update(@Param('id') id: string) {
+    return this.labelService.update(+id)
   }
 
   @Delete(':id')

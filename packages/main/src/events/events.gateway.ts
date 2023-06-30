@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators'
 import { Server, Socket } from 'socket.io'
 
 export interface Message {
-  type: 'offer' | 'answer' | 'candidate' | 'initialize' | 'leave'
+  type: 'offer' | 'answer' | 'candidate' | 'initialize' | 'leave' | 'chat'
   [key: string]: AnyToFix
 }
 export interface ServerToClientEvents {
@@ -117,7 +117,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, 
       map((num) => ({
         event: num === 1 ? 'onRegister' : id,
         data:
-          num === 1? JSON.stringify({ msg: 'register success', ids: this.ids }): JSON.stringify({ msg: `welcome ${id}` }),
+          num === 1
+            ? JSON.stringify({ msg: 'register success', ids: this.ids })
+            : JSON.stringify({ msg: `welcome ${id}` }),
       }))
     )
   }
@@ -159,8 +161,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, 
     const clientsRoom = this.server.sockets.adapter.rooms.get(room)
     const numberClients = clientsRoom?.size || 0
 
-    client.join(room)
+    const res = client.join(room)
 
+    if (res instanceof Promise) res.catch(console.error)
+    console.log(`${client.id} joined`)
     if (numberClients === 0) {
       // 处理创建房间后的逻辑
       this.rootAdmin = client.id
@@ -192,7 +196,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, 
     const [socketId, room] = data
     if (this.rootAdmin === client.id) {
       client.broadcast.emit('kickout', socketId)
-      this.server.sockets.sockets.get(socketId)?.leave(room)
+      const res = this.server.sockets.sockets.get(socketId)?.leave(room)
+      if (res instanceof Promise) res.catch(console.error)
     }
   }
 
@@ -201,7 +206,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, 
     @MessageBody() room: string,
     @ConnectedSocket() client: Socket<ClientToServerEvents, ServerToClientEvents>
   ) {
-    client.leave(room)
+    const res = client.leave(room)
+    if (res instanceof Promise) res.catch(console.error)
     client.emit('left room', client.id)
     client.broadcast.to(room).emit('message', { type: 'leave' }, client.id)
   }

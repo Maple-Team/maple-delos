@@ -7,22 +7,22 @@ import type { CreateDeviceDto } from './dto/create-device.dto'
 
 @Injectable()
 export class DeviceService {
-  constructor(@InjectModel(Device.name) private deviceModel: Model<DeviceDocument>) {}
+  constructor(@InjectModel(Device.name) private DeviceModel: Model<DeviceDocument>) {}
 
   async create(createDto: CreateDeviceDto): Promise<Device> {
-    const createdDevice = new this.deviceModel(createDto)
+    const createdDevice = new this.DeviceModel(createDto)
     return createdDevice.save()
   }
 
   async findAll(): Promise<Device[]> {
-    return this.deviceModel.find().exec()
+    return this.DeviceModel.find().exec()
   }
 
   async remove(id: string) {
-    return this.deviceModel.findByIdAndRemove(id)
+    return this.DeviceModel.findByIdAndRemove(id)
   }
 
   async insertMany(data: Device[]) {
-    return this.deviceModel.insertMany(data)
+    return this.DeviceModel.insertMany(data)
   }
 }

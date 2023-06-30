@@ -52,11 +52,13 @@ export class FictionController {
     //   async (id) => await this.labelService.findOne(+id),
     // );
     const { chapterContent, ...rest } = data
-    this.fictionService.create({
-      ...rest,
-      chapterContent: chapterContent.replaceAll(/<a.*>(.*)<\/a>/g, (_, p1) => p1),
-      labels: [],
-    })
+    this.fictionService
+      .create({
+        ...rest,
+        chapterContent: chapterContent.replaceAll(/<a.*>(.*)<\/a>/g, (_, p1) => p1),
+        labels: [],
+      })
+      .catch(console.error)
   }
 
   @Get()

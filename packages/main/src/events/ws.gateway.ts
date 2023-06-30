@@ -1,9 +1,9 @@
 import type { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, WsResponse } from '@nestjs/websockets'
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
-import { Observable, from } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { from } from 'rxjs'
 import { map } from 'rxjs/operators'
-import type { WebSocket } from 'ws'
-import { Server } from 'ws'
+import type { Server, WebSocket } from 'ws'
 
 @WebSocketGateway(8080, {
   cors: {

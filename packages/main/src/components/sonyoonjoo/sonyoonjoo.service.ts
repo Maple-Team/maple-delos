@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import type { Model } from 'mongoose'
 import type { BaseList } from '@liutsing/types-utils'
 import type { SonYoonJooDocument } from './schemas/sonyoonjoo.schema'
 import { SonYoonJoo } from './schemas/sonyoonjoo.schema'
