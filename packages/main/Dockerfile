@@ -1,32 +1,32 @@
 # building
-FROM node:lts-alpine AS development
+FROM node:18-alpine3.14 AS development
 
 WORKDIR app
 
 COPY package.json ./
 COPY tsconfig.build.json ./
 
-RUN npm install -g pnpm --registry=https://registry.npmmirror.com/ 
-RUN pnpm install --registry=https://registry.npmmirror.com/ 
+RUN npm config --global set registry https://registry.npmmirror.com/ && \
+    npm install --location=global pnpm && \
+    pnpm install @types/bull --save-dev && \
+    pnpm install
 
 COPY . .
 
 RUN pnpm run build
 
 # running
-FROM node:lts-alpine AS production
+FROM node:18-alpine3.14 AS production
 
 WORKDIR app
 
 COPY package.json ./
 COPY tsconfig.build.json ./
 
-# RUN npm install --omit=dev --registry=https://registry.npmmirror.com/
 
-RUN npm install -g pnpm --registry=https://registry.npmmirror.com/ 
-RUN pnpm install --only=production --registry=https://registry.npmmirror.com/ 
-
-COPY . .
+RUN npm config --global set registry https://registry.npmmirror.com/ && \ 
+    npm install --location=global pnpm && \
+    pnpm install --only=production
 
 COPY --from=development /app/dist ./dist
 
