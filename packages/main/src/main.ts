@@ -3,7 +3,6 @@ import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
 import { AppModule } from './app.module'
-// import { WsAdapter } from '@nestjs/platform-ws'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true })
@@ -16,7 +15,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api', app, document)
-  //   app.useWebSocketAdapter(new WsAdapter(app)) // NOTE 原生websocket需要, socket.io不需要
   app.setGlobalPrefix('api')
   app.enableVersioning({
     // type: VersioningType.URI,
@@ -26,7 +24,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService)
   const port = configService.get<number>('PORT')
 
-  await app.listen(port)
+  await app.listen(port, '0.0.0.0')
   console.log(`Application is running on: ${await app.getUrl()}`)
 }
 bootstrap().catch(console.error)

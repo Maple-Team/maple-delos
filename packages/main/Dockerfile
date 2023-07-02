@@ -30,6 +30,9 @@ RUN npm config --global set registry https://registry.npmmirror.com/ && \
 
 COPY --from=development /app/dist ./dist
 
+COPY .env .env
+COPY .env.production .env.production
+
 ENV NODE_ENV=production
 
 EXPOSE 3000
