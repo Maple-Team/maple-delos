@@ -7,4 +7,4 @@ import { DefaultGatewayController } from './default.controller'
   providers: [EventsGateway, DefaultGateway],
   controllers: [DefaultGatewayController],
 })
-export class EventsModule {}
+export class GatewaysModule {}

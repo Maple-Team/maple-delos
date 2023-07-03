@@ -24,7 +24,7 @@ import { MeituluModule } from './components/meitulu/meitulu.module'
 import { TimelineModule } from './components/timeline/timeline.module'
 import { ControlModule } from './components/remote-control/control.module'
 import { LzzModule } from './components/lzz/lzz.module'
-import { EventsModule } from './events/events.module'
+import { GatewaysModule } from './gateways/gateways.module'
 
 const envFiles = {
   development: '.env.development',
@@ -52,10 +52,10 @@ const envFiles = {
     MediaModule,
     FictionModule,
     LabelModule,
-    EventsModule,
     AlbumModule,
     ImageModule,
     BlogModule,
+    GatewaysModule,
     MockModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

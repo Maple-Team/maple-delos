@@ -23,7 +23,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   // 设置了自定义域名后
   afterInit(server: Namespace) {
-    console.log(server)
     this.server = server
   }
 
