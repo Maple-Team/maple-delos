@@ -3,7 +3,7 @@ import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSo
 import { from } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { Namespace, Server, Socket } from 'socket.io'
-import { ServerToClientEvents, ClientToServerEvents, Message } from './type'
+import { ClientToServerEvents, Message, ServerToClientEvents } from './type'
 
 @WebSocketGateway({
   cors: {

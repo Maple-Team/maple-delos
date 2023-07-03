@@ -44,6 +44,7 @@ export interface ServerToClientEvents {
    */
   kickout: (socketId: string) => void
   message: (message: Message, socketId: string) => void
+  notification: (message: string) => void
 }
 
 export interface ClientToServerEvents {

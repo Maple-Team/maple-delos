@@ -8,8 +8,8 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets'
 import { Namespace, Server, Socket } from 'socket.io'
-import { ServerToClientEvents } from './type'
 import { from, map } from 'rxjs'
+import { ServerToClientEvents } from './type'
 
 @WebSocketGateway({
   cors: {
@@ -49,5 +49,9 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
             : JSON.stringify({ msg: `welcome ${id}` }),
       }))
     )
+  }
+
+  alert(_msg?: string) {
+    this.server.emit('notification', '这是一段来自服务端的通知')
   }
 }
