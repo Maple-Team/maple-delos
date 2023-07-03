@@ -2,7 +2,7 @@ import type { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@n
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 import { from } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { Namespace, Server, Socket } from 'socket.io'
+import { Server, Socket } from 'socket.io'
 import { ClientToServerEvents, Message, ServerToClientEvents } from './type'
 
 @WebSocketGateway({
@@ -12,7 +12,6 @@ import { ClientToServerEvents, Message, ServerToClientEvents } from './type'
   namespace: 'events',
 })
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  namespaces: Namespace[] = []
   @WebSocketServer()
   server: Server<ServerToClientEvents>
 
