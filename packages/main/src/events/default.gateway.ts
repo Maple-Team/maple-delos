@@ -5,7 +5,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets'
-import { Server, Socket } from 'socket.io'
+import { Namespace, Socket } from 'socket.io'
 import { ServerToClientEvents } from './type'
 
 type CustomServerToClientEvents = Pick<ServerToClientEvents, 'notification'> & {
@@ -25,7 +25,7 @@ type CustomServerToClientEvents = Pick<ServerToClientEvents, 'notification'> & {
  */
 export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server<CustomServerToClientEvents>
+  server: Namespace<CustomServerToClientEvents>
 
   handleConnection(client: Socket, ...rest: unknown[]) {
     console.log('default gateway client connected', client.id, rest)
@@ -36,7 +36,8 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     client.broadcast.emit('leave', client.id)
   }
 
-  afterInit(server: Server) {
+  // 设置了namespace后, 类型变更了
+  afterInit(server: Namespace) {
     this.server = server
     // Add the middleware function to the Socket.io server
     this.server.use(this.customMiddleware)
@@ -44,11 +45,7 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
   test1(clientId?: string, _msg?: string) {
     this.server.emit('notification', '这是一段来自服务端的通知')
-    // 默认命名空间 this.server.sockets.sockets: map
-    // const clients = this.server.sockets.sockets
-
-    // 设定了命名空间 this.server.sockets：map
-    const clients = this.server.sockets as unknown as Map<string, Socket>
+    const clients = this.server.sockets
 
     if (clientId) {
       const client = clients?.get(clientId)
@@ -63,8 +60,7 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
   customMiddleware = (socket: Socket, next: (err?: AnyToFix) => void) => {
     // Custom middleware logic here
-    const token = socket.handshake.query.token // 假设通过查询参数传递令牌
-    console.log(token)
+    const _token = socket.handshake.query.token // 假设通过查询参数传递令牌
     // TODO 根据token解析用户信息，再关联socket id
     next() // Call next() to continue with the execution of other middleware or the actual event handlers
   }

@@ -12,7 +12,6 @@ import { FictionModule } from './components/fiction/fiction.module'
 import { LabelModule } from './components/label/label.module'
 import { Fiction } from './components/fiction/entities/fiction.entity'
 import { Label } from './components/label/entities/label.entity'
-import { EventsModule } from './events/events.module'
 import { ImageModule } from './components/gallery/image/image.module'
 import { AlbumModule } from './components/gallery/album/album.module'
 import { Image } from './components/gallery/image/entities/image.entity'
@@ -25,6 +24,7 @@ import { MeituluModule } from './components/meitulu/meitulu.module'
 import { TimelineModule } from './components/timeline/timeline.module'
 import { ControlModule } from './components/remote-control/control.module'
 import { LzzModule } from './components/lzz/lzz.module'
+import { EventsModule } from './events/events.module'
 
 const envFiles = {
   development: '.env.development',

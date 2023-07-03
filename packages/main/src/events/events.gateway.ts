@@ -1,8 +1,6 @@
 import type { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@nestjs/websockets'
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
-import { from } from 'rxjs'
-import { map } from 'rxjs/operators'
-import { Server, Socket } from 'socket.io'
+import { Namespace, Socket } from 'socket.io'
 import { ClientToServerEvents, Message, ServerToClientEvents } from './type'
 
 @WebSocketGateway({
@@ -13,11 +11,7 @@ import { ClientToServerEvents, Message, ServerToClientEvents } from './type'
 })
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server<ServerToClientEvents>
-
-  constructor() {
-    this.ids = []
-  }
+  server: Namespace<ServerToClientEvents>
 
   handleConnection(client: Socket, ...rest: unknown[]) {
     console.log('events client connected', client.id, rest)
@@ -27,51 +21,10 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     console.log('client connected', client.id)
   }
 
-  afterInit(server: Server) {
+  // 设置了自定义域名后
+  afterInit(server: Namespace) {
+    console.log(server)
     this.server = server
-  }
-
-  // 测试功能
-  ids: string[]
-  @SubscribeMessage('register')
-  register(@ConnectedSocket() client: Socket) {
-    const id = client.id
-    this.ids.push(id)
-    return from([1, 2]).pipe(
-      map((num) => ({
-        event: num === 1 ? 'onRegister' : id,
-        data:
-          num === 1
-            ? JSON.stringify({ msg: 'register success', ids: this.ids })
-            : JSON.stringify({ msg: `welcome ${id}` }),
-      }))
-    )
-  }
-
-  @SubscribeMessage('unRegister')
-  unRegister(@MessageBody() id: string) {
-    console.log('unRegister', id)
-    this.ids.splice(this.ids.indexOf(id) >>> 1, 1)
-    return from([1]).pipe(
-      map(() => ({
-        event: 'broadcast',
-        data: { msg: 'unRegister success', ids: this.ids, id },
-      }))
-    )
-  }
-
-  @SubscribeMessage('broadcast')
-  broadcast(@MessageBody() _msg: string) {
-    console.log('broadcast')
-    return {
-      event: 'broadcast',
-      msg: 'hello all',
-    }
-  }
-
-  @SubscribeMessage('identity')
-  async identity(@MessageBody() data: number): Promise<number> {
-    return data
   }
 
   // 会议室业务
@@ -82,7 +35,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @MessageBody() room: string,
     @ConnectedSocket() client: Socket<ClientToServerEvents, ServerToClientEvents>
   ) {
-    const clientsRoom = this.server.sockets.adapter.rooms.get(room)
+    const clientsRoom = this.server.adapter.rooms.get(room)
     const numberClients = clientsRoom?.size || 0
 
     const res = client.join(room)
@@ -95,9 +48,9 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       client.emit('created', room, client.id)
     } else {
       // 处理加入房间后的逻辑，事件推送
-      this.server.sockets.in(room).emit('join', room) // 通知房间内的其他用户
+      this.server.in(room).emit('join', room) // 通知房间内的其他用户
       this.server.to(client.id).emit('joined', room, client.id) // 通知客户端它加入了房间
-      this.server.sockets.in(room).emit('ready', client.id) // 房间准备创建连接
+      this.server.in(room).emit('ready', client.id) // 房间准备创建连接
     }
   }
 
@@ -120,7 +73,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     const [socketId, room] = data
     if (this.rootAdmin === client.id) {
       client.broadcast.emit('kickout', socketId)
-      const res = this.server.sockets.sockets.get(socketId)?.leave(room)
+      const res = this.server.sockets.get(socketId)?.leave(room)
       if (res instanceof Promise) res.catch(console.error)
     }
   }
