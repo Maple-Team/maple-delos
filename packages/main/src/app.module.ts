@@ -25,6 +25,7 @@ import { TimelineModule } from './components/timeline/timeline.module'
 import { ControlModule } from './components/remote-control/control.module'
 import { LzzModule } from './components/lzz/lzz.module'
 import { GatewaysModule } from './gateways/gateways.module'
+import { ChunkUploadModule } from './components/upload/chunk.upload.module'
 
 const envFiles = {
   development: '.env.development',
@@ -78,6 +79,7 @@ const envFiles = {
     TimelineModule,
     ControlModule,
     LzzModule,
+    ChunkUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
