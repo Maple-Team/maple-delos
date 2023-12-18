@@ -1,3 +1,4 @@
+import { clearInterval } from 'timers'
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -6,6 +7,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets'
 import { Namespace, Socket } from 'socket.io'
+import { OnModuleDestroy } from '@nestjs/common'
 import { ServerToClientEvents } from './type'
 
 type CustomServerToClientEvents = Pick<ServerToClientEvents, 'notification'> & {
@@ -23,12 +25,28 @@ type CustomServerToClientEvents = Pick<ServerToClientEvents, 'notification'> & {
 /**
  * 通用gateway，往客户端发送消息
  */
-export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, OnModuleDestroy {
   @WebSocketServer()
   server: Namespace<CustomServerToClientEvents>
 
+  intervalId: NodeJS.Timer
+
   handleConnection(client: Socket, ...rest: unknown[]) {
     console.log('default gateway client connected', client.id, rest)
+    this.testLoopSendMessage(client)
+  }
+
+  /**
+   * 测试用
+   * 持续的发送消息给客户端
+   * @param client
+   */
+  private testLoopSendMessage(client: Socket) {
+    this.intervalId && clearInterval(this.intervalId)
+    this.intervalId = setInterval(() => {
+      const message = { ts: new Date().getTime() }
+      client.send(message)
+    }, 100)
   }
 
   handleDisconnect(client: Socket) {
@@ -63,5 +81,9 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     const _token = socket.handshake.query.token // 假设通过查询参数传递令牌
     // TODO 根据token解析用户信息，再关联socket id
     next() // Call next() to continue with the execution of other middleware or the actual event handlers
+  }
+
+  onModuleDestroy() {
+    if (this.intervalId) clearInterval(this.intervalId)
   }
 }
