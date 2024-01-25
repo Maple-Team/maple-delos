@@ -80,3 +80,7 @@ docker-compose up -d
 
 - mqtt ?
 - ws microservice
+
+## Misc
+
+- [socketio-client-tool](https://amritb.github.io/socketio-client-tool/), test socket.io server

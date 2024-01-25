@@ -19,7 +19,7 @@ type CustomServerToClientEvents = Pick<ServerToClientEvents, 'notification'> & {
     origin: '*',
   },
   // 默认命名空间是: /
-  namespace: 'default',
+  namespace: 'default', // NOTE 客户端连接的地址：[protocol]://[host]:[port]/default
 })
 
 /**

@@ -7,7 +7,7 @@ import { ClientToServerEvents, Message, ServerToClientEvents } from './type'
   cors: {
     origin: '*',
   },
-  namespace: 'events',
+  namespace: 'events', // NOTE 客户端连接的地址：[protocol]://[host]:[port]/events
 })
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
