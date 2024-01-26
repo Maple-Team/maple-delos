@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { MongooseModule } from '@nestjs/mongoose'
+import { TerminusModule } from '@nestjs/terminus'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { MediaModule } from './components/media/media.module'
@@ -25,6 +26,7 @@ import { TimelineModule } from './components/timeline/timeline.module'
 import { ControlModule } from './components/remote-control/control.module'
 import { LzzModule } from './components/lzz/lzz.module'
 import { GatewaysModule } from './gateways/gateways.module'
+import { HealthModule } from './health/health.module'
 
 const envFiles = {
   development: '.env.development',
@@ -78,6 +80,8 @@ const envFiles = {
     TimelineModule,
     ControlModule,
     LzzModule,
+    TerminusModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

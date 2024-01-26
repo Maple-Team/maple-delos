@@ -84,3 +84,21 @@ docker-compose up -d
 ## Misc
 
 - [socketio-client-tool](https://amritb.github.io/socketio-client-tool/), test socket.io server
+
+### Your Development with Essential Packages and Tools
+
+1. Utils-decorators
+2. Typescript-collections
+3. Nestjs-i18n
+4. Inversify
+5. Shx & Shelljs
+6. Husky
+7. Autocannon
+8. Nodemailer
+9. Puppeteer
+10. @nestjs/terminus
+11. @swc/cli and @swc/core
+12. Concurrently
+13. @compodoc/compodoc
+14. Nest-commander
+15. Geolib & Turfjs:"

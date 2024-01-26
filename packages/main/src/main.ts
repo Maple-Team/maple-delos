@@ -47,7 +47,7 @@ async function bootstrap() {
   httpServer.use(cors()) // 添加cors中间件
   const httpApp = await NestFactory.create(AppModule, new ExpressAdapter(httpServer), { cors: true })
   httpApp.enableCors({ origin: '*' })
-  httpApp.setGlobalPrefix('api', { exclude: ['/'] })
+  httpApp.setGlobalPrefix('api', { exclude: ['/', '/health'] })
 
   await httpApp.init()
   const newPort = +port! + 1
