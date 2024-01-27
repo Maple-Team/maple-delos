@@ -1,8 +1,12 @@
-import { Module } from '@nestjs/common'
+import * as path from 'path'
+import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { MongooseModule } from '@nestjs/mongoose'
 import { TerminusModule } from '@nestjs/terminus'
+import { WinstonModule } from 'nest-winston'
+import { FileTransportOptions } from 'winston/lib/winston/transports'
+import * as winston from 'winston'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { MediaModule } from './components/media/media.module'
@@ -27,10 +31,22 @@ import { ControlModule } from './components/remote-control/control.module'
 import { LzzModule } from './components/lzz/lzz.module'
 import { GatewaysModule } from './gateways/gateways.module'
 import { HealthModule } from './health/health.module'
+import { UserModule } from './components/users/user.module'
+import { User } from './components/users/entities/user.entity'
+import { RequestLoggingMiddleware } from './middleware/request.log.middleware'
+import { AuthModule } from './auth/auth.module'
 
 const envFiles = {
   development: '.env.development',
   production: '.env.production',
+}
+const infoFilePath = path.join(process.cwd(), 'logs', 'info.log')
+const errorFilePath = path.join(process.cwd(), 'logs', 'error.log')
+
+// @https://github.com/winstonjs/winston/blob/master/docs/transports.md
+const fileOption: FileTransportOptions = {
+  maxsize: 1 * 1024 * 1024,
+  maxFiles: 100,
 }
 
 @Module({
@@ -44,6 +60,39 @@ const envFiles = {
           dbName: 'maple',
         }
       },
+    }),
+    WinstonModule.forRoot({
+      level: 'info',
+      format: winston.format.combine(
+        winston.format.timestamp({
+          format: 'YYYY-MM-DD HH:mm:ss SSS',
+        }),
+        winston.format.json()
+      ),
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.timestamp({
+              format: 'YYYY-MM-DD HH:mm:ss SSS',
+            }),
+            winston.format.json()
+          ),
+        }),
+        new winston.transports.File({
+          filename: infoFilePath,
+          level: 'info',
+          ...fileOption,
+        }),
+        // process.env.SHOWLARK_MESSAGE === 'true'
+        //   ? new LarkHook({
+        //       webhookUrl: 'https://open.feishu.cn/open-apis/bot/v2/hook/f44c17ad-06b0-4957-a5be-2b066fcef6ce',
+        //       level: 'error',
+        //       msgType: 'text',
+        //       emitAxiosErrors: true,
+        //     })
+        //   : null,
+      ].filter(Boolean),
+      rejectionHandlers: [new winston.transports.File({ filename: errorFilePath, ...fileOption })],
     }),
     RedisModule,
     ConfigModule.forRoot({
@@ -59,6 +108,7 @@ const envFiles = {
     BlogModule,
     GatewaysModule,
     MockModule,
+    AuthModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -70,7 +120,7 @@ const envFiles = {
           port: 3306,
           database: 'maple',
           password: '',
-          entities: [Product, Fiction, Label, Image, Album],
+          entities: [Product, Fiction, Label, Image, Album, User],
           synchronize: true,
         }
       },
@@ -82,8 +132,25 @@ const envFiles = {
     LzzModule,
     TerminusModule,
     HealthModule,
+    UserModule,
+    TypeOrmModule.forFeature([User]),
+    WinstonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule, OnModuleInit {
+  constructor(private readonly service: AppService) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggingMiddleware).forRoutes('*')
+  }
+
+  async onModuleInit() {
+    // 检查数据库中是否已经存在数据
+    const dataExists = await this.service.checkDataExists()
+
+    // 如果数据不存在，则执行插入操作
+    if (!dataExists) await this.service.insertData()
+  }
+}

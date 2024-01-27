@@ -35,7 +35,7 @@
     "@liutsing/eslint-config": "^0.0.11",
     "@liutsing/prettier-config": "^0.0.6",
     "@liutsing/tsconfig": "^0.0.6",
-    "@liutsing/types-utils": "^0.1.0",
+    "@liutsing/types-utils": "^1.0.2",
     "@nestjs/cli": "^10.0.5",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.3",
