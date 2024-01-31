@@ -7,6 +7,8 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Inject,
   Logger,
   Param,
@@ -127,5 +129,23 @@ export class UserController {
     return data
       .map(({ count, users_id, users_user_name }) => ({ count: +count, userId: users_id, userName: users_user_name }))
       .filter(({ count }) => count > 0)
+  }
+
+  @HttpCode(200)
+  @Roles(UserRole.USER, UserRole.ADMIN)
+  @Get('menus')
+  getMenu() {
+    // TODO 从数据库中读取
+    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel']
+  }
+
+  @Roles(UserRole.USER, UserRole.ADMIN)
+  @Get('data-permission')
+  getDataPermission(@Query() query) {
+    const id = +query.id
+    if (id > 0.5) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+
+    // TODO 从数据库中读取
+    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel']
   }
 }
