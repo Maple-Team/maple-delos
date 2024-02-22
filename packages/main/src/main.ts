@@ -30,7 +30,7 @@ async function bootstrap() {
 
   //   const document = SwaggerModule.createDocument(app, config)
   //   SwaggerModule.setup('api', app, document)
-  httpsApp.setGlobalPrefix('api', { exclude: ['/'] })
+  httpsApp.setGlobalPrefix('api', { exclude: ['/', '/health'] })
   httpsApp.enableVersioning({
     // type: VersioningType.URI,
     type: VersioningType.HEADER,

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpCode, Inject, Post, Query, UseInterceptors } from '@nestjs/common'
-import { ClientProxy } from '@nestjs/microservices'
+import { ClientProxy, MessagePattern } from '@nestjs/microservices'
 import { SendCommandParams } from '@liutsing/types-utils'
 import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 
@@ -9,7 +9,8 @@ export class ControlController {
   constructor(
     @Inject('REMOTE_CONTROL_SERVICE') private controlClient: ClientProxy,
     @Inject('LOG_SERVICE') private logClient: ClientProxy,
-    @Inject('MQTT_SERVICE') private mqttClient: ClientProxy
+    @Inject('MQTT_SERVICE') private mqttClient: ClientProxy,
+    @Inject('PHP_SERVICE') private phpClient: ClientProxy
   ) {}
 
   @Post('/sendCmd')
@@ -29,6 +30,13 @@ export class ControlController {
     if (!commandId) throw new Error('commandId not be null')
 
     this.logClient.emit('log', commandId)
+    // 微服务不在线会报错
     return this.controlClient.send('getVehConResult', commandId)
+  }
+
+  @MessagePattern('greeting')
+  async onGreeting(params: AnyToFix) {
+    // this.phpClient.emit('')
+    return params
   }
 }

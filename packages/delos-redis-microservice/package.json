@@ -1,5 +1,5 @@
 {
-  "name": "@liutsing/delos-logs",
+  "name": "@liutsing/delos-redis-microservice",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build --config tsconfig.build.json",
     "predeploy": "pnpm run build",
-    "deploy": "node scripts/deploy.js",
+    "deploy-template": "node scripts/deploy.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -35,9 +35,9 @@
     "@liutsing/prettier-config": "^0.0.6",
     "@liutsing/tsconfig": "^0.0.6",
     "@liutsing/types-utils": "^1.0.2",
-    "@nestjs/cli": "^10.0.5",
+    "@nestjs/cli": "^10.3.2",
     "@nestjs/schematics": "^10.0.1",
-    "@nestjs/testing": "^10.0.3",
+    "@nestjs/testing": "^10.3.3",
     "@types/express": "^4.17.13",
     "@types/jest": "29.5.2",
     "@types/node": "20.3.2",

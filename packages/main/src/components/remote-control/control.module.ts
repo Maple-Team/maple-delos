@@ -29,6 +29,15 @@ import { ControlController } from './control.control'
           clientId: process.env.MQTT_SERVICE_CLIENT_ID,
         },
       },
+      {
+        name: 'PHP_SERVICE',
+        transport: Transport.REDIS,
+        options: {
+          // host: process.env.LOG_SERVICE,
+          host: 'localhost',
+          port: 6379,
+        },
+      },
     ]),
   ],
   controllers: [ControlController],

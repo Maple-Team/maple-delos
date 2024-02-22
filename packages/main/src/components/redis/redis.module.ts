@@ -4,6 +4,8 @@ import type { RedisClientOptions } from 'redis'
 import type { CacheStore } from '@nestjs/cache-manager'
 import { CacheModule } from '@nestjs/cache-manager'
 
+// https://github.com/nest-modules/ioredis
+
 @Module({
   imports: [
     CacheModule.registerAsync<RedisClientOptions>({

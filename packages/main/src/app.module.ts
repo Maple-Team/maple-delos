@@ -23,11 +23,9 @@ import { Image } from './components/gallery/image/entities/image.entity'
 import { Album } from './components/gallery/album/entities/album.entity'
 import { BlogModule } from './components/zyc/blog.module'
 import { MockModule } from './components/mock/mock.module'
-import { RedisModule } from './components/redis/redis.module'
 import { SonyoonjooModule } from './components/sonyoonjoo/sonyoonjoo.module'
 import { MeituluModule } from './components/meitulu/meitulu.module'
 import { TimelineModule } from './components/timeline/timeline.module'
-import { ControlModule } from './components/remote-control/control.module'
 import { LzzModule } from './components/lzz/lzz.module'
 import { GatewaysModule } from './gateways/gateways.module'
 import { HealthModule } from './health/health.module'
@@ -35,6 +33,9 @@ import { UserModule } from './components/users/user.module'
 import { User } from './components/users/entities/user.entity'
 import { RequestLoggingMiddleware } from './middleware/request.log.middleware'
 import { AuthModule } from './auth/auth.module'
+import { RedisModule } from './components/redis/redis.module'
+import { ControlModule } from './components/remote-control/control.module'
+import { MicroserviceTestModule } from './components/microservice-test/control.module'
 
 const envFiles = {
   development: '.env.development',
@@ -135,6 +136,13 @@ const fileOption: FileTransportOptions = {
     UserModule,
     TypeOrmModule.forFeature([User]),
     WinstonModule,
+    // IoRedisModule.forRootAsync({
+    //   useFactory: () => ({
+    //     type: 'single',
+    //     url: `redis://${process.env.REDIS_HOST}:6379`,
+    //   }),
+    // }),
+    MicroserviceTestModule,
   ],
   controllers: [AppController],
   providers: [AppService],
