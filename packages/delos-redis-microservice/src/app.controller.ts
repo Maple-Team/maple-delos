@@ -14,16 +14,11 @@ export class AppController {
   constructor(private service: AppService) {}
 
   @EventPattern({ cmd: 'log1' }) // ignore return
-  log1(text: unknown) {
-    console.log('reveive msg: ', JSON.stringify(text))
+  log(text: unknown): void {
+    console.log('redis service: ', JSON.stringify(text))
+    // TODO 写到mongoDB
   }
-
-  @MessagePattern({ cmd: 'log2' }) // wait return
-  log2(text: unknown) {
-    console.log('reveive msg: ', JSON.stringify(text))
-    return '123'
-  }
-
+  // 来自redis sub的消息
   @MessagePattern({ cmd: 'greeting' })
   testMicroservice(@Payload() data: number[], @Ctx() context: RedisContext) {
     console.log(`Channel: ${context.getChannel()}`, data)

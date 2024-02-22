@@ -13,14 +13,22 @@ import { MicroserviceTestController } from './control.control'
           port: 8801,
         },
       },
-      //   {
-      //     name: 'LARAVEL_SERVICE',
-      //     transport: Transport.REDIS,
-      //     options: {
-      //       host: 'localhost',
-      //       port: 6379,
-      //     },
-      //   },
+      {
+        name: 'REDIS_SERVICE',
+        transport: Transport.REDIS,
+        options: {
+          host: 'localhost',
+          port: 6379,
+        },
+      },
+      {
+        name: 'LARAVEL_SERVICE',
+        transport: Transport.REDIS,
+        options: {
+          host: 'localhost',
+          port: 6379,
+        },
+      },
     ]),
   ],
   controllers: [MicroserviceTestController],
