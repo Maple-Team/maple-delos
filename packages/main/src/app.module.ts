@@ -37,6 +37,7 @@ import { RedisModule } from './components/redis/redis.module'
 import { ControlModule } from './components/remote-control/control.module'
 import { MicroserviceTestModule } from './components/microservice-test/control.module'
 import { SseTestModule } from './components/sse-test/sse-test.module'
+import { VideoModule } from './components/video/videos.mdoule'
 
 const envFiles = {
   development: '.env.development',
@@ -145,6 +146,7 @@ const fileOption: FileTransportOptions = {
     // }),
     MicroserviceTestModule,
     SseTestModule,
+    VideoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

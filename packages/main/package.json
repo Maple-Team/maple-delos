@@ -21,7 +21,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "auto": "openapi --input http://localhost:4004/api-json --output ./generated --client axios"
   },
   "prettier": "@liutsing/prettier-config",
   "jest": {
@@ -111,6 +112,7 @@
     "@types/ws": "^8.5.5",
     "cross-env": "^7.0.3",
     "jest": "29.5.0",
+    "openapi-typescript-codegen": "^0.27.0",
     "rimraf": "^5.0.1",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",

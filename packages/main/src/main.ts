@@ -6,6 +6,8 @@ import { ConfigService } from '@nestjs/config'
 import { ExpressAdapter } from '@nestjs/platform-express'
 import express from 'express'
 import cors from 'cors' // 导入cors模块
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+
 import { AppModule } from './app.module'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -20,16 +22,18 @@ async function bootstrap() {
     }
   }
   const httpsApp = await NestFactory.create(AppModule, { cors: true, httpsOptions })
-
-  // SwaggerModule
+  // add openapi support: https://docs.nestjs.com/openapi/introduction
+  // https://apifox.com/help/api-docs/importing-api/swagger
+  // https://github.com/ferdikoomen/openapi-typescript-codegen
   //   const config = new DocumentBuilder()
   //     .setTitle('MapleImage')
   //     .setDescription('The maple admin API description')
-  //     .setVersion('1.0')
+  //     .setVersion(require('../package.json').version)
   //     .build()
+  //   // swagger json url: <https://127.0.0.1:4003>/api-json
 
-  //   const document = SwaggerModule.createDocument(app, config)
-  //   SwaggerModule.setup('api', app, document)
+  //   const document = SwaggerModule.createDocument(httpsApp, config)
+  //   SwaggerModule.setup('api', httpsApp, document)
   httpsApp.setGlobalPrefix('api', { exclude: ['/', '/health'] })
   httpsApp.enableVersioning({
     // type: VersioningType.URI,
@@ -48,6 +52,14 @@ async function bootstrap() {
   const httpApp = await NestFactory.create(AppModule, new ExpressAdapter(httpServer), { cors: true })
   httpApp.enableCors({ origin: '*' })
   httpApp.setGlobalPrefix('api', { exclude: ['/', '/health'] })
+
+  const config = new DocumentBuilder()
+    .setTitle('MapleImage')
+    .setDescription('The maple admin API description')
+    .setVersion(require('../package.json').version)
+    .build()
+  const document = SwaggerModule.createDocument(httpApp, config)
+  SwaggerModule.setup('api', httpApp, document)
 
   await httpApp.init()
   const newPort = +port! + 1
