@@ -6,20 +6,29 @@ import type { VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
 
 interface RestParams {
-  no?: Video['no']
+  code?: Video['code']
   actress?: string | AnyToFix
 }
 @Injectable()
 export class VideoService {
-  async findAll() {
-    return await this.model.find({}).select('no').exec()
+  constructor(@InjectModel(Video.name) private model: Model<VideoDocument>) {}
+
+  async add(data: Partial<Video>) {
+    const res = await this.model.findOneAndUpdate({ code: data.code }, data).exec()
+    if (res) return res
+    return (await this.model.create({ ...data, waiting: true })).save()
   }
 
-  constructor(@InjectModel(Video.name) private model: Model<VideoDocument>) {}
+  async findAll() {
+    return this.model
+      .find({ waiting: { $ne: true } })
+      .select('code')
+      .exec()
+  }
 
   async findWithPagination(page: number, pageSize: number, rest: RestParams): Promise<BaseList<Video>> {
     const filterKeys: RestParams = {}
-    if (rest.no) filterKeys.no = rest.no
+    if (rest.code) filterKeys.code = rest.code
     if (rest.actress) {
       filterKeys.actress = {
         $elemMatch: {

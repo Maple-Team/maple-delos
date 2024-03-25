@@ -29,7 +29,7 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   @WebSocketServer()
   server: Namespace<CustomServerToClientEvents>
 
-  intervalId: NodeJS.Timer
+  intervalId: NodeJS.Timeout
 
   handleConnection(client: Socket, ...rest: unknown[]) {
     console.log('default gateway client connected', client.id, rest)

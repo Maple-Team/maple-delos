@@ -31,13 +31,11 @@ export class AuthService {
 
   async validateUser(loginDto: LoginUserDto) {
     const user = await this.usersService.findOneByPhone(loginDto.phone)
-    if (!user) {
-      throw new BadRequestException('用户名或密码错误')
-    }
+    if (!user) throw new BadRequestException('用户名或密码错误')
+
     const res = await bcrypt.compare(loginDto.password, user?.password)
     if (res) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user
+      const { password: _password, ...result } = user
       return result
     } else {
       throw new BadRequestException('用户名或密码错误')

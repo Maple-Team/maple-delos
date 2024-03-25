@@ -19,6 +19,7 @@
     "@liutsing/tsconfig": "^0.0.6",
     "@liutsing/types-utils": "^1.0.2",
     "@types/jest": "29.5.2",
+    "minio": "^7.1.3",
     "nx": "^16.4.0",
     "rimraf": "^5.0.1"
   },

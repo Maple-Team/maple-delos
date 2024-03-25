@@ -4,6 +4,7 @@ FROM node:18-alpine3.14 AS development
 WORKDIR app
 
 COPY package.json ./
+COPY tsconfig.json ./
 COPY tsconfig.build.json ./
 
 RUN npm config --global set registry https://registry.npmmirror.com/ && \
@@ -21,6 +22,7 @@ FROM node:18-alpine3.14 AS production
 WORKDIR app
 
 COPY package.json ./
+COPY tsconfig.json ./
 COPY tsconfig.build.json ./
 
 

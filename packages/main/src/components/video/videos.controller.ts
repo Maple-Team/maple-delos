@@ -1,5 +1,6 @@
-import { Controller, Get, Query, UseInterceptors } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Post, Query, UseInterceptors } from '@nestjs/common'
 import { VideoService } from './videos.service'
+import { Video } from './schemas/video.schema'
 import { Public } from '@/auth/decorators'
 import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 
@@ -11,7 +12,15 @@ export class VideoController {
   @Get('all')
   @Public()
   findAll() {
-    return this.service.findAll()
+    return this.service.findAll().then((res) => res.map(({ code }) => code).sort())
+  }
+
+  @Post('add')
+  @Public()
+  add(@Body() data: Partial<Video>) {
+    if (!data) throw new BadRequestException('empty data')
+    if (!data.code) throw new BadRequestException('empty id')
+    return this.service.add(data)
   }
 
   @Get('pages')
