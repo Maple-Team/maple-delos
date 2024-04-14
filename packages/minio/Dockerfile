@@ -1,5 +1,5 @@
 # building
-FROM node:lts-alpine AS development
+FROM node:18-alpine3.14 AS development
 
 WORKDIR app
 
