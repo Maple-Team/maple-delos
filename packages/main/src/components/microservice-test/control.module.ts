@@ -10,7 +10,7 @@ import { MicroserviceTestController } from './control.control'
         transport: Transport.TCP,
         options: {
           host: process.env.LOG_SERVICE,
-          port: 8801,
+          port: 3000,
         },
       },
       {

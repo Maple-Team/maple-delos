@@ -14,7 +14,7 @@ COPY . .
 RUN pnpm run build
 
 # running
-FROM node:lts-alpine AS production
+FROM node:18-alpine3.14 AS production
 
 WORKDIR app
 

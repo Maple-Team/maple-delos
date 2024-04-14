@@ -3,4 +3,5 @@ export interface LocaleData {
   data: Record<string, string>
   version: string
   ns?: string
+  project: string
 }

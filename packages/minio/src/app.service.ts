@@ -30,8 +30,8 @@ export class AppService {
   // @https://min.io/docs/minio/linux/developers/javascript/minio-javascript.html#api-reference
   // https://github.com/minio/minio-js/blob/master/examples/put-object.js
   // loadPath: '/locales/version/{{lng}}/{{ns}}.json'
-  updateLocale({ version, locale, data, ns = 'default' }: LocaleData) {
-    const file = `locales/${version}/${locale}/${ns}.json`
+  updateLocale({ version, locale, data, ns = 'default', project }: LocaleData) {
+    const file = `locales/${project}/${version}/${locale}/${ns}.json`
     this.minioClient.putObject('i18n-bucket', file, JSON.stringify(data), (e) => {
       if (e) return console.log(e)
       console.log('Successfully uploaded the string')

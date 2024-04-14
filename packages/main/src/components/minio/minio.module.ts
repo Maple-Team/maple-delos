@@ -13,7 +13,7 @@ import { MinioController } from './minio.controller'
         transport: Transport.TCP,
         options: {
           host: process.env.MINIO_SERVICE,
-          port: 8801,
+          port: 3000,
         },
       },
     ]),
