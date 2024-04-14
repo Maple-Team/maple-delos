@@ -38,6 +38,7 @@ import { ControlModule } from './components/remote-control/control.module'
 import { MicroserviceTestModule } from './components/microservice-test/control.module'
 import { SseTestModule } from './components/sse-test/sse-test.module'
 import { VideoModule } from './components/video/videos.mdoule'
+import { MinioModule } from './components/minio/minio.module'
 
 const envFiles = {
   development: '.env.development',
@@ -147,6 +148,7 @@ const fileOption: FileTransportOptions = {
     MicroserviceTestModule,
     SseTestModule,
     VideoModule,
+    MinioModule,
   ],
   controllers: [AppController],
   providers: [AppService],
