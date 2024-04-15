@@ -11,5 +11,8 @@
     "strictBindCallApply": false,
     "strictNullChecks": false
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src1/**/*",
+    "src"
+  ]
 }

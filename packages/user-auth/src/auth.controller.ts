@@ -39,9 +39,7 @@ export class AuthController {
     return req.user
   }
 
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(200)
-  @Get('logout')
+  
   async logout(@Request() req: ExpressRequest) {
     await this.authService.logout(req.user.id)
   }
