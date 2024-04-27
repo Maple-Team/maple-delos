@@ -77,5 +77,5 @@ Nest is [MIT licensed](LICENSE).
 mqtt sever 的一个开源实现
 
 ```bash
-docker run -d --name emqx -p 1883:1883 -p 8083:8083  -p 18083:18083 -v $PWD/docker-data/eqtt/data:/opt/emqx/data --network maple-network emqx:5.5.1
+docker run -d --name emqx -p 1883:1883 -p 8083:8083  -p 18083:18083 -v $PWD/docker-data/eqtt/data:/opt/emqx/data --network maple-network  --restart always  emqx:5.5.1
 ```

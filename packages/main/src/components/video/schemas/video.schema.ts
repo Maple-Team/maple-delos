@@ -22,7 +22,10 @@ export class Video {
   code: string
 
   @Prop({ required: true })
-  actresses: string[]
+  no: string
+
+  @Prop({ required: true })
+  actresses: Actress[]
 
   @Prop({ required: false })
   tages: string[]
@@ -47,6 +50,12 @@ export class Video {
 
   @Prop({ required: false })
   waiting: boolean
+
+  @Prop({ required: true, type: 'Number' })
+  relaseDate: Date
+
+  @Prop({ required: false })
+  previewes: string[]
 }
 
 export const VideoSchema = SchemaFactory.createForClass(Video)

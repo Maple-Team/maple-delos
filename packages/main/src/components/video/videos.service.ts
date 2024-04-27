@@ -6,7 +6,7 @@ import type { VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
 
 interface RestParams {
-  code?: Video['code']
+  code?: Video['code'] 
   actress?: string | AnyToFix
 }
 @Injectable()
