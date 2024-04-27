@@ -38,6 +38,7 @@ export class AppService {
       role: UserRole.ADMIN,
       feature: 'admin',
       staffId: 'A0001',
+      teams: [],
     })
     await this.repo.save(newData)
   }

@@ -39,6 +39,11 @@ import { MicroserviceTestModule } from './components/microservice-test/control.m
 import { SseTestModule } from './components/sse-test/sse-test.module'
 import { VideoModule } from './components/video/videos.mdoule'
 import { MinioModule } from './components/minio/minio.module'
+import { LocaleModule, ProjectsModule, ScreenshotModule, TeamsModule } from './components/i18n'
+import { Team } from './components/i18n/teams/entities/team.entity'
+import { Project } from './components/i18n/projects/entities/project.entity'
+import { Screenshots } from './components/i18n/screenshot/entities'
+import { Locale } from './components/i18n/locale/entities/locale.entity'
 
 const envFiles = {
   development: '.env.development',
@@ -124,7 +129,7 @@ const fileOption: FileTransportOptions = {
           port: 3306,
           database: 'maple',
           password: '',
-          entities: [Product, Fiction, Label, Image, Album, User],
+          entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale],
           synchronize: true,
         }
       },
@@ -149,6 +154,10 @@ const fileOption: FileTransportOptions = {
     SseTestModule,
     VideoModule,
     MinioModule,
+    TeamsModule,
+    ProjectsModule,
+    ScreenshotModule,
+    LocaleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
