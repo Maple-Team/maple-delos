@@ -21,4 +21,10 @@ export class MinioController {
     if (!data || Object.keys(data).length === 0) throw new BadRequestException('body should not be null')
     return this.service.updateLocale(data)
   }
+
+  @Public()
+  @Post('/upload-locale-image')
+  uploadLocaleImage(@Body() data: string) {
+    return this.service.uploadLocaleImage(data)
+  }
 }

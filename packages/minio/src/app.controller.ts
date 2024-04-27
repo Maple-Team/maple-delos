@@ -16,4 +16,9 @@ export class AppController {
   updateLocale(data: LocaleData): void {
     this.service.updateLocale(data)
   }
+
+  @EventPattern('update-locale-image')
+  uploadLocaleImage(data: string) {
+    return this.service.uploadLocaleImage(data)
+  }
 }

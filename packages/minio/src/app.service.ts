@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import * as Minio from 'minio'
+import { uuid } from '@liutsing/utils'
 import { LocaleData } from './type'
 
 @Injectable()
@@ -36,5 +37,12 @@ export class AppService {
       if (e) return console.log(e)
       console.log('Successfully uploaded the string')
     })
+  }
+
+  async uploadLocaleImage(data: string) {
+    const ext = 'png'
+    const file = `locales/screenShots/${uuid()}.${ext}`
+    await this.minioClient.putObject('i18n-bucket', file, data).catch(console.error)
+    return file
   }
 }

@@ -23,4 +23,8 @@ export class MinioService {
     })
     return 'ok'
   }
+
+  uploadLocaleImage(data: string) {
+    return this.minioClient.send('upload-locale-image', data)
+  }
 }
