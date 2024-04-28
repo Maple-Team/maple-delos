@@ -7,7 +7,7 @@ import { ExpressAdapter } from '@nestjs/platform-express'
 import express from 'express'
 import cors from 'cors' // 导入cors模块
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-
+import * as bodyParser from 'body-parser';
 import { AppModule } from './app.module'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -51,8 +51,12 @@ async function bootstrap() {
     // NOTE socket.io server not working
     const httpServer = express()
     httpServer.use(cors()) // 添加cors中间件
+    httpServer.use(bodyParser.json({ limit: '50mb' }));
+    httpServer.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
     const httpApp = await NestFactory.create(AppModule, new ExpressAdapter(httpServer), { cors: true })
     httpApp.enableCors({ origin: '*' })
+
     httpApp.setGlobalPrefix('api', { exclude: ['/', '/health'] })
 
     const config = new DocumentBuilder()
@@ -65,7 +69,9 @@ async function bootstrap() {
 
     await httpApp.init()
     const port = 3000
-    const newPort = +port! + 1
+    const newPort = +port! + 3
+
+
 
     httpServer.listen(newPort, '0.0.0.0', () => {
         console.log(`http server is running: http://127.0.0.1:${newPort}`)

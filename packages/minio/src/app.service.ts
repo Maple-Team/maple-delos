@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer'
 import { Injectable } from '@nestjs/common'
 import * as Minio from 'minio'
 import { uuid } from '@liutsing/utils'
@@ -11,9 +12,12 @@ export class AppService {
             endPoint: process.env.MINIO_ENDPOINT,
             port: 9000,
             useSSL: false,
-            accessKey: 'WVSZfWXkKYT1LRGPU2iZ' || 'QpV65O7Dnc2jDBCDOnz5',
-            secretKey: 'XToJxC6tfEF5YJIXmszC2OMyaGdrDV3WedXQN8Rb' || 'VfdkjoVTYWPEL7M98D8ulTx9qeJZm1ZNTFd53fWN',
-
+            // mac
+            // accessKey: 'QpV65O7Dnc2jDBCDOnz5',
+            // secretKey: 'VfdkjoVTYWPEL7M98D8ulTx9qeJZm1ZNTFd53fWN',
+            // walle
+            accessKey: 'WVSZfWXkKYT1LRGPU2iZ',
+            secretKey: 'XToJxC6tfEF5YJIXmszC2OMyaGdrDV3WedXQN8Rb',
         })
         minioClient.getBucketPolicy('i18n-bucket', (e, r) => {
             console.log(e, r)
@@ -47,14 +51,21 @@ export class AppService {
     /**
      * 存储base64截图
      * @param data base64格式的截图
-     * @returns 
+     * @returns
      */
     async uploadLocaleImage(data: string) {
-        const [str,] = data.split(';')
-        const [_, mime] = str.split(':')
-        const [__, ext] = mime.split('/')
-        const file = `locales/screenShots/${uuid()}.${ext}`
-        await this.minioClient.putObject('i18n-bucket', file, data, { 'Content-Type': mime }).catch(console.error)
+        const [_1, dataStr] = data.split(',')
+        const [str] = data.split(';')
+        const [_2, mime] = str.split(':')
+        const [_3, ext] = mime.split('/')
+        const file = `screenShots/${uuid()}.${ext}`
+
+        const imageData = Buffer.from(dataStr, 'base64')
+
+        await this.minioClient
+            .putObject('i18n-bucket', file, imageData, { 'Content-Type': mime })
+            .catch(console.error)
+
         return file
     }
 }

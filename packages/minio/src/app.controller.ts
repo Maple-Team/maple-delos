@@ -19,7 +19,7 @@ export class AppController {
     }
 
     @EventPattern('upload-locale-image')
-    uploadLocaleImage(data: string) { 
+    uploadLocaleImage(data: string) {
         return this.service.uploadLocaleImage(data)
     }
 }

@@ -1,8 +1,8 @@
-import { Public } from '@/auth/decorators';
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
-import { ScreenshotService } from './screenshot.service';
-import { MinioService } from '@/components/minio/minio.service';
-import { Observable, switchMap } from 'rxjs';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common'
+import { Observable, switchMap } from 'rxjs'
+import { ScreenshotService } from './screenshot.service'
+import { Public } from '@/auth/decorators'
+import { MinioService } from '@/components/minio/minio.service'
 
 @Controller('screenshot')
 export class ScreenshotController {
@@ -15,7 +15,7 @@ export class ScreenshotController {
     uploadLocaleImage(@Body() body: { data: string }) {
         if (!body.data) throw new BadRequestException('data is null')
         const observableSrc: Observable<string> = this.minioService.uploadLocaleImage(body.data)
-        return observableSrc.pipe(switchMap(s => {
+        return observableSrc.pipe(switchMap((s) => {
             return this.service.create(s)
         }))
     }
