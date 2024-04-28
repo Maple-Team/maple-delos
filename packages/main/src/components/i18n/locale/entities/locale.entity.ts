@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { Screenshots } from '../../screenshot/entities'
+import { Project } from '../../projects/entities/project.entity'
 
 @Entity({ schema: 'i18n-locale' })
 export class Locale {
@@ -40,4 +41,10 @@ export class Locale {
     name: 'screenshots-locales',
   })
   screenshots: Screenshots[]
+
+  @ManyToMany(() => Project, (project) => project.locales)
+  @JoinTable({
+    name: 'projects-locales',
+  })
+  projects: Project[]
 }

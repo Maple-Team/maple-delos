@@ -2,20 +2,20 @@ import { NestFactory } from '@nestjs/core'
 import { MicroserviceOptions, Transport } from '@nestjs/microservices'
 import { AppModule } from './app.module'
 
-const port = 3000
+const port = 3002
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-    transport: Transport.TCP,
-    options: {
-      host: '0.0.0.0',
-      port,
-    },
-  })
-  app
-    .listen()
-    .then(() => {
-      console.log(`nestjs-minio is listen on ${port}`)
+    const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+        transport: Transport.TCP,
+        options: {
+            host: '0.0.0.0',
+            port,
+        },
     })
-    .catch(console.error)
+    app
+        .listen()
+        .then(() => {
+            console.log(`nestjs-minio is listen on ${port}`)
+        })
+        .catch(console.error)
 }
 bootstrap().catch(console.error)

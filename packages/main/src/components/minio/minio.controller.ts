@@ -22,9 +22,5 @@ export class MinioController {
     return this.service.updateLocale(data)
   }
 
-  @Public()
-  @Post('/upload-locale-image')
-  uploadLocaleImage(@Body() data: string) {
-    return this.service.uploadLocaleImage(data)
-  }
+
 }
