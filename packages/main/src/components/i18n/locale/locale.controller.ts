@@ -1,9 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common'
+import { BaseParams } from '@liutsing/types-utils'
 import { LocaleService } from './locale.service'
 import { CreateLocaleDto, UpdateLocaleWithScreenShotsDto } from './dto/create-locale.dto'
 import { UpdateLocaleDto } from './dto/update-locale.dto'
 import { Locale } from './entities/locale.entity'
-import { BaseParams } from '@liutsing/types-utils'
 import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
 
@@ -17,48 +28,12 @@ export class LocaleController {
     return this.service.create(createLocaleDto)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(+id)
-  }
-
-  /**
-   * 按id更新
-   * @param id 
-   * @param updateLocaleDto 
-   * @returns 
-   */
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLocaleDto: UpdateLocaleDto) {
-    return this.service.update(+id, updateLocaleDto)
-  }
-
-  /**
-   * 按id删除
-   * @param id 
-   * @returns 
-   */
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.service.remove(+id)
-  }
-
-  /**
-   * 批量创建
-   * @param createLocaleDtos 
-   * @returns 
-   */
-  @Public()
-  @Post('batch')
-  batchCreate(@Body() createLocaleDtos: CreateLocaleDto[]) {
-    return this.service.batchCreate(createLocaleDtos)
-  }
-
   /**
    * 分页查询
-   * @param query 
-   * @returns 
+   * @param query
+   * @returns
    */
+  @Public()
   @Get('pages')
   findWithPagination(@Query() query) {
     const { current = 1, pageSize = 10, ...rest } = query as BaseParams<Locale>
@@ -69,14 +44,52 @@ export class LocaleController {
     })
   }
 
-    /**
-   * 批量更新词条与截图的关系(chrome插件用)
-   * @param dtos 
-   * @returns 
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(+id)
+  }
+
+  /**
+   * 按id更新
+   * @param id
+   * @param updateLocaleDto
+   * @returns
    */
-    @Public()
-    @Post('batchWithScreenShots')
-    batchCreateWithScreenShots(@Body() dtos: UpdateLocaleWithScreenShotsDto[]) {
-      return this.service.batchCreateWithScreenShots(dtos)
-    }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateLocaleDto: UpdateLocaleDto) {
+    return this.service.update(+id, updateLocaleDto)
+  }
+
+  /**
+   * 按id删除
+   * @param id
+   * @returns
+   */
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.service.remove(+id)
+  }
+
+  /**
+   * 批量创建
+   * @param createLocaleDtos
+   * @returns
+   */
+  @Public()
+  @Post('batch')
+  batchCreate(@Body() createLocaleDtos: CreateLocaleDto[]) {
+    if (!createLocaleDtos || createLocaleDtos.length === 0) throw new BadRequestException('body should not be null')
+    return this.service.batchCreate(createLocaleDtos)
+  }
+
+  /**
+   * 批量更新词条与截图的关系(chrome插件用)
+   * @param dtos
+   * @returns
+   */
+  @Public()
+  @Post('batchWithScreenShots')
+  batchCreateWithScreenShots(@Body() dtos: UpdateLocaleWithScreenShotsDto[]) {
+    return this.service.batchCreateWithScreenShots(dtos)
+  }
 }

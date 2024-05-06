@@ -18,14 +18,17 @@ export class Locale {
   @Column({ name: 'key' })
   readonly key: string
 
-  @Column({ name: 'zhCN' })
+  @Column({ name: 'zh_CN' })
   readonly zhCN: string
 
-  @Column({ name: 'zhHK' })
+  @Column({ name: 'zh_HK' })
   readonly zhHK: string
 
-  @Column({ name: 'enUS' })
+  @Column({ name: 'en_US' })
   readonly enUS: string
+
+  @Column({ name: 'project' })
+  readonly project: string
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: number

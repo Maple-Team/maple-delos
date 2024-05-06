@@ -14,7 +14,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     })
   }
 
-  async validate(payload: any) {
+  async validate(payload: AnyToFix) {
     return this.usersService.findOne(payload.sub)
   }
 }
