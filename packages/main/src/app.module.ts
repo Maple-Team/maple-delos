@@ -128,7 +128,7 @@ const fileOption: FileTransportOptions = {
           host: process.env.MYSQL_HOST,
           port: 3306,
           database: 'maple',
-          password: '',
+          password: 'root',
           entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale],
           synchronize: true,
         }
