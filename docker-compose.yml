@@ -1,9 +1,3 @@
-version: '2'
-
-networks:
-  maple-network:
-    external:
-      name: maple-network
 services:
   main:
     container_name: nestjs-main
@@ -27,3 +21,7 @@ services:
     restart: always
     networks:
       - maple-network
+networks:
+  maple-network:
+    name: maple-network
+    external: true

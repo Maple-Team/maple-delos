@@ -1,5 +1,5 @@
 # building
-FROM node:18-alpine3.14 AS development
+FROM node:22-alpine3.19 AS development
 
 WORKDIR app
 
@@ -17,7 +17,7 @@ COPY . .
 RUN pnpm run build
 
 # running
-FROM node:18-alpine3.14 AS production
+FROM node:22-alpine3.19 AS production
 
 WORKDIR app
 
