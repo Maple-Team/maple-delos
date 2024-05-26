@@ -6,6 +6,7 @@ import * as jwt from 'jsonwebtoken'
 import { jwtConstants } from 'src/constants'
 
 const MAX_LENGTH = 50
+const IGNORE_PAYLOAD_METHODS = ['get', 'head', 'options']
 @Injectable()
 export class RequestLoggingMiddleware implements NestMiddleware {
   constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
@@ -14,13 +15,9 @@ export class RequestLoggingMiddleware implements NestMiddleware {
     const { method, ip, body, originalUrl, headers } = req
     const token = (headers.authorization as string)?.split('Bearer ')?.[1]
 
-    if (method.toLowerCase() === 'get') return
-    const bodyStr = JSON.stringify(body)
-
     let info = {
       method,
       ip,
-      reqBody: bodyStr.length > MAX_LENGTH ? bodyStr.substring(0, MAX_LENGTH) : body,
       originalUrl,
       ua: headers['user-agent'],
     }
@@ -37,8 +34,11 @@ export class RequestLoggingMiddleware implements NestMiddleware {
       }
     })
 
-    next()
+    if (!IGNORE_PAYLOAD_METHODS.includes(method.toLowerCase())) {
+      const bodyStr = JSON.stringify(body)
 
+      info['reqBody'] = bodyStr.length > MAX_LENGTH ? bodyStr.substring(0, MAX_LENGTH) : body
+    }
     const rawSend = res.send
     // NOTE 重要的解决方案
     // @ts-expect-error: xx
@@ -50,5 +50,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
       // 调用原始的res.send()方法发送响应
       rawSend.call(res, body)
     }
+
+    next()
   }
 }
