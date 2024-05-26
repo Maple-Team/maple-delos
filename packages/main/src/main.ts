@@ -7,7 +7,7 @@ import * as bodyParser from 'body-parser'
 import { AppModule } from './app.module'
 
 // const isDev = process.env.NODE_ENV === 'development'
-
+// FIXME 启用https服务的原因?
 async function bootstrap() {
   //   const homeDir = os.homedir()
 

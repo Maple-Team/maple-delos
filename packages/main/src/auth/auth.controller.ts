@@ -8,7 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
+import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import type { Request as ExpressRequest } from 'express'
 import { AuthService } from './auth.service'
 import { Public } from './decorators/public.decorator'
