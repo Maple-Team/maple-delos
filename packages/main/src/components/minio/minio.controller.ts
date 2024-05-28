@@ -2,7 +2,6 @@ import { BadRequestException, Body, Controller, Get, Post, UseInterceptors } fro
 import { MinioService } from './minio.service'
 import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
-import { LocaleData } from '@/type'
 
 @Controller('minio')
 @UseInterceptors(TransformInterceptor)
