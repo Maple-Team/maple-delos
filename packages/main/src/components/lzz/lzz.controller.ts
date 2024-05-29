@@ -2,12 +2,14 @@ import { Controller, Get, Query, UseInterceptors } from '@nestjs/common'
 import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 import { groupBy } from 'lodash'
 import { LzzService } from './lzz.service'
+import { Public } from '@/auth/decorators'
 
 @Controller('lzz')
 @UseInterceptors(TransformInterceptor)
 export class LzzController {
   constructor(private readonly lzzService: LzzService) {}
 
+  @Public()
   @Get('all')
   async findAll() {
     const data = await this.lzzService.findAll()

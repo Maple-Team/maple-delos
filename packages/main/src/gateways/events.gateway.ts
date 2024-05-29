@@ -3,6 +3,9 @@ import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSo
 import { Namespace, Socket } from 'socket.io'
 import { ClientToServerEvents, Message, ServerToClientEvents } from './type'
 
+// 需要socket.io客户端 https://socket-test-client.netlify.app/
+// https:// amritb.github.io/socketio-client-tool/
+
 @WebSocketGateway({
   cors: {
     origin: '*',
