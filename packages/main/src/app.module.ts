@@ -7,6 +7,7 @@ import { TerminusModule } from '@nestjs/terminus'
 import { WinstonModule } from 'nest-winston'
 import { FileTransportOptions } from 'winston/lib/winston/transports'
 import * as winston from 'winston'
+import { APP_FILTER } from '@nestjs/core'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { MediaModule } from './components/media/media.module'
@@ -44,6 +45,10 @@ import { Team } from './components/i18n/teams/entities/team.entity'
 import { Project } from './components/i18n/projects/entities/project.entity'
 import { Screenshots } from './components/i18n/screenshot/entities'
 import { Locale } from './components/i18n/locale/entities/locale.entity'
+import { ElectronAppModule } from './components/electron-app/electron-app.module'
+import { HttpExceptionFilter } from './filters/http-exception.filter'
+import { GlobalErrorFilter } from './filters/global-exception.filter'
+import { QueryFailedErrorFilter } from './filters/query-failed-error.filter'
 
 const envFiles = {
   development: '.env.development',
@@ -158,9 +163,24 @@ const fileOption: FileTransportOptions = {
     ProjectsModule,
     ScreenshotModule,
     LocaleModule,
+    ElectronAppModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: QueryFailedErrorFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalErrorFilter,
+    },
+  ],
 })
 export class AppModule implements NestModule, OnModuleInit {
   constructor(private readonly service: AppService) {}
