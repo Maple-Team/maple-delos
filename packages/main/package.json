@@ -43,6 +43,7 @@
     }
   },
   "dependencies": {
+    "@graphql-tools/utils": "^10.2.2",
     "@liutsing/enums": "^1.0.3",
     "@liutsing/node-utils": "^0.0.3",
     "@liutsing/utils": "^0.0.9",
@@ -78,6 +79,8 @@
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",
     "express": "^4.19.2",
+    "graphql-query-complexity": "^1.0.0",
+    "graphql-subscriptions": "^2.0.0",
     "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
@@ -93,6 +96,10 @@
     "socket.io": "^4.7.1",
     "typeorm": "^0.3.17",
     "winston": "^3.11.0",
+    "@apollo/server": "^4.10.4",
+    "@nestjs/apollo": "^12.1.0",
+    "@nestjs/graphql": "^12.1.1",
+    "graphql": "^16.8.1",
     "ws": "^8.13.0"
   },
   "devDependencies": {

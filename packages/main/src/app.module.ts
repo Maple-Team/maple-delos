@@ -8,6 +8,9 @@ import { WinstonModule } from 'nest-winston'
 import { FileTransportOptions } from 'winston/lib/winston/transports'
 import * as winston from 'winston'
 import { APP_FILTER } from '@nestjs/core'
+import { GraphQLModule } from '@nestjs/graphql'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
+import { DirectiveLocation, GraphQLDirective } from 'graphql'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { MediaModule } from './components/media/media.module'
@@ -49,6 +52,8 @@ import { ElectronAppModule } from './components/electron-app/electron-app.module
 import { HttpExceptionFilter } from './filters/http-exception.filter'
 import { GlobalErrorFilter } from './filters/global-exception.filter'
 import { QueryFailedErrorFilter } from './filters/query-failed-error.filter'
+import { RecipesModule } from '@/components/graphql/recipes/recipes.module'
+import { upperDirectiveTransformer } from '@/components/graphql/common/directives/upper-case.directive'
 
 const envFiles = {
   development: '.env.development',
@@ -164,6 +169,21 @@ const fileOption: FileTransportOptions = {
     ScreenshotModule,
     LocaleModule,
     ElectronAppModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'schema.gql',
+      transformSchema: (schema) => upperDirectiveTransformer(schema, 'upper'),
+      installSubscriptionHandlers: true,
+      buildSchemaOptions: {
+        directives: [
+          new GraphQLDirective({
+            name: 'upper',
+            locations: [DirectiveLocation.FIELD_DEFINITION],
+          }),
+        ],
+      },
+    }),
+    RecipesModule,
   ],
   controllers: [AppController],
   providers: [

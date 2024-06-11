@@ -15,7 +15,7 @@ export class GlobalErrorFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>()
     // @ts-expect-error: 确定类型原型
     // eslint-disable-next-line no-proto
-    console.error('[ error type ] >', error.__proto__)
+    console.log('[ error type ] >', error.__proto__)
     if (error instanceof HttpException) {
       const status = error.getStatus()
       response.status(status).json({

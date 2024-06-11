@@ -8,12 +8,13 @@ import {
 } from '@nestjs/websockets'
 import { Namespace, Socket } from 'socket.io'
 import { OnModuleDestroy } from '@nestjs/common'
+import { uuid } from '@liutsing/utils'
 import { ServerToClientEvents } from './type'
 
 type CustomServerToClientEvents = Pick<ServerToClientEvents, 'notification'> & {
   [key: string]: (...rest: unknown[]) => void
 }
-
+// 测试地址：https://piehost.com/socketio-tester
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -43,8 +44,14 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
    */
   private testLoopSendMessage(client: Socket) {
     this.intervalId && clearInterval(this.intervalId)
+    let prevUUID = uuid()
     this.intervalId = setInterval(() => {
-      const message = { ts: new Date().getTime() }
+      const message = {
+        ts: new Date().getTime(),
+        payload: { uuid: prevUUID },
+      }
+      if (Math.random() > 0.999) prevUUID = uuid()
+
       client.send(message)
     }, 100)
   }
