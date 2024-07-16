@@ -32,9 +32,31 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
   intervalId: NodeJS.Timeout
 
+  /**
+   * socket连接信息(重写的方法)
+   * @param client
+   * @param rest
+   */
   handleConnection(client: Socket, ...rest: unknown[]) {
-    console.log('default gateway client connected', client.id, rest)
+    console.log('socket.io default gateway client connected', client.id, rest)
     this.testLoopSendMessage(client)
+    this.listenClientMessage(client)
+  }
+
+  private listenClientMessage(client: Socket) {
+    client.on('message', (message) => {
+      console.log('socket.io收到客户端的消息', message, client.id)
+    })
+    client.on('stopCmd', () => {
+      console.log('socket.io收到客户端的消息: stopCmd')
+      const status = Math.random() > 0.5
+      client.emit('stopStatus', status, client.id)
+    })
+    client.on('unStopCmd', () => {
+      console.log('socket.io收到客户端的消息: unStopCmd', client.id)
+      const status = Math.random() > 0.5
+      client.emit('stopStatus', status, client.id)
+    })
   }
 
   /**
@@ -52,7 +74,7 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
       }
       if (Math.random() > 0.999) prevUUID = uuid()
 
-      client.send(message)
+      client.emit('interval', message)
     }, 100)
   }
 
