@@ -46,6 +46,8 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   private listenClientMessage(client: Socket) {
     client.on('message', (message) => {
       console.log('socket.io收到客户端的消息', message, client.id)
+      client.emit('message', `单发：hello ${client.id}`)
+      this.server.emit('message', `广播: hello ${client.id}`)
     })
     client.on('stopCmd', () => {
       console.log('socket.io收到客户端的消息: stopCmd')
