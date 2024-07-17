@@ -136,7 +136,7 @@ export class UserController {
   @Get('menus')
   getMenu() {
     // TODO 从数据库中读取
-    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel']
+    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel', '/graphql', '/socket-io-chat']
   }
 
   @Roles(UserRole.USER, UserRole.ADMIN)
@@ -146,6 +146,6 @@ export class UserController {
     if (id > 0.5) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
 
     // TODO 从数据库中读取
-    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel']
+    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel', '/graphql', '/socket-io-chat']
   }
 }

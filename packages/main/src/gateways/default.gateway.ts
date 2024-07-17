@@ -59,6 +59,16 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
       const status = Math.random() > 0.5
       client.emit('stopStatus', status, client.id)
     })
+    this.server.on('chat-message', (message) => {
+      console.log('socket.io收到客户端的消息', message, client.id)
+      client.emit('chat-message', `单发：hello ${client.id}`)
+      //   this.server.emit('chat-message', `广播: hello ${client.id}`)
+    })
+    client.on('chat-message', (message) => {
+      console.log('socket.io收到客户端的消息', message, client.id)
+      client.emit('chat-message', `单发：hello ${client.id}`)
+      //   this.server.emit('chat-message', `广播: hello ${client.id}`)
+    })
   }
 
   /**
@@ -110,6 +120,7 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   customMiddleware = (socket: Socket, next: (err?: AnyToFix) => void) => {
     // Custom middleware logic here
     const _token = socket.handshake.query.token // 假设通过查询参数传递令牌
+    console.log(socket.handshake.query, 'query')
     // TODO 根据token解析用户信息，再关联socket id
     next() // Call next() to continue with the execution of other middleware or the actual event handlers
   }
