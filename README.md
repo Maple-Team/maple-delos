@@ -6,3 +6,7 @@
 
 - 一键起全部服务
 - 一键部署
+
+## with rspack
+
+- https://github.com/rspack-contrib/rspack-examples/tree/main/rspack/nestjs
