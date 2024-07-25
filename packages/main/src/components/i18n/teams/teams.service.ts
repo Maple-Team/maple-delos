@@ -12,7 +12,7 @@ export class TeamsService {
     private repo: Repository<Team>
   ) {}
 
-  create(createTeamDto: CreateTeamDto) {
+  create(_createTeamDto: CreateTeamDto) {
     return 'This action adds a new team'
   }
 
@@ -24,7 +24,7 @@ export class TeamsService {
     return `This action returns a #${id} team`
   }
 
-  update(id: number, updateTeamDto: UpdateTeamDto) {
+  update(id: number, _updateTeamDto: UpdateTeamDto) {
     return `This action updates a #${id} team`
   }
 

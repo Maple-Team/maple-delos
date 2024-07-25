@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseInterceptors } from '@nestjs/common'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 import { TimelineService } from './timeline.service'
+import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 
 @Controller('timeline')
 @UseInterceptors(TransformInterceptor)

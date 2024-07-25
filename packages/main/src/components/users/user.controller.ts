@@ -19,7 +19,6 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 import { UserRole } from '@liutsing/enums'
 import { BaseParams, ChangePwdDto } from '@liutsing/types-utils'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -31,6 +30,7 @@ import { Roles } from '../../auth/decorators'
 import { User } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UserService } from './user.service'
+import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 
 @UseInterceptors(TransformInterceptor)
 @Roles(UserRole.ADMIN)

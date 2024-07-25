@@ -30,14 +30,14 @@ export class Screenshots {
     })
     updatedAt: number
 
-    /**一个截图有多个词条，一个词条由多个截图 */
+    /** 一个截图有多个词条，一个词条由多个截图 */
     @ManyToMany(() => Locale, (locale) => locale.screenshots)
     @JoinTable({
         name: 'screenshots-locales',
     })
     locales: Locale[]
 
-    /**多个截图属于一个项目 */
+    /** 多个截图属于一个项目 */
     @ManyToOne(() => Project, (project) => project.screenshotses)
     @JoinTable({
         name: 'screenshots-projects',

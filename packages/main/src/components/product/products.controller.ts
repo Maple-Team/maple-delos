@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 import { ProductService } from './products.service'
+import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 
 @Controller({
   path: 'products',

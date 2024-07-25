@@ -8,13 +8,13 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import type { Request as ExpressRequest } from 'express'
 import { AuthService } from './auth.service'
 import { Public } from './decorators/public.decorator'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { RefreshTokenGuard } from './guards/refreshToken.guard'
+import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 
 @UseInterceptors(TransformInterceptor)
 @Controller('auth')

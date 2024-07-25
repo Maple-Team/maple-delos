@@ -87,7 +87,7 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
       if (Math.random() > 0.999) prevUUID = uuid()
 
       client.emit('interval', message)
-    }, 100)
+    }, 10 * 1000)
   }
 
   handleDisconnect(client: Socket) {

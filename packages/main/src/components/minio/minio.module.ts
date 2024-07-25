@@ -18,6 +18,6 @@ import { MinioController } from './minio.controller'
       },
     ]),
   ],
-  exports:[MinioService]
+  exports: [MinioService]
 })
 export class MinioModule {}

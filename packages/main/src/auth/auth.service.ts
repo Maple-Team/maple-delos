@@ -1,16 +1,16 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
-import { UserService } from 'src/components/users/user.service'
 import { JwtService } from '@nestjs/jwt'
-import { jwtConstants } from 'src/constants'
 import * as bcrypt from 'bcrypt'
-import { User } from 'src/components/users/entities/user.entity'
-import { LoginUserDto } from 'src/components/users/dto/login-user.dto'
 import { UserRole } from '@liutsing/enums'
+import { UserService } from '@/components/users/user.service'
+import { jwtConstants } from '@/constants'
+import { User } from '@/components/users/entities/user.entity'
+import { LoginUserDto } from '@/components/users/dto/login-user.dto'
 
 @Injectable()
 export class AuthService {
   constructor(private jwtService: JwtService, private usersService: UserService) {}
-  //   https://github.com/lujakob/nestjs-realworld-example-app/blob/master/src/user/user.controller.ts
+  //   https://github.com/lujakob/nestjs-realworld-example-app/blob/master/@/user/user.controller.ts
   async signIn(user: User) {
     if (!user) {
       return new BadRequestException()

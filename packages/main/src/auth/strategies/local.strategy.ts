@@ -9,7 +9,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'phone' })
   }
 
-  async validate(phone: string, password: string): Promise<any> {
+  async validate(phone: string, password: string): Promise<AnyToFix> {
     if (!phone || !password) {
       // NOTE 字段不齐全会报错误 401，奇怪的错误码
       // FIXME 这里不生效
