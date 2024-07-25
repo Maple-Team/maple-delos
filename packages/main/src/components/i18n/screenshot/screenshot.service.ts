@@ -13,8 +13,8 @@ export class ScreenshotService {
 
     /**
      * 根据多个id获取多条记录
-     * @param ids 
-     * @returns 
+     * @param ids
+     * @returns
      */
     findByIDs(ids: number[]) {
         return this.repo.findBy({

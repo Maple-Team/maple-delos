@@ -1,4 +1,3 @@
-import { Label } from 'src/components/label/entities/label.entity'
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { Image } from '../../image/entities/image.entity'
+import { Label } from '@/components/label/entities/label.entity'
 
 @Entity()
 export class Album {

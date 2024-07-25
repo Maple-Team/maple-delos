@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import * as jwt from 'jsonwebtoken'
-import { jwtConstants } from 'src/constants'
+import { jwtConstants } from '@/constants'
 
 const MAX_LENGTH = 50
 const IGNORE_PAYLOAD_METHODS = ['get', 'head', 'options']
@@ -14,7 +14,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
 
   use(req: Request, res: Response, next: NextFunction) {
     const { method, ip, body, originalUrl, headers } = req
-    const token = (headers.authorization as string)?.split('Bearer ')?.[1]
+    const token = (headers.authorization)?.split('Bearer ')?.[1]
 
     let info: RequestLogInfo = {
       method,

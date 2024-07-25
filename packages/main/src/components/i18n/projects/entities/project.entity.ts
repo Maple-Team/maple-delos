@@ -21,7 +21,7 @@ export class Project {
     })
     updatedAt: number
 
-    /**一个项目有多个词条 */
+    /** 一个项目有多个词条 */
     @ManyToMany(() => Locale, (locale) => locale.projects)
     @JoinTable({
         name: 'projects-locales',

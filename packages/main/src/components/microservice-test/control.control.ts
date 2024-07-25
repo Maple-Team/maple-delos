@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, UseInterceptors } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
+import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
 
 @Controller('microservice-test')

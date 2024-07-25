@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseInterceptors } from '@nestjs/common'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 import { groupBy } from 'lodash'
 import { LzzService } from './lzz.service'
+import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
 
 @Controller('lzz')
