@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@liutsing/utils": "^0.1.5",
-    "core-js": "3"
+    "core-js": "3",
+    "winston-daily-rotate-file": "^5.0.0"
   }
 }

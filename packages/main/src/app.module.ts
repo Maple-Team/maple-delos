@@ -1,12 +1,9 @@
-import * as path from 'path'
 import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { MongooseModule } from '@nestjs/mongoose'
 import { TerminusModule } from '@nestjs/terminus'
 import { WinstonModule } from 'nest-winston'
-import { FileTransportOptions } from 'winston/lib/winston/transports'
-import * as winston from 'winston'
 import { APP_FILTER } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
@@ -41,7 +38,7 @@ import { RedisModule } from './components/redis/redis.module'
 import { ControlModule } from './components/remote-control/control.module'
 import { MicroserviceTestModule } from './components/microservice-test/control.module'
 import { SseTestModule } from './components/sse-test/sse-test.module'
-import { VideoModule } from './components/video/videos.mdoule'
+import { VideoModule } from './components/video/videos.module'
 import { MinioModule } from './components/minio/minio.module'
 import { LocaleModule, ProjectsModule, ScreenshotModule, TeamsModule } from './components/i18n'
 import { Team } from './components/i18n/teams/entities/team.entity'
@@ -52,20 +49,13 @@ import { ElectronAppModule } from './components/electron-app/electron-app.module
 import { HttpExceptionFilter } from './filters/http-exception.filter'
 import { GlobalErrorFilter } from './filters/global-exception.filter'
 import { QueryFailedErrorFilter } from './filters/query-failed-error.filter'
+import { winstonConfig } from './winston-config'
 import { RecipesModule } from '@/components/graphql/recipes/recipes.module'
 import { upperDirectiveTransformer } from '@/components/graphql/common/directives/upper-case.directive'
 
 const envFiles = {
   development: '.env.development',
   production: '.env.production',
-}
-const infoFilePath = path.join(process.cwd(), 'logs', 'info.log')
-const errorFilePath = path.join(process.cwd(), 'logs', 'error.log')
-
-// @https://github.com/winstonjs/winston/blob/master/docs/transports.md
-const fileOption: FileTransportOptions = {
-  maxsize: 1 * 1024 * 1024,
-  maxFiles: 100,
 }
 
 @Module({
@@ -80,39 +70,7 @@ const fileOption: FileTransportOptions = {
         }
       },
     }),
-    WinstonModule.forRoot({
-      level: 'info',
-      format: winston.format.combine(
-        winston.format.timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss SSS',
-        }),
-        winston.format.json()
-      ),
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp({
-              format: 'YYYY-MM-DD HH:mm:ss SSS',
-            }),
-            winston.format.json()
-          ),
-        }),
-        new winston.transports.File({
-          filename: infoFilePath,
-          level: 'info',
-          ...fileOption,
-        }),
-        // process.env.SHOWLARK_MESSAGE === 'true'
-        //   ? new LarkHook({
-        //       webhookUrl: 'https://open.feishu.cn/open-apis/bot/v2/hook/f44c17ad-06b0-4957-a5be-2b066fcef6ce',
-        //       level: 'error',
-        //       msgType: 'text',
-        //       emitAxiosErrors: true,
-        //     })
-        //   : null,
-      ].filter(Boolean),
-      rejectionHandlers: [new winston.transports.File({ filename: errorFilePath, ...fileOption })],
-    }),
+    WinstonModule.forRoot(winstonConfig),
     RedisModule,
     ConfigModule.forRoot({
       envFilePath: envFiles[process.env.NODE_ENV] || '.env',

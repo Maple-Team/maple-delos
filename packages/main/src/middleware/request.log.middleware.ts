@@ -8,13 +8,22 @@ import { jwtConstants } from '@/constants'
 const MAX_LENGTH = 50
 const IGNORE_PAYLOAD_METHODS = ['get', 'head', 'options']
 
+declare module 'express' {
+  interface Request {
+    /**
+     * 请求日志中间件
+     */
+    hasLogged?: boolean
+  }
+}
+
 @Injectable()
 export class RequestLoggingMiddleware implements NestMiddleware {
   constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
 
   use(req: Request, res: Response, next: NextFunction) {
     const { method, ip, body, originalUrl, headers } = req
-    const token = (headers.authorization)?.split('Bearer ')?.[1]
+    const token = headers.authorization?.split('Bearer ')?.[1]
 
     let info: RequestLogInfo = {
       method,
@@ -41,14 +50,14 @@ export class RequestLoggingMiddleware implements NestMiddleware {
     }
     const rawSend = res.send
     // NOTE 重要的解决方案
-    // @ts-expect-error: xx
-    res.send = (body: string) => {
-      // 在这里，你可以修改响应体，例如记录日志或进行其他操作
-      try {
-        this.logger.info({ ...info, resBody: JSON.parse(body) })
-      } catch (error) {}
-      // 调用原始的res.send()方法发送响应
-      rawSend.call(res, body)
+    res.send = (body) => {
+      if (!req.hasLogged) {
+        // 在这里，你可以修改响应体，例如记录日志或进行其他操作
+        this.logger.info('%o', { ...info, resBody: JSON.parse(body) })
+        req.hasLogged = true
+      }
+      // NOTE 调用原始的res.send()方法发送响应
+      return rawSend.call(res, body)
     }
 
     next()
