@@ -4,6 +4,11 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { QueryFailedError } from 'typeorm'
 import { Logger } from 'winston'
 
+/**
+ * @deprecated
+ * 注入 GlobalErrorFilter 后不生效
+ * @see GlobalErrorFilter
+ */
 @Catch(QueryFailedError)
 export class QueryFailedErrorFilter implements ExceptionFilter {
   constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}

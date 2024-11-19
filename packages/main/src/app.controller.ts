@@ -1,6 +1,7 @@
-import { Controller, Get, Inject, UseInterceptors } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Inject, Post, UseInterceptors } from '@nestjs/common'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
+import { sleep } from '@liutsing/utils'
 import { AppService } from './app.service'
 import { Public } from './auth/decorators'
 import { TransformInterceptor } from './interceptor/transform.interceptor'
@@ -19,10 +20,19 @@ export class AppController {
     return this.appService.hello()
   }
 
+  @Post()
+  async post(@Body() body) {
+    this.logger.debug('%o', body)
+    return body
+  }
+
   @Get('hello')
-  json() {
+  async json() {
+    await sleep(2000)
     // 400
-    // throw new BadRequestException()
+    if (Math.random() > 0.5) throw new BadRequestException('error')
+    else return 'ok'
+
     // 502 test
     // throw new BadGatewayException()
     // 测试logger的输出结果

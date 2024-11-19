@@ -2,6 +2,11 @@ import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common'
 import { Catch, HttpException } from '@nestjs/common'
 import type { Request, Response } from 'express'
 
+/**
+ * @deprecated
+ * 注入 GlobalErrorFilter 后不生效
+ * @see GlobalErrorFilter
+ */
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
