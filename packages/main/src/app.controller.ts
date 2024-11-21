@@ -1,4 +1,14 @@
-import { BadRequestException, Body, Controller, Get, Inject, Post, UseInterceptors } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Post,
+  UnauthorizedException,
+  UseInterceptors,
+} from '@nestjs/common'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import { sleep } from '@liutsing/utils'
@@ -9,6 +19,7 @@ import { TransformInterceptor } from './interceptor/transform.interceptor'
 @Public()
 @Controller('app')
 @UseInterceptors(TransformInterceptor)
+// @UseFilters(new HttpExceptionFilter()) controller scope
 export class AppController {
   constructor(
     private readonly appService: AppService,
@@ -30,7 +41,7 @@ export class AppController {
   async json() {
     await sleep(500)
     // 400
-    if (Math.random() > 0.5) throw new BadRequestException('error')
+    if (Math.random() > 0.5) throw new UnauthorizedException('Forbidden')
     else return 'ok'
 
     // 502 test
@@ -67,5 +78,21 @@ export class AppController {
         name: 'test',
       },
     }
+  }
+
+  @Get('403')
+  //   @UseFilters(new HttpExceptionFilter()) // method scope
+  async findAll() {
+    throw new HttpException(
+      {
+        status: HttpStatus.FORBIDDEN,
+        error: 'This is a custom message',
+      },
+      HttpStatus.FORBIDDEN,
+      {
+        cause: new Error(),
+        description: 'some error',
+      }
+    )
   }
 }

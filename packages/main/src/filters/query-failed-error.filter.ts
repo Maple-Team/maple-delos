@@ -13,17 +13,15 @@ import { Logger } from 'winston'
 export class QueryFailedErrorFilter implements ExceptionFilter {
   constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
   // NOTE https://docs.nestjs.com/exception-filters
-  // TODO
   catch(err: QueryFailedError, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
     const status = HttpStatus.CONFLICT
 
-    this.logger.error({ exception: err, path: request.url })
+    this.logger.error('error: %o, stack: %s, url: %s', err, err.stack, request.url)
 
     // TODO 预设映射关系，提供更好的提示信息，对应哪个用户可见字段
-
     // @ts-expect-error: xx
     if (err.code === 'ER_DUP_ENTRY') {
       // 从错误信息中提取出重复字段的信息
@@ -34,6 +32,8 @@ export class QueryFailedErrorFilter implements ExceptionFilter {
         response.status(status).json({
           message: `已存在相同的记录: ${duplicateValue}`,
           status,
+          timestamp: new Date().toISOString(),
+          path: request.url,
         })
         return
       }
@@ -42,6 +42,8 @@ export class QueryFailedErrorFilter implements ExceptionFilter {
     response.status(status).json({
       message: '发生了数据库错误',
       status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
     })
   }
 }

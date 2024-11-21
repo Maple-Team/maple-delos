@@ -47,8 +47,8 @@ import { Screenshots } from './components/i18n/screenshot/entities'
 import { Locale } from './components/i18n/locale/entities/locale.entity'
 import { ElectronAppModule } from './components/electron-app/electron-app.module'
 import { GlobalErrorFilter } from './filters/global-exception.filter'
-// import { HttpExceptionFilter } from './filters/http-exception.filter'
-// import { QueryFailedErrorFilter } from './filters/query-failed-error.filter'
+import { HttpExceptionFilter } from './filters/http-exception.filter'
+import { QueryFailedErrorFilter } from './filters/query-failed-error.filter'
 import { CustomTypeormLogger, winstonConfig } from './logger'
 import { RecipesModule } from '@/components/graphql/recipes/recipes.module'
 import { upperDirectiveTransformer } from '@/components/graphql/common/directives/upper-case.directive'
@@ -180,17 +180,19 @@ const envFiles = {
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: HttpExceptionFilter,
-    // },
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: QueryFailedErrorFilter,
-    // },
+    // global-scoped filters
+
     {
       provide: APP_FILTER,
       useClass: GlobalErrorFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: QueryFailedErrorFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
     },
   ],
 })
