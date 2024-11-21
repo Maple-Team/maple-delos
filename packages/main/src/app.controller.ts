@@ -28,7 +28,7 @@ export class AppController {
 
   @Get('hello')
   async json() {
-    await sleep(2000)
+    await sleep(500)
     // 400
     if (Math.random() > 0.5) throw new BadRequestException('error')
     else return 'ok'

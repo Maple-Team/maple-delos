@@ -16,7 +16,6 @@
     "paths": {
       "@/*": ["src/*"]
     },
-
     "declaration": true,
     "removeComments": true,
     "allowSyntheticDefaultImports": true,

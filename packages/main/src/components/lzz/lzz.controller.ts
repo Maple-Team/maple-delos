@@ -18,20 +18,16 @@ export class LzzController {
   }
 
   @Get('pages')
+  @Public()
   findWithPagination(@Query() query: { current: number; pageSize: number; year?: number; name?: string }) {
     const { current = 1, pageSize = 30 } = query
     return this.lzzService.findWithPagination(+current, +pageSize)
   }
 
   @Get('detail')
+  @Public()
   findById(@Query() query: { id: string }) {
     const { id } = query
     return this.lzzService.findById(id)
-  }
-
-  @Public()
-  @Get('test')
-  test() {
-    return 'ok'
   }
 }

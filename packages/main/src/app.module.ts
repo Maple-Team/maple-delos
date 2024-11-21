@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { TypeOrmModule } from '@nestjs/typeorm'
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { MongooseModule } from '@nestjs/mongoose'
 import { TerminusModule } from '@nestjs/terminus'
 import { WinstonModule } from 'nest-winston'
@@ -49,7 +49,7 @@ import { ElectronAppModule } from './components/electron-app/electron-app.module
 import { GlobalErrorFilter } from './filters/global-exception.filter'
 // import { HttpExceptionFilter } from './filters/http-exception.filter'
 // import { QueryFailedErrorFilter } from './filters/query-failed-error.filter'
-import { winstonConfig } from './winston-config'
+import { CustomTypeormLogger, winstonConfig } from './logger'
 import { RecipesModule } from '@/components/graphql/recipes/recipes.module'
 import { upperDirectiveTransformer } from '@/components/graphql/common/directives/upper-case.directive'
 
@@ -89,16 +89,50 @@ const envFiles = {
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async () => {
+      useFactory: async (): Promise<TypeOrmModuleOptions> => {
         return {
-          username: 'root',
           type: 'mysql',
-          host: process.env.MYSQL_HOST,
-          port: 3306,
-          database: 'maple',
-          password: 'root',
+          // 单个数据库配置
+          //   username: 'root',
+          //   host: process.env.MYSQL_HOST,
+          //   port: 3306,
+          //   database: 'maple',
+          //   password: 'root',
           entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale],
           synchronize: true,
+          charset: 'utf8mb4',
+          // typeorm 日志
+          maxQueryExecutionTime: 1000,
+          //   logger: 'file',
+          logger: new CustomTypeormLogger(),
+          //   debug: true, // 开启debug，太多信息了
+          logging: ['query', 'error'],
+          // 主从数据库配置
+          replication: {
+            master: {
+              host: process.env.MYSQL_MASTER_HOST,
+              port: +process.env.MYSQL_MASTER_PORT,
+              username: 'root',
+              password: 'root',
+              database: 'maple',
+            },
+            slaves: [
+              {
+                host: process.env.MYSQL_SLAVE1_HOST,
+                port: +process.env.MYSQL_SLAVE1_PORT,
+                username: 'root',
+                password: 'root',
+                database: 'maple',
+              },
+              {
+                host: process.env.MYSQL_SLAVE2_HOST,
+                port: +process.env.MYSQL_SLAVE2_PORT,
+                username: 'root',
+                password: 'root',
+                database: 'maple',
+              },
+            ],
+          },
         }
       },
     }),

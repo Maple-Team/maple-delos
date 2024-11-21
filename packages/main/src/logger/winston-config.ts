@@ -19,7 +19,8 @@ const baseRotateFileOption: WinstonDailyRotateFile.DailyRotateFileTransportOptio
   maxSize: '1m',
   maxFiles: '90d',
   level: 'info',
-  filename: '%DATE%.log',
+  filename: '%DATE%',
+  extension: '.log', // 文件后缀
 }
 
 const formats = [
@@ -50,7 +51,6 @@ export const winstonConfig: WinstonModuleOptions = {
 
     new WinstonDailyRotateFile({
       ...baseRotateFileOption,
-      filename: '%DATE%.log',
       level: 'info',
     }),
     // process.env.SHOWLARK_MESSAGE === 'true'
