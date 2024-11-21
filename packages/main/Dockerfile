@@ -1,7 +1,7 @@
 # building
 FROM node:22-alpine3.19 AS development
 
-WORKDIR app
+WORKDIR /app
 
 COPY package.json ./
 COPY tsconfig.json ./
@@ -19,7 +19,7 @@ RUN pnpm run build
 # running
 FROM node:22-alpine3.19 AS production
 
-WORKDIR app
+WORKDIR /app
 
 COPY package.json ./
 COPY tsconfig.json ./

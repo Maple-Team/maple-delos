@@ -1,9 +1,10 @@
 services:
   main:
     container_name: nestjs-main
-    build:
-      context: ./packages/main
-      dockerfile: 'Dockerfile'
+    image: liutsing/delos-main:latest
+    # build:
+    #   context: .
+    #   dockerfile: 'Dockerfile'
     ports:
       - 3001:3000
     restart: always
@@ -13,9 +14,14 @@ services:
       - MINIO_SERVICE=nestjs-minio
   minio:
     container_name: nestjs-minio
-    build:
-      context: ./packages/minio
-      dockerfile: 'Dockerfile'
+    image: liutsing/delos-minio:latest
+    environment:
+      - MINIO_ACCESS_KEY=XpiUE5sGLAXt4EtKgKiH
+      - MINIO_SECRET_KEY=8qnIB6KhE5n5hxpxePeDewWpD47XLTs4K9CsUKKk
+      - MINIO_I18N_BUCKET=i18n
+    # build:
+    #   context: .
+    #   dockerfile: 'Dockerfile'
     # ports:
     #   - 8801:8801
     restart: always

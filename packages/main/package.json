@@ -1,12 +1,11 @@
 {
-  "name": "@maple/delos-main",
-  "version": "0.0.7",
+  "name": "@liutsing/delos-main",
+  "version": "0.0.8",
   "private": true,
   "description": "",
   "license": "UNLICENSED",
   "author": "",
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "cross-env NODE_ENV=production nest build --config tsconfig.build.json",
     "predeploy": "pnpm run build",
     "deploy": "node scripts/deploy.js",
@@ -47,7 +46,7 @@
     "@graphql-tools/utils": "^10.2.2",
     "@liutsing/enums": "^1.0.3",
     "@liutsing/node-utils": "^0.0.3",
-    "@liutsing/utils": "^0.0.9",
+    "@liutsing/utils": "^0.5.1",
     "@nestjs-modules/ioredis": "^2.0.1",
     "@nestjs/apollo": "^12.1.0",
     "@nestjs/axios": "^3.0.1",
@@ -101,7 +100,9 @@
     "socket.io": "^4.7.1",
     "typeorm": "^0.3.17",
     "winston": "^3.11.0",
-    "ws": "^8.13.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "ws": "^8.13.0",
+    "tslib": "^2.6.0"
   },
   "devDependencies": {
     "@liutsing/eslint-config": "^0.0.11",
@@ -130,7 +131,6 @@
     "ts-loader": "^9.4.4",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.2.0",
-    "tslib": "^2.6.0",
     "typescript": "^5.1.6"
   }
 }

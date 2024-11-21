@@ -5,13 +5,11 @@ import { Kind, ValueNode } from 'graphql'
 export class DateScalar implements CustomScalar<number, Date> {
   description = 'Date custom scalar type'
 
-  // @ts-expect-error: xx
-  parseValue(value: number): Date {
+  parseValue(value): Date {
     return new Date(value) // value from the client
   }
 
-  // @ts-expect-error: xx
-  serialize(value: Date): number {
+  serialize(value): number {
     return value.getTime() // value sent to the client
   }
 

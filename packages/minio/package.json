@@ -1,6 +1,6 @@
 {
-  "name": "@liutsing/minio-microservice",
-  "version": "0.0.1",
+  "name": "@liutsing/delos-minio",
+  "version": "0.0.2",
   "description": "",
   "author": "",
   "private": true,
@@ -24,6 +24,7 @@
   "dependencies": {
     "@nestjs/common": "^10.3.3",
     "@nestjs/config": "^3.0.0",
+    "@liutsing/utils": "^0.5.1",
     "@nestjs/core": "^10.3.3",
     "@nestjs/microservices": "^10.3.3",
     "@nestjs/platform-express": "^10.3.3",
