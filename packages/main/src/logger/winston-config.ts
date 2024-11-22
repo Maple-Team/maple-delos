@@ -29,10 +29,13 @@ const formats = [
   }),
   winston.format.splat(),
   winston.format.errors({ stack: true }),
+  winston.format.printf(({ timestamp, level, message }) => {
+    return `[${timestamp}] ${level} ${message}`
+  }),
 ]
 export const winstonConfig: WinstonModuleOptions = {
   level: 'info',
-  format: winston.format.combine(...formats, winston.format.json()),
+  format: winston.format.combine(...formats),
   transports: [
     process.env.NODE_ENV !== 'production'
       ? new winston.transports.Console({
@@ -41,10 +44,7 @@ export const winstonConfig: WinstonModuleOptions = {
             winston.format.cli({
               level: true,
             }),
-            ...formats,
-            winston.format.printf(({ timestamp, level, message }) => {
-              return `[${timestamp}] ${level} ${message}`
-            })
+            ...formats
           ),
         })
       : null,

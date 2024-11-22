@@ -101,10 +101,9 @@ const envFiles = {
           charset: 'utf8mb4',
           // typeorm 日志
           maxQueryExecutionTime: 1000,
-          //   logger: 'file',
           logger: new CustomTypeormLogger(),
           //   debug: true, // 开启debug，太多信息了
-          logging: ['query', 'error'],
+          logging: 'all',
           // 主从数据库配置
           replication: {
             master: {

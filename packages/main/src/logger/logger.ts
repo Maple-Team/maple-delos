@@ -11,7 +11,7 @@ const logFileDatePattern = 'YYYY-MM-DD' // 日志文件日期格式
 // 创建日志轮转器
 export const logStream = fileStreamRotator.getStream({
   filename: path.join(logDirectory, logFileName),
-  frequency: 'minute', // 每天轮转一次
+  frequency: 'daily',
   date_format: logFileDatePattern,
   size: logFileSize,
   max_logs: '7d', // 保留7天的日志
