@@ -5,9 +5,7 @@ import { QueryFailedError } from 'typeorm'
 import { Logger } from 'winston'
 
 /**
- * @deprecated
- * 注入 GlobalErrorFilter 后不生效
- * @see GlobalErrorFilter
+ * 捕获数据库错误，并返回给前端用户
  */
 @Catch(QueryFailedError)
 export class QueryFailedErrorFilter implements ExceptionFilter {
