@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import * as Minio from 'minio'
 import { uuid } from '@liutsing/utils'
 import { LocaleData } from './type'
@@ -52,16 +52,20 @@ export class AppService {
    * @returns
    */
   async uploadLocaleImage(data: string) {
-    const [_1, dataStr] = data.split(',')
-    const [str] = data.split(';')
-    const [_2, mime] = str.split(':')
-    const [_3, ext] = mime.split('/')
-    const file = `screenShots/${uuid()}.${ext}`
+    try {
+      const [_1, dataStr] = data.split(',')
+      const [str] = data.split(';')
+      const [_2, mime] = str.split(':')
+      const [_3, ext] = mime.split('/')
+      const file = `screenShots/${uuid()}.${ext}`
 
-    const imageData = Buffer.from(dataStr, 'base64')
+      const imageData = Buffer.from(dataStr, 'base64')
 
-    await this.minioClient.putObject(bucketName, file, imageData, { 'Content-Type': mime }).catch(console.error)
+      await this.minioClient.putObject(bucketName, file, imageData, { 'Content-Type': mime }).catch(console.error)
 
-    return file
+      return file
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
   }
 }
