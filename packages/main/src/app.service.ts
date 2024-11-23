@@ -21,7 +21,7 @@ export class AppService {
   async checkDataExists(): Promise<boolean> {
     const count = await this.repo.count({
       where: {
-        phone: '18123845936', // TODO 更新手机号
+        phone: '18123845936',
       },
     })
     return count > 0

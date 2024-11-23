@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
-// import { jwtConstants } from '@/constants'
 import { APP_GUARD } from '@nestjs/core'
 import { PassportModule } from '@nestjs/passport'
 import { UserModule } from '@/components/users/user.module'
@@ -13,15 +12,7 @@ import { AuthController } from '@/auth/auth.controller'
 import { AuthService } from '@/auth/auth.service'
 
 @Module({
-  imports: [
-    UserModule,
-    PassportModule,
-    JwtModule.register({
-      //   global: false,
-      //   secret: jwtConstants.secret,
-      //   signOptions: { expiresIn: jwtConstants.expiresIn },
-    }),
-  ],
+  imports: [UserModule, PassportModule, JwtModule.register({})],
   controllers: [AuthController],
   providers: [
     AuthService,

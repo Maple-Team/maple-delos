@@ -88,14 +88,44 @@ const envFiles = {
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (): Promise<TypeOrmModuleOptions> => {
+        const config =
+          process.env.USE_MASTER_SLAVE_MYSQL === 'true'
+            ? {
+                replication: {
+                  master: {
+                    host: process.env.MYSQL_MASTER_HOST,
+                    port: +process.env.MYSQL_MASTER_PORT,
+                    username: 'root',
+                    password: 'root',
+                    database: 'maple',
+                  },
+                  slaves: [
+                    {
+                      host: process.env.MYSQL_SLAVE1_HOST,
+                      port: +process.env.MYSQL_SLAVE1_PORT,
+                      username: 'root',
+                      password: 'root',
+                      database: 'maple',
+                    },
+                    {
+                      host: process.env.MYSQL_SLAVE2_HOST,
+                      port: +process.env.MYSQL_SLAVE2_PORT,
+                      username: 'root',
+                      password: 'root',
+                      database: 'maple',
+                    },
+                  ],
+                },
+              }
+            : {
+                username: 'root',
+                host: process.env.MYSQL_HOST,
+                port: +process.env.MYSQL_PORT,
+                database: 'maple',
+                password: 'root',
+              }
         return {
           type: 'mysql',
-          // 单个数据库配置
-          //   username: 'root',
-          //   host: process.env.MYSQL_HOST,
-          //   port: 3306,
-          //   database: 'maple',
-          //   password: 'root',
           entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale],
           synchronize: true,
           charset: 'utf8mb4',
@@ -104,32 +134,7 @@ const envFiles = {
           logger: new CustomTypeormLogger(),
           //   debug: true, // 开启debug，太多信息了
           logging: 'all',
-          // 主从数据库配置
-          replication: {
-            master: {
-              host: process.env.MYSQL_MASTER_HOST,
-              port: +process.env.MYSQL_MASTER_PORT,
-              username: 'root',
-              password: 'root',
-              database: 'maple',
-            },
-            slaves: [
-              {
-                host: process.env.MYSQL_SLAVE1_HOST,
-                port: +process.env.MYSQL_SLAVE1_PORT,
-                username: 'root',
-                password: 'root',
-                database: 'maple',
-              },
-              {
-                host: process.env.MYSQL_SLAVE2_HOST,
-                port: +process.env.MYSQL_SLAVE2_PORT,
-                username: 'root',
-                password: 'root',
-                database: 'maple',
-              },
-            ],
-          },
+          ...config,
         }
       },
     }),
@@ -177,8 +182,6 @@ const envFiles = {
   controllers: [AppController],
   providers: [
     AppService,
-    // global-scoped filters
-
     {
       provide: APP_FILTER,
       useClass: GlobalErrorFilter,

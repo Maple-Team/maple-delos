@@ -1,7 +1,10 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { UserRole } from '@liutsing/enums'
+import { sleep } from '@liutsing/utils'
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
+import { Logger } from 'winston'
 import { UserService } from '@/components/users/user.service'
 import { jwtConstants } from '@/constants'
 import { User } from '@/components/users/entities/user.entity'
@@ -9,7 +12,12 @@ import { LoginUserDto } from '@/components/users/dto/login-user.dto'
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService, private usersService: UserService) {}
+  constructor(
+    private jwtService: JwtService,
+    private usersService: UserService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
+  ) {}
+
   //   https://github.com/lujakob/nestjs-realworld-example-app/blob/master/@/user/user.controller.ts
   async signIn(user: User) {
     if (!user) {
@@ -18,7 +26,7 @@ export class AuthService {
       const { ...result } = user
       const payload = { sub: user.id, username: user.username, role: user.role }
 
-      const { refreshToken, accessToken } = await this.getTokens(payload)
+      const { refreshToken, accessToken } = await this.getTokens(payload, user.refreshToken)
       await this.updateRefreshToken(user.id, refreshToken)
 
       return {
@@ -48,21 +56,30 @@ export class AuthService {
     })
   }
 
-  async getTokens(payload: { sub: number; username: string; role: UserRole }) {
+  async getTokens(payload: { sub: number; username: string; role: UserRole }, existedRefreshToken: string) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
-        secret: jwtConstants.secret,
-        expiresIn: '30m',
+        secret: jwtConstants.secretKey,
+        expiresIn: jwtConstants.accessTokenExpiresIn,
       }),
-      this.jwtService.signAsync(payload, {
-        secret: jwtConstants.secret,
-        expiresIn: '7d',
-      }),
+      !existedRefreshToken
+        ? this.jwtService.signAsync(payload, {
+            secret: jwtConstants.secretKey,
+            expiresIn: jwtConstants.refreshTokenExpiresIn,
+          })
+        : sleep(100),
     ])
-
+    if (!existedRefreshToken) {
+      this.logger.info(
+        `getTokens: ${JSON.stringify({
+          accessTokenExpiresIn: jwtConstants.accessTokenExpiresIn,
+          refreshTokenExpiresIn: jwtConstants.refreshTokenExpiresIn,
+        })}`
+      )
+    }
     return {
       accessToken,
-      refreshToken,
+      refreshToken: (refreshToken as string | undefined) || existedRefreshToken,
     }
   }
 
@@ -75,7 +92,7 @@ export class AuthService {
     if (!user || !user.refreshToken) throw new ForbiddenException('Access Denied')
     const refreshTokenMatches = user.refreshToken === refreshToken
     if (!refreshTokenMatches) throw new ForbiddenException('Access Denied')
-    const tokens = await this.getTokens({ sub: user.id, username: user.username, role: user.role })
+    const tokens = await this.getTokens({ sub: user.id, username: user.username, role: user.role }, user.refreshToken)
     await this.updateRefreshToken(user.id, tokens.refreshToken)
     return tokens
   }

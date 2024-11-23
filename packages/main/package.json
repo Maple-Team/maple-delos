@@ -24,7 +24,6 @@
     "auto": "openapi --input http://localhost:4004/api-json --output ./generated --client axios"
   },
   "prettier": "@liutsing/prettier-config",
- 
   "dependencies": {
     "@apollo/server": "^4.10.4",
     "@graphql-tools/utils": "^10.2.2",

@@ -73,6 +73,14 @@ export class UserService {
     })
   }
 
+  findUserInfo(id: number) {
+    return this.repo.findOne({
+      where: {
+        id,
+      },
+    })
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return this.repo.update(id, updateUserDto)
   }

@@ -10,7 +10,6 @@ import {
   HttpException,
   HttpStatus,
   Inject,
-  Logger,
   Param,
   Post,
   Put,
@@ -26,6 +25,7 @@ import { mkdirSafeSync } from '@liutsing/node-utils'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import type { Request as ExpressRequest } from 'express'
 import type { UpdateResult } from 'typeorm'
+import { Logger } from 'winston'
 import { Roles } from '../../auth/decorators'
 import { User } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -103,6 +103,11 @@ export class UserController {
       pageSize: +pageSize,
       ...rest,
     })
+  }
+
+  @Get('profile')
+  profile(@Request() req: ExpressRequest) {
+    return this.service.findUserInfo(req.user.id)
   }
 
   @Put(':id')

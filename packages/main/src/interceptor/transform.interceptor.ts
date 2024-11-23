@@ -13,6 +13,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, BaseResponse<
           status: context.switchToHttp().getResponse().statusCode,
           message: 'success',
           data,
+          timestamp: new Date().getTime(),
         }
       })
     )
