@@ -1,8 +1,9 @@
-import { BadRequestException, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
 import { IS_PUBLIC_KEY } from '@/auth/decorators/public.decorator'
 
+// 业务代码处打断点，然后查看调用栈，进而在三方库中的代码中打断点，查看执行流程
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   // 返回个class的函数
@@ -24,7 +25,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     console.log('JwtAuthGuard handleRequest', status, info)
     if (err) {
       // 运行时发生异常
-      throw new BadRequestException(err.message || 'JWT token error')
+      throw new UnauthorizedException(err.message || 'JWT token error')
     }
     if (!user) {
       // 处理 user 为 null 的情况，可能是令牌格式错误或令牌过期

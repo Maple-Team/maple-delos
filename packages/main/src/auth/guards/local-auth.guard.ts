@@ -3,6 +3,12 @@ import { AuthGuard } from '@nestjs/passport'
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
+  constructor() {
+    super({
+      badRequestMessage: '手机号或密码为空',
+    })
+  }
+
   /**
    * 认证后的结果回调
    * @param err 认证过程中抛出的错误
@@ -17,8 +23,7 @@ export class LocalAuthGuard extends AuthGuard('local') {
     if (err) throw err // 认证过程中抛出的错误
 
     if (!user) {
-      // 处理 user 为 null 的情况，可能是令牌格式错误或令牌过期
-      //   if (info && info.name === 'TokenExpiredError') throw new UnauthorizedException('JWT token has expired')
+      // 认证过程中没有抛出错误，但是认证失败
       throw new HttpException(info, status)
     }
     return user
