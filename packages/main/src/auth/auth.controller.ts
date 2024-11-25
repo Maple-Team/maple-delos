@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpStatus,
   Post,
   Request,
   UseGuards,
@@ -28,7 +29,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @Get('logout')
   async logout(@Request() req: ExpressRequest) {
     await this.authService.logout(req.user.id)
@@ -36,7 +37,7 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   async login(@Request() req) {
     const user = await this.authService.signIn(req.user)

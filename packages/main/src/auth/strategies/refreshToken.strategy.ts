@@ -6,9 +6,10 @@ import { jwtConstants } from '@/constants'
 
 /**
  * jwt策略
+ * 使用Strategy中的jwt解析，判断token是否有效
  */
 @Injectable()
-export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh') {
+export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh-token') {
   constructor() {
     super({
       // If true the verify callback will be called with args (request, jwt_payload, done_callback)
