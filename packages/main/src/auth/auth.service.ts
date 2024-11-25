@@ -10,6 +10,10 @@ import { jwtConstants } from '@/constants'
 import { User } from '@/components/users/entities/user.entity'
 import { LoginUserDto } from '@/components/users/dto/login-user.dto'
 
+/**
+ * 用户认证服务
+ * TODO token失效策略
+ */
 @Injectable()
 export class AuthService {
   constructor(
@@ -26,7 +30,7 @@ export class AuthService {
       const { ...result } = user
       const payload = { sub: user.id, username: user.username, role: user.role }
 
-      const { refreshToken, accessToken } = await this.getTokens(payload, user.refreshToken)
+      const { refreshToken, accessToken } = await this.getTokens(payload, null)
       await this.updateRefreshToken(user.id, refreshToken)
 
       return {
@@ -56,6 +60,13 @@ export class AuthService {
     })
   }
 
+  /**
+   * 生成token
+   * 如果已存在刷新token，则使用已存在的刷新token
+   * @param payload
+   * @param existedRefreshToken
+   * @returns
+   */
   async getTokens(payload: { sub: number; username: string; role: UserRole }, existedRefreshToken: string) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
@@ -69,14 +80,7 @@ export class AuthService {
           })
         : sleep(100),
     ])
-    if (!existedRefreshToken) {
-      this.logger.info(
-        `getTokens: ${JSON.stringify({
-          accessTokenExpiresIn: jwtConstants.accessTokenExpiresIn,
-          refreshTokenExpiresIn: jwtConstants.refreshTokenExpiresIn,
-        })}`
-      )
-    }
+
     return {
       accessToken,
       refreshToken: (refreshToken as string | undefined) || existedRefreshToken,
@@ -89,9 +93,9 @@ export class AuthService {
 
   async refreshTokens(userId: number, refreshToken: string) {
     const user = await this.usersService.findOne(userId)
-    if (!user || !user.refreshToken) throw new ForbiddenException('Access Denied')
+    if (!user || !user.refreshToken) throw new ForbiddenException('Invalid user')
     const refreshTokenMatches = user.refreshToken === refreshToken
-    if (!refreshTokenMatches) throw new ForbiddenException('Access Denied')
+    if (!refreshTokenMatches) throw new ForbiddenException('Invalid refresh token')
     const tokens = await this.getTokens({ sub: user.id, username: user.username, role: user.role }, user.refreshToken)
     await this.updateRefreshToken(user.id, tokens.refreshToken)
     return tokens

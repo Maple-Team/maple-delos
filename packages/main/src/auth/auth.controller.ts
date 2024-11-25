@@ -21,6 +21,19 @@ import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req: ExpressRequest) {
+    return req.user
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  @Get('logout')
+  async logout(@Request() req: ExpressRequest) {
+    await this.authService.logout(req.user.id)
+  }
+
   @Public()
   @Post('login')
   @HttpCode(200)
@@ -32,24 +45,10 @@ export class AuthController {
     return user
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    delete req.user.refreshToken
-    return req.user
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(200)
-  @Get('logout')
-  async logout(@Request() req: ExpressRequest) {
-    await this.authService.logout(req.user.id)
-  }
-
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
   async refreshTokens(@Request() req) {
-    console.log('req.user', req.user)
+    // NOTE req.user: guard的validate函数的返回值
     const userId = req.user.sub
     const refreshToken = req.user.refreshToken
     const { refreshToken: newRefreshToken, accessToken } = await this.authService.refreshTokens(userId, refreshToken)

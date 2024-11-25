@@ -17,9 +17,11 @@ export class RequestLoggingMiddleware implements NestMiddleware {
   constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
 
   use(req: Request, res: Response, next: NextFunction) {
+    // FIXME 输出两次？
     const t1 = performance.now()
     const { method, ip, originalUrl, headers } = req
-    // const token = headers.authorization?.split('Bearer ')?.[1]
+
+    // console.log('headers: ', headers.authorization, originalUrl)
 
     const info: RequestLogInfo = {
       method,

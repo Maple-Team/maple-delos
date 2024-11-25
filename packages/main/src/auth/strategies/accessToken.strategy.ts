@@ -19,8 +19,12 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   // Pass the parsed token to the user
-  async validate(payload: AnyToFix, verified) {
-    console.log('AccessTokenStrategy payload', payload, verified)
+  /**
+   * @param payload
+   * @param verified
+   * @returns 返回给request.user对象
+   */
+  async validate(payload: AnyToFix, verified: Function) {
     return this.usersService.findOne(payload.sub)
   }
 }
