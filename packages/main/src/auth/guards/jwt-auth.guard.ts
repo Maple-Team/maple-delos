@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
 import { Logger } from 'winston'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
-import { IS_PUBLIC_KEY } from '@/auth/decorators/public.decorator'
+import { IS_PUBLIC_KEY } from '@/auth/decorators'
 
 // 业务代码处打断点，然后查看调用栈，进而在三方库中的代码中打断点，查看执行流程
 @Injectable()

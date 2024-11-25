@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common'
 import type { Request as ExpressRequest } from 'express'
 import { AuthService } from './auth.service'
-import { Public } from './decorators/public.decorator'
+import { Public } from './decorators'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { RefreshTokenGuard } from './guards/refreshToken.guard'

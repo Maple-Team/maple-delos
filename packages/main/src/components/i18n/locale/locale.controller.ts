@@ -72,24 +72,25 @@ export class LocaleController {
 
   /**
    * 批量创建
-   * @param createLocaleDtos
+   * @param createLocaleDtoArray
    * @returns
    */
   @Public()
   @Post('batch')
-  batchCreate(@Body() createLocaleDtos: CreateLocaleDto[]) {
-    if (!createLocaleDtos || createLocaleDtos.length === 0) throw new BadRequestException('body should not be null')
-    return this.service.batchCreate(createLocaleDtos)
+  batchCreate(@Body() createLocaleDtoArray: CreateLocaleDto[]) {
+    if (!createLocaleDtoArray || createLocaleDtoArray.length === 0)
+      throw new BadRequestException('body should not be null')
+    return this.service.batchCreate(createLocaleDtoArray)
   }
 
   /**
    * 批量更新词条与截图的关系(chrome插件用)
-   * @param dtos
+   * @param dtoArray
    * @returns
    */
   @Public()
   @Post('batchWithScreenShots')
-  batchCreateWithScreenShots(@Body() dtos: UpdateLocaleWithScreenShotsDto[]) {
-    return this.service.batchCreateWithScreenShots(dtos)
+  batchCreateWithScreenShots(@Body() dtoArray: UpdateLocaleWithScreenShotsDto[]) {
+    return this.service.batchCreateWithScreenShots(dtoArray)
   }
 }

@@ -21,10 +21,10 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   // Pass the parsed token to the user
   /**
    * @param payload
-   * @param verified
+   * @param _verified
    * @returns 返回给request.user对象
    */
-  async validate(payload: AnyToFix, verified: Function) {
+  async validate(payload: AnyToFix, _verified: Function) {
     return this.usersService.findOne(payload.sub)
   }
 }

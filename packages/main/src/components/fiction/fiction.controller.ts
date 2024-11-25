@@ -38,10 +38,10 @@ export class FictionController {
     // };
     // const labels: (number | string)[] = data.labels;
     // const ids: number[] = labels.filter(isNumber) as number[];
-    // const strs: string[] = labels.filter((s) => !isNumber(s)) as string[];
+    // const sts: string[] = labels.filter((s) => !isNumber(s)) as string[];
 
     // const { identifiers } = await this.labelService.batchCreate(
-    //   strs.map((str) => {
+    //   sts.map((str) => {
     //     return {
     //       name: str,
     //       type: 'fiction',
