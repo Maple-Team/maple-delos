@@ -81,11 +81,11 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "socket.io": "^4.7.1",
+    "tslib": "^2.6.0",
     "typeorm": "^0.3.17",
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^5.0.0",
-    "ws": "^8.13.0",
-    "tslib": "^2.6.0"
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@liutsing/eslint-config": "^0.0.11",
