@@ -33,6 +33,11 @@ const formats = [
     return `[${timestamp}] ${level} ${message}`
   }),
 ]
+
+/**
+ * @description: winston配置
+ * NOTE console和文件的输出会有差别
+ */
 export const winstonConfig: WinstonModuleOptions = {
   level: 'info',
   format: winston.format.combine(...formats),

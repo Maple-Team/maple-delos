@@ -38,17 +38,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
     const status = exception.getStatus()
 
-    this.logger.error('error: %o, stack: %s, url: %s', exception, exception.stack, request.url)
+    this.logger.error('HttpExceptionFilter error: %o, stack: %s, url: %s', exception, exception.stack, request.url) // NOTE 错误日志->console和文件的输出会有差别
     response.status(status).json({
       status,
       timestamp: new Date().toISOString(),
       path: request.url,
       message: exception.message,
     })
-  }
-}
-export class ForbiddenException extends HttpException {
-  constructor() {
-    super('Forbidden', HttpStatus.FORBIDDEN)
   }
 }

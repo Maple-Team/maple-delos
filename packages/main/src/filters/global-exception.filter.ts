@@ -19,7 +19,7 @@ export class GlobalErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
-    this.logger.error('error: %o, stack: %s, url: %s', error, error.stack, request.url)
+    this.logger.error('GlobalErrorFilter error: %o, stack: %s, url: %s', error, error.stack, request.url) // NOTE 错误日志->console和文件的输出会有差别
     // NOTE 策略模式
     if (error instanceof MongooseError) {
       response.status(HttpStatus.BAD_REQUEST).json({
@@ -32,10 +32,10 @@ export class GlobalErrorFilter implements ExceptionFilter {
     } else {
       try {
         // @ts-expect-error: xx
-        const statusCode = error.statusCode
-        response.status(statusCode).send()
+        const statusCode = error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR
+        response.status(statusCode).json()
       } catch (e) {
-        response.status(HttpStatus.BAD_REQUEST).send(e)
+        response.status(HttpStatus.BAD_REQUEST).json()
       }
     }
   }

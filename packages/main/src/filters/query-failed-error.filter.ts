@@ -17,7 +17,7 @@ export class QueryFailedErrorFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
     const status = HttpStatus.CONFLICT
 
-    this.logger.error('error: %o, stack: %s, url: %s', err, err.stack, request.url)
+    this.logger.error('QueryFailedErrorFilter error: %o, stack: %s, url: %s', err, err.stack, request.url)
 
     // TODO 预设映射关系，提供更好的提示信息，对应哪个用户可见字段
     // @ts-expect-error: xx
