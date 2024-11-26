@@ -36,7 +36,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
       if (!req.hasLogged) {
         // 在这里，你可以修改响应体，例如记录日志或进行其他操作
         // 政策法规下：请求体和响应体的信息不能够存储
-        let status
+        let status = 500
         try {
           status = JSON.parse(body).status
         } catch (error) {

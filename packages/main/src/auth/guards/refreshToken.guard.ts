@@ -5,6 +5,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Reflector } from '@nestjs/core'
 import { IS_PUBLIC_KEY } from '../decorators'
 
+// @reference: https://www.elvisduru.com/blog/nestjs-jwt-authentication-refresh-token
 @Injectable()
 export class RefreshTokenGuard extends AuthGuard('refresh-token') {
   constructor(private reflector: Reflector, @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {
@@ -12,6 +13,7 @@ export class RefreshTokenGuard extends AuthGuard('refresh-token') {
   }
 
   canActivate(context: ExecutionContext) {
+    this.logger.debug('RefreshTokenGuard canActivate')
     const request: Request = context.switchToHttp().getRequest()
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),

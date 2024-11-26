@@ -4,6 +4,7 @@
   "private": true,
   "description": "",
   "license": "UNLICENSED",
+  "packageManager": "pnpm@9.9.0",
   "author": "",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

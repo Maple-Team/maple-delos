@@ -12,7 +12,6 @@ import { LoginUserDto } from '@/components/users/dto/login-user.dto'
 
 /**
  * 用户认证服务
- * TODO token失效策略
  */
 @Injectable()
 export class AuthService {
@@ -88,6 +87,7 @@ export class AuthService {
   }
 
   async logout(userId: number) {
+    // TODO 失效 accessToken
     return this.usersService.update(userId, { refreshToken: null })
   }
 

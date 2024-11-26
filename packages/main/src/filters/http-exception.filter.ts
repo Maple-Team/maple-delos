@@ -1,5 +1,5 @@
 import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common'
-import { Catch, HttpException, HttpStatus, Inject } from '@nestjs/common'
+import { Catch, HttpException, Inject } from '@nestjs/common'
 import type { Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'

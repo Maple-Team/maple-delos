@@ -16,6 +16,7 @@ import {
   Query,
   Request,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
 import { UserRole } from '@liutsing/enums'
@@ -31,8 +32,11 @@ import { User } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UserService } from './user.service'
 import { TransformInterceptor } from '@/interceptor/transform.interceptor'
+import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard'
+import { RolesGuard } from '@/auth/guards/roles.guard'
 
 @UseInterceptors(TransformInterceptor)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 @Controller('users')
 export class UserController {
@@ -42,7 +46,6 @@ export class UserController {
   ) {}
 
   @Post()
-  @HttpCode(200)
   @UseInterceptors(FileInterceptor('avatar'))
   async create(@UploadedFile() file: Express.Multer.File, @Body() createUserDto: CreateUserDto) {
     const res = await this.service.create(createUserDto)
@@ -78,11 +81,6 @@ export class UserController {
     return this.service.findAllModuleUsers()
   }
 
-  //   @Get(':id')
-  //   findOne(@Param('id') id: string) {
-  //     return this.usersService.findOne(+id)
-  //   }
-
   @HttpCode(200)
   @Roles(UserRole.USER, UserRole.DEVICE, UserRole.ADMIN)
   @Post('changePwd')
@@ -106,8 +104,15 @@ export class UserController {
   }
 
   @Get('profile')
+  @Roles(UserRole.USER, UserRole.ADMIN)
   profile(@Request() req: ExpressRequest) {
     return this.service.findUserInfo(req.user.id)
+  }
+
+  // NOTE 路由顺序很重要
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(+id)
   }
 
   @Put(':id')

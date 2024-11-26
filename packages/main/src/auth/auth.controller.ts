@@ -46,7 +46,7 @@ export class AuthController {
     return user
   }
 
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(RefreshTokenGuard, JwtAuthGuard)
   @Get('refresh')
   async refreshTokens(@Request() req) {
     // NOTE req.user: guard的validate函数的返回值

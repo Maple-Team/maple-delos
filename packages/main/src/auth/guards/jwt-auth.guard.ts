@@ -14,6 +14,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext) {
+    this.logger.debug('JwtAuthGuard canActivate')
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -26,13 +27,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err: Error | null, user: AnyToFix | false, info, _context, status) {
     const msg = 'Invalid token'
     if (err) {
-      this.logger.debug('JwtAuthGuard error: %o, info: %o, status: %s', err, info, status)
+      this.logger.error('JwtAuthGuard error: %o, info: %o, status: %s', err, info, status)
       // 运行时发生异常
       throw new UnauthorizedException(msg)
     }
     if (!user) {
       // 处理 user 为 null 的情况，可能是令牌格式错误或令牌过期
-      this.logger.debug('JwtAuthGuard error: %o, info: %o, status: %s', err, info, status)
+      this.logger.error('JwtAuthGuard error: %o, info: %o, status: %s', err, info, status)
       if (info && info.name === 'TokenExpiredError') throw new UnauthorizedException(msg)
 
       throw new UnauthorizedException(msg)

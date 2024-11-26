@@ -14,7 +14,7 @@ import { GatewaysModule } from './gateways/gateways.module'
 import { HealthModule } from './health/health.module'
 import { RequestLoggingMiddleware } from './middleware/request.log.middleware'
 import { AuthModule } from './auth/auth.module'
-import { GlobalErrorFilter, HttpExceptionFilter, QueryFailedErrorFilter } from './filters'
+import { GlobalErrorFilter, HttpExceptionFilter, TypeORMErrorFilter } from './filters'
 import { CustomTypeormLogger, winstonConfig } from './logger'
 import {
   Album,
@@ -193,7 +193,7 @@ const envFiles = {
     },
     {
       provide: APP_FILTER,
-      useClass: QueryFailedErrorFilter,
+      useClass: TypeORMErrorFilter,
     },
     {
       provide: APP_FILTER,
