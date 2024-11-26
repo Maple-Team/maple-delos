@@ -29,14 +29,25 @@ export class GlobalErrorFilter implements ExceptionFilter {
         timestamp: new Date().toISOString(),
         path: request.url,
       })
+    } else if (error instanceof SyntaxError || error instanceof TypeError || error instanceof RangeError) {
+      response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        // message: error.message, // 屏蔽错误
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      })
     } else {
+      let statusCode = HttpStatus.INTERNAL_SERVER_ERROR
       try {
         // @ts-expect-error: xx
-        const statusCode = error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR
-        response.status(statusCode).json()
-      } catch (e) {
-        response.status(HttpStatus.BAD_REQUEST).json()
-      }
+        statusCode = error.statusCode
+      } catch (e) {}
+      response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        status: statusCode,
+        message: error.message,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      })
     }
   }
 }
