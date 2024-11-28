@@ -30,7 +30,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh-to
    * @returns 返回给request.user对象
    */
   validate(req: Request, payload: AnyToFix) {
-    const refreshToken = req.get('authorization').replace('Bearer', '').trim()
+    const refreshToken = req.get('Authorization').replace('Bearer', '').trim()
     const refreshResult = { ...payload, refreshToken }
     return refreshResult
   }

@@ -6,11 +6,11 @@ import type { BaseResponse } from '@liutsing/types-utils'
 
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor<T, BaseResponse<T>> {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<BaseResponse<T>> {
+  intercept(_context: ExecutionContext, next: CallHandler): Observable<BaseResponse<T>> {
     return next.handle().pipe(
       map((data) => {
         return {
-          status: context.switchToHttp().getResponse().statusCode,
+          status: 0,
           message: 'success',
           data,
           timestamp: new Date().getTime(),

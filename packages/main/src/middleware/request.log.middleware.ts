@@ -20,9 +20,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
     // FIXME 输出两次？
     const t1 = performance.now()
     const { method, ip, originalUrl, headers } = req
-
-    // console.log('headers: ', headers.authorization, originalUrl)
-
+    // console.log('headers authorization: ', headers.authorization, originalUrl)
     const info: RequestLogInfo = {
       method,
       ip,
@@ -39,6 +37,8 @@ export class RequestLoggingMiddleware implements NestMiddleware {
         let status = 500
         try {
           status = JSON.parse(body).status
+          // 业务ok的请求，日志中的状态更新展示为200
+          if (status === 0) status = 200
         } catch (error) {
           // 空body导致的错误
           // controller层没有使用@UseInterceptors(TransformInterceptor)
