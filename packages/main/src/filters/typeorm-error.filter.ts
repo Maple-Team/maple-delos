@@ -39,16 +39,19 @@ export class TypeORMErrorFilter implements ExceptionFilter {
         if (match && match.length > 1) {
           const duplicateValue = match[1]
           // 将重复字段的信息返回给前端用户
-          response.status(status).json({
-            message: `已存在相同的记录: ${duplicateValue}`,
-            status,
-            timestamp: new Date().getTime(),
-            path: request.url,
-          })
+          response
+            .status(status)
+            .header('X-Version', process.env.APP_VERSION)
+            .json({
+              message: `已存在相同的记录: ${duplicateValue}`,
+              status,
+              timestamp: new Date().getTime(),
+              path: request.url,
+            })
           return
         }
       } else {
-        response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        response.status(HttpStatus.INTERNAL_SERVER_ERROR).header('X-Version', process.env.APP_VERSION).json({
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           timestamp: new Date().getTime(),
           path: request.url,
@@ -56,7 +59,7 @@ export class TypeORMErrorFilter implements ExceptionFilter {
       }
     }
 
-    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR).header('X-Version', process.env.APP_VERSION).json({
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       timestamp: new Date().getTime(),
       path: request.url,

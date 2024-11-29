@@ -1,11 +1,9 @@
-import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common'
+import { Controller, Get, Param, Query } from '@nestjs/common'
 import { SonyoonjooService } from './sonyoonjoo.service'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
 
 @Public()
 @Controller('sonyoonjoo')
-@UseInterceptors(TransformInterceptor)
 export class SonyoonjooController {
   constructor(private readonly sonyoonjooService: SonyoonjooService) {}
 

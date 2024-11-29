@@ -1,9 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { LabelService } from './label.service'
 import type { CreateLabelDto } from './dto/create-label.dto'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 
-@UseInterceptors(TransformInterceptor)
 @Controller({
   path: 'label',
   version: 'v1',

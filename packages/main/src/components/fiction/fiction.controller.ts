@@ -14,10 +14,8 @@ import { FilesInterceptor } from '@nestjs/platform-express'
 import { LabelService } from '../label/label.service'
 import { FictionService } from './fiction.service'
 import type { CreateFictionDto } from './dto/create-fiction.dto'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 
 @Controller('fiction')
-@UseInterceptors(TransformInterceptor)
 export class FictionController {
   @Inject(LabelService)
   private readonly labelService: LabelService

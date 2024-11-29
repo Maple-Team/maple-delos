@@ -1,25 +1,12 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseInterceptors,
-} from '@nestjs/common'
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
 import { BaseParams } from '@liutsing/types-utils'
 import { LocaleService } from './locale.service'
 import { CreateLocaleDto, UpdateLocaleWithScreenShotsDto } from './dto/create-locale.dto'
 import { UpdateLocaleDto } from './dto/update-locale.dto'
 import { Locale } from './entities/locale.entity'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
 
 @Controller('locale')
-@UseInterceptors(TransformInterceptor)
 export class LocaleController {
   constructor(private readonly service: LocaleService) {}
 

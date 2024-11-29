@@ -1,10 +1,8 @@
-import { Controller, Get, Query, UseInterceptors } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import { TimelineService } from './timeline.service'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
 
 @Controller('timeline')
-@UseInterceptors(TransformInterceptor)
 export class TimelineController {
   constructor(private readonly service: TimelineService) {}
 

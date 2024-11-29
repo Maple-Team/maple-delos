@@ -4,7 +4,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { MongooseModule } from '@nestjs/mongoose'
 import { TerminusModule } from '@nestjs/terminus'
 import { WinstonModule } from 'nest-winston'
-import { APP_FILTER } from '@nestjs/core'
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { DirectiveLocation, GraphQLDirective } from 'graphql'
@@ -55,6 +55,8 @@ import {
   VideoModule,
   upperDirectiveTransformer,
 } from './components'
+import { TransformInterceptor } from './interceptor/transform.interceptor'
+import { HeaderInterceptor } from './interceptor/header.interceptor'
 
 const envFiles = {
   development: '.env.development',
@@ -198,6 +200,14 @@ const envFiles = {
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HeaderInterceptor,
     },
   ],
 })

@@ -24,7 +24,7 @@ export class LocalAuthGuard extends AuthGuard('local') {
     if (err) throw err // 认证过程中抛出的错误
 
     if (!user) {
-      this.logger.error('LocalAuthGuard handleRequest: ', err, user, info, status)
+    //   this.logger.error('LocalAuthGuard handleRequest: ', err, user, info, status)
       // 认证过程中没有抛出错误，但是认证失败
       throw new HttpException(info, status)
     }

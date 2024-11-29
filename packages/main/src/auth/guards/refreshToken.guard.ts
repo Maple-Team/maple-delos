@@ -13,7 +13,7 @@ export class RefreshTokenGuard extends AuthGuard('refresh-token') {
   }
 
   canActivate(context: ExecutionContext) {
-    this.logger.debug('RefreshTokenGuard canActivate')
+    // this.logger.debug('RefreshTokenGuard canActivate')
     const request: Request = context.switchToHttp().getRequest()
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
@@ -28,16 +28,16 @@ export class RefreshTokenGuard extends AuthGuard('refresh-token') {
     return super.canActivate(context)
   }
 
-  handleRequest(err: Error | null, user: AnyToFix | false, info, _context, status) {
+  handleRequest(err: Error | null, user: AnyToFix | false, info, _context, _status) {
     const msg = 'Invalid Refresh token'
     if (err) {
-      this.logger.debug('RefreshTokenGuard error: %o, info: %o, status: %s', err, info, status)
+      //   this.logger.debug('RefreshTokenGuard error: %o, info: %o, status: %s', err, info, status)
       // 运行时发生异常
       throw new ForbiddenException(msg)
     }
     if (!user) {
       // 处理 user 为 null 的情况，可能是令牌格式错误或令牌过期
-      this.logger.debug('RefreshTokenGuard error: %o, info: %o, status: %s', err, info, status)
+      //   this.logger.debug('RefreshTokenGuard error: %o, info: %o, status: %s', err, info, status)
       if (info && info.name === 'TokenExpiredError') throw new ForbiddenException(msg)
 
       throw new ForbiddenException(msg)

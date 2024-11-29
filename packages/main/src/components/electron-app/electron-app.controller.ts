@@ -16,7 +16,6 @@ import { ElectronAppService } from './electron-app.service'
 import { CreateElectronAppDto } from './dto/create-electron-app.dto'
 import { UpdateElectronAppDto } from './dto/update-electron-app.dto'
 import { Public } from '@/auth/decorators'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 
 /**
 路由匹配规则
@@ -25,7 +24,6 @@ import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 顺序：路由的声明顺序也会影响匹配结果，NestJS会按照你在控制器中声明它们的方式进行匹配。
  */
 @Controller('electron-app')
-@UseInterceptors(TransformInterceptor)
 export class ElectronAppController {
   constructor(private readonly electronAppService: ElectronAppService) {}
 

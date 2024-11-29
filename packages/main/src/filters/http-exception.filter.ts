@@ -39,7 +39,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus()
 
     this.logger.error('HttpExceptionFilter error: %o, stack: %s, url: %s', exception, exception.stack, request.url) // NOTE 错误日志->console和文件的输出会有差别
-    response.status(status).json({
+    response.status(status).header('X-Version', process.env.APP_VERSION).json({
       status,
       timestamp: new Date().getTime(),
       path: request.url,

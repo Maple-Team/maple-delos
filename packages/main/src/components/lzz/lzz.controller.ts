@@ -1,10 +1,8 @@
-import { Controller, Get, Query, UseInterceptors } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import { groupBy } from 'lodash'
 import { LzzService } from './lzz.service'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 
 @Controller('lzz')
-@UseInterceptors(TransformInterceptor)
 export class LzzController {
   constructor(private readonly lzzService: LzzService) {}
 

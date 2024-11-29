@@ -1,24 +1,12 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Post,
-  UnauthorizedException,
-  UseInterceptors,
-} from '@nestjs/common'
+import { Body, Controller, Get, HttpException, HttpStatus, Inject, Post, UnauthorizedException } from '@nestjs/common'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import { sleep } from '@liutsing/utils'
 import { AppService } from './app.service'
 import { Public } from './auth/decorators'
-import { TransformInterceptor } from './interceptor/transform.interceptor'
 
 @Public()
 @Controller('app')
-@UseInterceptors(TransformInterceptor)
 // @UseFilters(new HttpExceptionFilter()) controller scope
 export class AppController {
   constructor(

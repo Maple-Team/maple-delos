@@ -1,10 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
 import { BlogService } from './blog.service'
-import type { CreateBlogDto } from './dto/create-blogdto'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
+import type { CreateBlogDto } from './dto/create-blogDto'
 
 @Controller('zyc-blog')
-@UseInterceptors(TransformInterceptor)
 export class BlogController {
   constructor(private readonly service: BlogService) {}
 

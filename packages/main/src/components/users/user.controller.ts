@@ -31,11 +31,9 @@ import { Roles } from '../../auth/decorators'
 import { User } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UserService } from './user.service'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard'
 import { RolesGuard } from '@/auth/guards/roles.guard'
 
-@UseInterceptors(TransformInterceptor)
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 @Controller('users')

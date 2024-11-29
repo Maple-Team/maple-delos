@@ -1,4 +1,4 @@
-import { Inject, Injectable, NestMiddleware } from '@nestjs/common'
+import { HttpStatus, Inject, Injectable, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
@@ -34,14 +34,17 @@ export class RequestLoggingMiddleware implements NestMiddleware {
       if (!req.hasLogged) {
         // 在这里，你可以修改响应体，例如记录日志或进行其他操作
         // 政策法规下：请求体和响应体的信息不能够存储
-        let status = 500
+        let status: number = HttpStatus.INTERNAL_SERVER_ERROR
         try {
+          // may be undefined
           status = JSON.parse(body).status
+          this.logger.info(body)
           // 业务ok的请求，日志中的状态更新展示为200
           if (status === 0) status = 200
+          if (status === undefined) status = HttpStatus.INTERNAL_SERVER_ERROR
         } catch (error) {
           // 空body导致的错误
-          // controller层没有使用@UseInterceptors(TransformInterceptor)
+          // controller层没有使用
           this.logger.error('body error: %o', error)
         }
         const method = info.method.toUpperCase()

@@ -4,7 +4,7 @@ import type { BaseList } from '@liutsing/types-utils'
 import type { Model } from 'mongoose'
 import type { BlogDocument } from './schemas/blog.schema'
 import { Blog } from './schemas/blog.schema'
-import type { CreateBlogDto } from './dto/create-blogdto'
+import type { CreateBlogDto } from './dto/create-blogDto'
 
 @Injectable()
 export class BlogService {

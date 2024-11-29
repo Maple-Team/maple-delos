@@ -1,10 +1,8 @@
-import { Controller, Get, Inject, UseInterceptors } from '@nestjs/common'
+import { Controller, Get, Inject } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
 
 @Controller('microservice-test')
-@UseInterceptors(TransformInterceptor)
 export class MicroserviceTestController {
   constructor(
     @Inject('REDIS_SERVICE') private redisClient: ClientProxy,
@@ -15,8 +13,8 @@ export class MicroserviceTestController {
   @Public()
   @Get('/log1')
   log1() {
-    this.logClient.emit({ cmd: 'log1' }, 'emit mesg') // 向远程服务器发送事件，它是一种异步的、无需等待响应的方式
-    this.redisClient.emit({ cmd: 'log1' }, 'emit mesg') // 向远程服务器发送事件，它是一种异步的、无需等待响应的方式
+    this.logClient.emit({ cmd: 'log1' }, 'emit msg') // 向远程服务器发送事件，它是一种异步的、无需等待响应的方式
+    this.redisClient.emit({ cmd: 'log1' }, 'emit msg') // 向远程服务器发送事件，它是一种异步的、无需等待响应的方式
     // emit to laravel microservice
     this.laravelClient.emit('greeting', '123')
   }

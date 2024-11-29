@@ -1,11 +1,9 @@
-import { BadRequestException, Body, Controller, Get, Post, Query, UseInterceptors } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Post, Query } from '@nestjs/common'
 import { VideoService } from './videos.service'
 import { Video } from './schemas/video.schema'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
 
 @Public()
-@UseInterceptors(TransformInterceptor)
 @Controller('videos')
 export class VideoController {
   constructor(private readonly service: VideoService) {}
