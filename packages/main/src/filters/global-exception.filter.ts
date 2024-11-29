@@ -26,14 +26,14 @@ export class GlobalErrorFilter implements ExceptionFilter {
         status: HttpStatus.BAD_REQUEST,
         // TODO 国际化
         message: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().getTime(),
         path: request.url,
       })
     } else if (error instanceof SyntaxError || error instanceof TypeError || error instanceof RangeError) {
       response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         // message: error.message, // 屏蔽错误
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().getTime(),
         path: request.url,
       })
     } else {
@@ -45,7 +45,7 @@ export class GlobalErrorFilter implements ExceptionFilter {
       response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         status: statusCode,
         message: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().getTime(),
         path: request.url,
       })
     }

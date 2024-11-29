@@ -42,7 +42,7 @@ export class TypeORMErrorFilter implements ExceptionFilter {
           response.status(status).json({
             message: `已存在相同的记录: ${duplicateValue}`,
             status,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().getTime(),
             path: request.url,
           })
           return
@@ -50,7 +50,7 @@ export class TypeORMErrorFilter implements ExceptionFilter {
       } else {
         response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
           status: HttpStatus.INTERNAL_SERVER_ERROR,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().getTime(),
           path: request.url,
         })
       }
@@ -58,7 +58,7 @@ export class TypeORMErrorFilter implements ExceptionFilter {
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       status: HttpStatus.INTERNAL_SERVER_ERROR,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().getTime(),
       path: request.url,
     })
   }
