@@ -140,7 +140,7 @@ const envFiles = {
           maxQueryExecutionTime: 1000,
           logger: new CustomTypeormLogger(),
           //   debug: true, // 开启debug，太多信息了
-          logging: 'all',
+          logging: process.env.NODE_ENV === 'development' ? false : 'all',
           ...config,
         }
       },

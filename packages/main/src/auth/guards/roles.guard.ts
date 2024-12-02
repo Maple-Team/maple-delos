@@ -15,7 +15,6 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector, @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    this.logger.debug('RolesGuard canActivate')
     const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -24,7 +23,7 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles) return true
     // NOTE 需要先走jwt的守卫，req对象才会被注入user信息
     const { user }: { user: User | undefined } = context.switchToHttp().getRequest()
-    this.logger.debug('role guard user', user)
+    // this.logger.debug('role guard user: %o', user)
     // FIXME user多个角色
     const result = requiredRoles.some((role) => user?.role === role)
     // false -> custom error message

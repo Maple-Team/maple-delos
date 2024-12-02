@@ -107,12 +107,6 @@ export class UserController {
     return this.service.findUserInfo(req.user.id)
   }
 
-  // NOTE 路由顺序很重要
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(+id)
-  }
-
   @Put(':id')
   async resetPwd(@Param('id') id: string) {
     return this.service.resetPwd(+id)
@@ -155,5 +149,11 @@ export class UserController {
 
     // TODO 从数据库中读取
     return ['/dashboard', '/react-demo', '/react-amap', '/react-panel', '/graphql', '/socket-io-chat']
+  }
+
+  // NOTE 路由顺序很重要
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(+id)
   }
 }
