@@ -38,7 +38,6 @@ export class RequestLoggingMiddleware implements NestMiddleware {
         try {
           // may be undefined
           status = JSON.parse(body).status
-          this.logger.info(body)
           // 业务ok的请求，日志中的状态更新展示为200
           if (status === 0) status = 200
           if (status === undefined) status = HttpStatus.INTERNAL_SERVER_ERROR
