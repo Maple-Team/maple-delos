@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
 import { BlogService } from './blog.service'
-import type { CreateBlogDto } from './dto/create-blogDto'
+import { CreateBlogDto } from './dto/create-blogDto'
 
 @Controller('zyc-blog')
 export class BlogController {
