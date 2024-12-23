@@ -4,8 +4,15 @@ import type { Document } from 'mongoose'
 export type VideoDocument = Video & Document
 export type ActressDocument = Actress & Document
 
+export interface IActress {
+  name: string
+  avatar?: string
+  birthDay?: Date
+  height?: number
+}
+
 @Schema({ collection: 'actresses' })
-export class Actress {
+export class Actress implements IActress {
   /** 姓名 */
   @Prop({ required: true })
   name: string
@@ -22,20 +29,9 @@ export class Actress {
   @Prop({ required: false })
   height: number
 }
-/**
-  title: string;
-  code: string;
-  actresses: string[];
-  tags?: string[];
-  series?: string;
-  date?: string;
-  previews?: string[];
-  cover?: string;
-  thumb?: string;
-  director?: string;
- */
+
 @Schema({ collection: 'adult-videos' })
-export class Video {
+export class Video implements IVideo {
   @Prop({ required: true })
   title: string
 
@@ -43,12 +39,8 @@ export class Video {
   code: string
 
   @Prop({ required: true })
-  no: string
+  actresses: string[]
 
-  @Prop({ required: true })
-  actresses: Actress[]
-
-  /** 标签 */
   @Prop({ required: false })
   tags: string[]
 
@@ -75,5 +67,20 @@ export class Video {
   waiting: boolean
 }
 
-export const VideoSchema = SchemaFactory.createForClass(Video)
+export interface IVideo {
+  title: string
+  code: string
+  actresses: string[]
+  tags?: string[]
+  series?: string
+  releaseDate?: Date
+  previews?: string[]
+  cover?: string
+  thumb?: string
+  director?: string
+  comments?: string
+  waiting?: boolean
+}
+
+export const VideoSchema = SchemaFactory.createForClass<IVideo>(Video)
 export const ActressSchema = SchemaFactory.createForClass(Actress)

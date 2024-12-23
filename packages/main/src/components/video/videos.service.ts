@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import type { Model } from 'mongoose'
 import type { BaseList } from '@liutsing/types-utils'
+import dayjs from 'dayjs'
 import type { VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
 
@@ -16,7 +17,7 @@ export class VideoService {
   async add(data: Partial<Video>) {
     const res = await this.model.findOneAndUpdate({ code: data.code }, data).exec()
     if (res) return res
-    return (await this.model.create({ ...data, waiting: true })).save()
+    return (await this.model.create({ ...data, releaseDate: dayjs(data.releaseDate).toDate(), waiting: true })).save()
   }
 
   async findAll() {
@@ -63,7 +64,7 @@ export class VideoService {
       data.map((item) => ({
         updateOne: {
           filter: { code: item.code },
-          update: { $set: item },
+          update: { $set: { ...item, releaseDate: dayjs(item.releaseDate).toDate() } },
           upsert: true,
         },
       }))
