@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Query } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { VideoService } from './videos.service'
 import { Video } from './schemas/video.schema'
 import { Public } from '@/auth/decorators'
@@ -27,8 +27,14 @@ export class VideoController {
   }
 
   @Post('batch-add')
-  batchAdd(@Body() data: Partial<Video[]>) {
+  async batchAdd(@Body() data: Partial<Video[]>): Promise<AnyToFix> {
     if (!data) throw new BadRequestException('empty data')
     return this.service.batchAdd(data)
+  }
+
+  @Get(':code')
+  info(@Param() { code }: { code: string }) {
+    if (!code) throw new BadRequestException('empty data')
+    return this.service.findByCode(code)
   }
 }

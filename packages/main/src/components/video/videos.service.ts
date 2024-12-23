@@ -70,15 +70,28 @@ export class VideoService {
     }
   }
 
-  async batchAdd(data: Partial<Video[]>) {
+  async batchAdd(data: Partial<Video[]>): Promise<AnyToFix> {
     return this.model.bulkWrite(
       data.map((item) => ({
         updateOne: {
           filter: { code: item.code },
-          update: { $set: { ...item, releaseDate: dayjs(item.releaseDate).toDate() } },
+          update: { $set: { ...item } },
           upsert: true,
+          insert: {
+            // FIXME
+            ...item,
+            waiting: true,
+          },
         },
       }))
     )
+  }
+
+  findByCode(code: string) {
+    return this.model
+      .findOne({
+        code,
+      })
+      .exec()
   }
 }

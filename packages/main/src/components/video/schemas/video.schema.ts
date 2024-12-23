@@ -47,7 +47,7 @@ export class Video implements IVideo {
   @Prop({ required: false })
   comments: string
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   releaseDate: Date
 
   /** 预览图 */
@@ -58,13 +58,13 @@ export class Video implements IVideo {
   @Prop({ required: false })
   thumb: string
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   cover: string
 
   @Prop({ required: false })
   series: string
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   director: string
 
   @Prop({ required: false })
