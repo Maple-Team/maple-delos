@@ -54,6 +54,10 @@ export class Video implements IVideo {
   @Prop({ required: false })
   previews: string[]
 
+  /** 小图 */
+  @Prop({ required: false })
+  thumb: string
+
   @Prop({ required: true })
   cover: string
 
@@ -83,4 +87,6 @@ export interface IVideo {
 }
 
 export const VideoSchema = SchemaFactory.createForClass<IVideo>(Video)
-export const ActressSchema = SchemaFactory.createForClass(Actress)
+export const ActressSchema = SchemaFactory.createForClass<IActress>(Actress)
+
+// @https://docs.nestjs.com/techniques/mongodb

@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import type { Model } from 'mongoose'
 import type { BaseList } from '@liutsing/types-utils'
 import dayjs from 'dayjs'
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
+import { Logger } from 'winston'
 import type { VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
 
@@ -12,7 +14,16 @@ interface RestParams {
 }
 @Injectable()
 export class VideoService {
-  constructor(@InjectModel(Video.name) private model: Model<VideoDocument>) {}
+  constructor(
+    @InjectModel(Video.name) private model: Model<VideoDocument>,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
+  ) {
+    this.model.schema.post('save', (res, next) => {
+      const { thumb, previews, cover } = res
+      this.logger.debug('post save: %o', { thumb, previews, cover })
+      next()
+    })
+  }
 
   async add(data: Partial<Video>) {
     const res = await this.model.findOneAndUpdate({ code: data.code }, data).exec()
@@ -60,7 +71,7 @@ export class VideoService {
   }
 
   async batchAdd(data: Partial<Video[]>) {
-    return this.model.collection.bulkWrite(
+    return this.model.bulkWrite(
       data.map((item) => ({
         updateOne: {
           filter: { code: item.code },
