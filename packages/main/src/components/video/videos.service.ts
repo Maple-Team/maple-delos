@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import type { Model } from 'mongoose'
 import type { BaseList } from '@liutsing/types-utils'
 import type { VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
@@ -56,5 +56,17 @@ export class VideoService {
       },
       records: data,
     }
+  }
+
+  async batchAdd(data: Partial<Video[]>) {
+    return this.model.collection.bulkWrite(
+      data.map((item) => ({
+        updateOne: {
+          filter: { code: item.code },
+          update: { $set: item },
+          upsert: true,
+        },
+      }))
+    )
   }
 }

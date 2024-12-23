@@ -25,4 +25,10 @@ export class VideoController {
     const { page = 1, pageSize = 30, ...rest } = query
     return this.service.findWithPagination(+page, +pageSize, { ...rest })
   }
+
+  @Post('batch-add')
+  batchAdd(@Body() data: Partial<Video[]>) {
+    if (!data) throw new BadRequestException('empty data')
+    return this.service.batchAdd(data)
+  }
 }

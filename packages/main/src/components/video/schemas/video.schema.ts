@@ -6,13 +6,34 @@ export type ActressDocument = Actress & Document
 
 @Schema({ collection: 'actresses' })
 export class Actress {
+  /** 姓名 */
   @Prop({ required: true })
   name: string
 
-  @Prop({ required: true })
+  /** 头像 */
+  @Prop({ required: false })
   avatar: string
-}
 
+  /** 出生日期 */
+  @Prop({ required: false })
+  birthDay: Date
+
+  /** 身高 */
+  @Prop({ required: false })
+  height: number
+}
+/**
+  title: string;
+  code: string;
+  actresses: string[];
+  tags?: string[];
+  series?: string;
+  date?: string;
+  previews?: string[];
+  cover?: string;
+  thumb?: string;
+  director?: string;
+ */
 @Schema({ collection: 'adult-videos' })
 export class Video {
   @Prop({ required: true })
@@ -27,15 +48,17 @@ export class Video {
   @Prop({ required: true })
   actresses: Actress[]
 
+  /** 标签 */
   @Prop({ required: false })
-  tages: string[]
+  tags: string[]
 
   @Prop({ required: false })
   comments: string
 
   @Prop({ required: true })
-  date: string
+  releaseDate: Date
 
+  /** 预览图 */
   @Prop({ required: false })
   previews: string[]
 
@@ -50,12 +73,6 @@ export class Video {
 
   @Prop({ required: false })
   waiting: boolean
-
-  @Prop({ required: true, type: 'Number' })
-  relaseDate: Date
-
-  @Prop({ required: false })
-  previewes: string[]
 }
 
 export const VideoSchema = SchemaFactory.createForClass(Video)
