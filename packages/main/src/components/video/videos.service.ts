@@ -5,9 +5,9 @@ import type { BaseList } from '@liutsing/types-utils'
 import dayjs from 'dayjs'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
+import type { AnyBulkWriteOperation } from 'mongodb'
 import type { VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
-import type { AnyBulkWriteOperation } from 'mongodb'
 
 interface RestParams {
   code?: Video['code']
@@ -58,6 +58,7 @@ export class VideoService {
       records: data,
     }
   }
+
   /**
    * 添加或更新详细数据
    * @param data - 要添加或更新的视频数据
@@ -98,9 +99,10 @@ export class VideoService {
     // 移除主键_id
     return this.model.find({}).select('-_id').exec()
   }
+
   /**
    * 批量添加基础数据
-   * 
+   *
    export declare interface UpdateOneModel<TSchema extends Document = Document> {
         The filter to limit the updated documents. filter 是一个 Filter 类型的属性，用于指定更新操作的筛选条件。只有满足这些条件的文档才会被更新。
        filter: Filter<TSchema>;
@@ -110,13 +112,13 @@ export class VideoService {
        arrayFilters?: Document[];
         Specifies a collation.  collation 是一个可选属性，用于指定排序规则。排序规则定义了字符串比较的方式，例如大小写敏感或不敏感。
        collation?: CollationOptions; collation 的常见翻译为“排序规则”或“校对规则”。它用于指定字符串比较和排序的规则，例如大小写敏感性、重音符号处理等。在数据库中，collation 通常用于定义文本字段的排序和比较行为。
-        The index to use. If specified, then the query system will only consider plans using the hinted index. hint 是一个可选属性，用于指定查询优化器应该使用的索引。如果指定了索引，查询系统将只考虑使用该索引的查询计划。 
+        The index to use. If specified, then the query system will only consider plans using the hinted index. hint 是一个可选属性，用于指定查询优化器应该使用的索引。如果指定了索引，查询系统将只考虑使用该索引的查询计划。
        hint?: Hint;
          When true, creates a new document if no document matches the query.  upsert 是一个可选属性，当设置为 true 时，如果没有文档匹配查询条件，将插入一个新文档。
        upsert?: boolean;
    }
-   * @param data 
-   * @returns 
+   * @param data
+   * @returns
    */
   async batchAdd(data: Partial<Video[]>): Promise<AnyToFix> {
     return this.model.bulkWrite(

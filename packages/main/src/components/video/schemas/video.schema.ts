@@ -1,4 +1,3 @@
-import { VideoStatusEnum } from '@/enum/status'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import type { Document } from 'mongoose'
 
@@ -70,10 +69,13 @@ export class Video implements IVideo {
 
   @Prop({ required: false })
   hasVideo: boolean
+
   @Prop({ required: false })
   hasPreview: boolean
+
   @Prop({ required: false })
   hasBasic: boolean
+
   @Prop({ required: false })
   hasDetail: boolean
 }
