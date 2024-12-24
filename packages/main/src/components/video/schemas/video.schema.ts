@@ -68,8 +68,14 @@ export class Video implements IVideo {
   @Prop({ required: false })
   director: string
 
-  @Prop({ required: true })
-  status: VideoStatusEnum
+  @Prop({ required: false })
+  hasVideo: boolean
+  @Prop({ required: false })
+  hasPreview: boolean
+  @Prop({ required: false })
+  hasBasic: boolean
+  @Prop({ required: false })
+  hasDetail: boolean
 }
 
 export interface IVideo {
@@ -84,7 +90,11 @@ export interface IVideo {
   thumb?: string
   director?: string
   comments?: string
-  status: VideoStatusEnum
+
+  hasVideo?: boolean // 是否有视频
+  hasPreview?: boolean // 是否有预览图
+  hasBasic?: boolean // 是否有基础数据
+  hasDetail?: boolean // 是否有详细数据
 }
 
 export const VideoSchema = SchemaFactory.createForClass<IVideo>(Video)

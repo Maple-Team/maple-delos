@@ -8,7 +8,6 @@ import { Logger } from 'winston'
 import type { VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
 import type { AnyBulkWriteOperation } from 'mongodb'
-import { VideoStatusEnum } from '@/enum/status'
 
 interface RestParams {
   code?: Video['code']
@@ -60,7 +59,7 @@ export class VideoService {
     }
   }
   /**
-   * 添加或更新视频数据
+   * 添加或更新详细数据
    * @param data - 要添加或更新的视频数据
    * @returns 返回更新后的视频数据
    */
@@ -72,27 +71,8 @@ export class VideoService {
           {
             $set: {
               ...data,
-              status: {
-                // 使用 $switch 操作符来根据条件更新字段
-                $switch: {
-                  branches: [
-                    {
-                      case: { $eq: ['$status', VideoStatusEnum.META] }, // 如果 status 等于 VideoStatusEnum.META
-                      then: VideoStatusEnum.PREVIEW, // 更新为 VideoStatusEnum.PREVIEW
-                    },
-                    {
-                      case: {
-                        $or: [
-                          { $eq: ['$status', null] }, // 如果 status 为 null
-                          { $not: ['$status'] }, // 或者 status 不存在
-                        ],
-                      },
-                      then: VideoStatusEnum.PREVIEW, // 更新为 VideoStatusEnum.PREVIEW
-                    },
-                  ],
-                  default: '$status', // 如果以上条件都不满足，保持原有值
-                },
-              },
+              releaseDate: dayjs(data.releaseDate).toDate(),
+              hasDetail: true,
             },
           },
         ],
@@ -109,17 +89,17 @@ export class VideoService {
       await this.model.create({
         ...data,
         releaseDate: dayjs(data.releaseDate).toDate(), // 将 releaseDate 转换为 Date 类型
-        status: VideoStatusEnum.PREVIEW, // 设置初始状态为 VideoStatusEnum.PREVIEW
+        hasDetail: true,
       })
     ).save()
   }
 
   async findAll() {
     // 移除主键_id
-    return this.model.find({}).select('code status -_id').exec()
+    return this.model.find({}).select('-_id').exec()
   }
   /**
-   * 批量添加
+   * 批量添加基础数据
    * 
    export declare interface UpdateOneModel<TSchema extends Document = Document> {
         The filter to limit the updated documents. filter 是一个 Filter 类型的属性，用于指定更新操作的筛选条件。只有满足这些条件的文档才会被更新。
@@ -151,7 +131,7 @@ export class VideoService {
                 ...item,
               },
               $setOnInsert: {
-                status: VideoStatusEnum.META,
+                hasBasic: true,
               },
             },
             upsert: true,
