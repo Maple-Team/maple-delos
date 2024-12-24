@@ -20,7 +20,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
     // FIXME 输出两次？
     const t1 = performance.now()
     const { method, ip, originalUrl, headers } = req
-    // console.log('headers authorization: ', headers.authorization, originalUrl)
+    // console.log('headers: ', headers['user-agent'], body, ip)
     const info: RequestLogInfo = {
       method,
       ip,
@@ -56,7 +56,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
           method,
           `\x1b[34m${info.url}\x1b[0m`,
           info.ip,
-          status,
+          info.url === '/api/auth/mqtt' ? (status === HttpStatus.INTERNAL_SERVER_ERROR ? 200 : status) : status,
           usedTime.toFixed(1),
           info.ua
         )

@@ -46,6 +46,35 @@ export class AuthController {
     return user
   }
 
+  /**
+   * MQTT登录授权所需的路由
+   *
+   * 返回示例
+HTTP/1.1 200 OK
+Headers: Content-Type: application/json
+...
+Body:
+{
+    "result": "allow", // options: "allow" | "deny" | "ignore"
+    "is_superuser": true // options: true | false, default value: false
+}
+   * @param req
+   * @returns
+   */
+  @Public()
+  @Post('mqtt')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(LocalAuthGuard)
+  async mqttLogin(@Request() req) {
+    const user = await this.authService.signIn(req.user)
+    if (user instanceof BadRequestException) return user
+
+    return {
+      result: 'allow',
+      is_superuser: false,
+    }
+  }
+
   @UseGuards(RefreshTokenGuard, JwtAuthGuard)
   @Get('refresh')
   async refreshTokens(@Request() req) {
