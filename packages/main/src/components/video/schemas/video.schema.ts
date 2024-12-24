@@ -1,3 +1,4 @@
+import { VideoStatusEnum } from '@/enum/status'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import type { Document } from 'mongoose'
 
@@ -67,8 +68,8 @@ export class Video implements IVideo {
   @Prop({ required: false })
   director: string
 
-  @Prop({ required: false })
-  waiting: boolean
+  @Prop({ required: true })
+  status: VideoStatusEnum
 }
 
 export interface IVideo {
@@ -83,10 +84,18 @@ export interface IVideo {
   thumb?: string
   director?: string
   comments?: string
-  waiting?: boolean
+  status: VideoStatusEnum
 }
 
 export const VideoSchema = SchemaFactory.createForClass<IVideo>(Video)
 export const ActressSchema = SchemaFactory.createForClass<IActress>(Actress)
 
 // @https://docs.nestjs.com/techniques/mongodb
+// FIXME hook
+VideoSchema.post('save', (doc: VideoDocument) => {
+  console.log('post save:', {
+    thumb: doc.thumb,
+    previews: doc.previews,
+    cover: doc.cover,
+  })
+})
