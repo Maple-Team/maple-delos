@@ -74,9 +74,6 @@ export class Video implements IVideo {
   hasPreview: boolean
 
   @Prop({ required: false })
-  hasBasic: boolean
-
-  @Prop({ required: false })
   hasDetail: boolean
 }
 
@@ -95,7 +92,6 @@ export interface IVideo {
 
   hasVideo?: boolean // 是否有视频
   hasPreview?: boolean // 是否有预览图
-  hasBasic?: boolean // 是否有基础数据
   hasDetail?: boolean // 是否有详细数据
 }
 

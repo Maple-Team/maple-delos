@@ -97,7 +97,12 @@ export class VideoService {
 
   async findAll() {
     // 移除主键_id
-    return this.model.find({}).select('-_id').exec()
+    return this.model
+      .find({
+        hasVideo: true,
+      })
+      .select('-_id')
+      .exec()
   }
 
   /**
@@ -133,7 +138,7 @@ export class VideoService {
                 ...item,
               },
               $setOnInsert: {
-                hasBasic: true,
+                hasDetail: false,
               },
             },
             upsert: true,

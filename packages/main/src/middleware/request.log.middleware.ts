@@ -52,7 +52,6 @@ export class RequestLoggingMiddleware implements NestMiddleware {
         // 记录请求日志
         this.logger.info(
           '%s %s %s %d %sms %s',
-
           method,
           `\x1b[34m${info.url}\x1b[0m`,
           info.ip,
