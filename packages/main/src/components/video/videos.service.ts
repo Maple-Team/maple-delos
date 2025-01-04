@@ -59,20 +59,41 @@ export class VideoService {
     }
   }
 
+  containsJapanese(text?: string): boolean {
+    // 正则表达式匹配日文字符
+    const japaneseRegex = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\u3400-\u4DBF\uFF66-\uFF9D\u31F0-\u31FF]/
+    return japaneseRegex.test(text)
+  }
+
   /**
    * 添加或更新详细数据
    * @param data - 要添加或更新的视频数据
    * @returns 返回更新后的视频数据
    */
   async add(data: Partial<Video>) {
+    const { title, releaseDate, ...rest } = data
+
+    const titleObj = this.containsJapanese(title)
+      ? {
+          title,
+        }
+      : {
+          enTitle: title,
+        }
+    const dateObj = releaseDate
+      ? {
+          releaseDate: dayjs(releaseDate).toDate(),
+        }
+      : {}
     const res = await this.model
       .findOneAndUpdate(
         { code: data.code }, // 查询条件，根据视频代码查找视频
         [
           {
             $set: {
-              ...data,
-              releaseDate: dayjs(data.releaseDate).toDate(),
+              ...rest,
+              ...titleObj,
+              ...dateObj,
               hasDetail: true,
             },
           },
@@ -101,7 +122,7 @@ export class VideoService {
       .find({
         hasVideo: true,
       })
-      .select('-_id')
+      .select('code hasDetail hasVideo')
       .exec()
   }
 
@@ -128,6 +149,15 @@ export class VideoService {
   async batchAdd(data: Partial<Video[]>): Promise<AnyToFix> {
     return this.model.bulkWrite(
       data.map((item) => {
+        const { title, ...rest } = item
+        const titleObj = this.containsJapanese(title)
+          ? {
+              title,
+            }
+          : {
+              enTitle: title,
+            }
+
         const config: AnyBulkWriteOperation<Video> = {
           // 这个操作只会更新匹配到的第一个文档。如果查询条件匹配到多个文档，只有第一个文档会被更新
           updateOne: {
@@ -135,7 +165,8 @@ export class VideoService {
             filter: { code: item.code },
             update: {
               $set: {
-                ...item,
+                ...rest,
+                ...titleObj,
               },
               $setOnInsert: {
                 hasDetail: false,
