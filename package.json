@@ -12,6 +12,7 @@
     "deploy": "nx run-many --target=deploy --all",
     "docker": "node scripts/docker.cjs",
     "postdocker": "docker-compose up -d",
+    "postversion": "pnpm run docker",
     "lint": "nx run-many --target=deploy --all"
   },
   "prettier": "@liutsing/prettier-config",
