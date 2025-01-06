@@ -1,4 +1,4 @@
-import type { Label } from 'src/components/label/entities/label.entity'
+import type { Label } from '@/components/label/entities/label.entity'
 
 export class CreateFictionDto {
   readonly bookName: string

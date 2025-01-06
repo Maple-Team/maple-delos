@@ -1,56 +1,66 @@
-import * as path from 'path'
 import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { TypeOrmModule } from '@nestjs/typeorm'
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { MongooseModule } from '@nestjs/mongoose'
 import { TerminusModule } from '@nestjs/terminus'
 import { WinstonModule } from 'nest-winston'
-import { FileTransportOptions } from 'winston/lib/winston/transports'
-import * as winston from 'winston'
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
+import { GraphQLModule } from '@nestjs/graphql'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
+import { DirectiveLocation, GraphQLDirective } from 'graphql'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
-import { MediaModule } from './components/media/media.module'
-import { Product } from './components/product/product.entity'
-import { ProductsModule } from './components/product/products.module'
-import { DeviceModule } from './components/device/device.module'
-import { FictionModule } from './components/fiction/fiction.module'
-import { LabelModule } from './components/label/label.module'
-import { Fiction } from './components/fiction/entities/fiction.entity'
-import { Label } from './components/label/entities/label.entity'
-import { ImageModule } from './components/gallery/image/image.module'
-import { AlbumModule } from './components/gallery/album/album.module'
-import { Image } from './components/gallery/image/entities/image.entity'
-import { Album } from './components/gallery/album/entities/album.entity'
-import { BlogModule } from './components/zyc/blog.module'
-import { MockModule } from './components/mock/mock.module'
-import { SonyoonjooModule } from './components/sonyoonjoo/sonyoonjoo.module'
-import { MeituluModule } from './components/meitulu/meitulu.module'
-import { TimelineModule } from './components/timeline/timeline.module'
-import { LzzModule } from './components/lzz/lzz.module'
 import { GatewaysModule } from './gateways/gateways.module'
 import { HealthModule } from './health/health.module'
-import { UserModule } from './components/users/user.module'
-import { User } from './components/users/entities/user.entity'
 import { RequestLoggingMiddleware } from './middleware/request.log.middleware'
 import { AuthModule } from './auth/auth.module'
-import { RedisModule } from './components/redis/redis.module'
-import { ControlModule } from './components/remote-control/control.module'
-import { MicroserviceTestModule } from './components/microservice-test/control.module'
-import { SseTestModule } from './components/sse-test/sse-test.module'
-import { VideoModule } from './components/video/videos.mdoule'
-import { MinioModule } from './components/minio/minio.module'
+import { GlobalErrorFilter, HttpExceptionFilter, TypeORMErrorFilter } from './filters'
+import { CustomTypeormLogger, winstonConfig } from './logger'
+import {
+  Album,
+  AlbumModule,
+  BlogModule,
+  ControlModule,
+  DeviceModule,
+  ElectronAppModule,
+  Fiction,
+  FictionModule,
+  Image,
+  ImageModule,
+  Label,
+  LabelModule,
+  Locale,
+  LocaleModule,
+  LzzModule,
+  MediaModule,
+  MeituluModule,
+  MicroserviceTestModule,
+  MinioModule,
+  MockModule,
+  Product,
+  ProductsModule,
+  Project,
+  ProjectsModule,
+  RecipesModule,
+  RedisModule,
+  ScreenshotModule,
+  Screenshots,
+  SonyoonjooModule,
+  SseTestModule,
+  Team,
+  TeamsModule,
+  TimelineModule,
+  User,
+  UserModule,
+  VideoModule,
+  upperDirectiveTransformer,
+} from './components'
+import { TransformInterceptor } from './interceptor/transform.interceptor'
+import { HeaderInterceptor } from './interceptor/header.interceptor'
 
 const envFiles = {
   development: '.env.development',
   production: '.env.production',
-}
-const infoFilePath = path.join(process.cwd(), 'logs', 'info.log')
-const errorFilePath = path.join(process.cwd(), 'logs', 'error.log')
-
-// @https://github.com/winstonjs/winston/blob/master/docs/transports.md
-const fileOption: FileTransportOptions = {
-  maxsize: 1 * 1024 * 1024,
-  maxFiles: 100,
 }
 
 @Module({
@@ -65,39 +75,7 @@ const fileOption: FileTransportOptions = {
         }
       },
     }),
-    WinstonModule.forRoot({
-      level: 'info',
-      format: winston.format.combine(
-        winston.format.timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss SSS',
-        }),
-        winston.format.json()
-      ),
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp({
-              format: 'YYYY-MM-DD HH:mm:ss SSS',
-            }),
-            winston.format.json()
-          ),
-        }),
-        new winston.transports.File({
-          filename: infoFilePath,
-          level: 'info',
-          ...fileOption,
-        }),
-        // process.env.SHOWLARK_MESSAGE === 'true'
-        //   ? new LarkHook({
-        //       webhookUrl: 'https://open.feishu.cn/open-apis/bot/v2/hook/f44c17ad-06b0-4957-a5be-2b066fcef6ce',
-        //       level: 'error',
-        //       msgType: 'text',
-        //       emitAxiosErrors: true,
-        //     })
-        //   : null,
-      ].filter(Boolean),
-      rejectionHandlers: [new winston.transports.File({ filename: errorFilePath, ...fileOption })],
-    }),
+    WinstonModule.forRoot(winstonConfig),
     RedisModule,
     ConfigModule.forRoot({
       envFilePath: envFiles[process.env.NODE_ENV] || '.env',
@@ -116,16 +94,54 @@ const fileOption: FileTransportOptions = {
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async () => {
+      useFactory: async (): Promise<TypeOrmModuleOptions> => {
+        const config =
+          process.env.USE_MASTER_SLAVE_MYSQL === 'true'
+            ? {
+                replication: {
+                  master: {
+                    host: process.env.MYSQL_MASTER_HOST,
+                    port: +process.env.MYSQL_MASTER_PORT,
+                    username: 'root',
+                    password: 'root',
+                    database: 'maple',
+                  },
+                  slaves: [
+                    {
+                      host: process.env.MYSQL_SLAVE1_HOST,
+                      port: +process.env.MYSQL_SLAVE1_PORT,
+                      username: 'root',
+                      password: 'root',
+                      database: 'maple',
+                    },
+                    {
+                      host: process.env.MYSQL_SLAVE2_HOST,
+                      port: +process.env.MYSQL_SLAVE2_PORT,
+                      username: 'root',
+                      password: 'root',
+                      database: 'maple',
+                    },
+                  ],
+                },
+              }
+            : {
+                username: 'root',
+                host: process.env.MYSQL_HOST,
+                port: +process.env.MYSQL_PORT,
+                database: 'maple',
+                password: 'root',
+              }
         return {
-          username: 'root',
           type: 'mysql',
-          host: process.env.MYSQL_HOST,
-          port: 3306,
-          database: 'maple',
-          password: '',
-          entities: [Product, Fiction, Label, Image, Album, User],
+          entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale],
           synchronize: true,
+          charset: 'utf8mb4',
+          // typeorm 日志
+          maxQueryExecutionTime: 1000,
+          logger: new CustomTypeormLogger(),
+          //   debug: true, // 开启debug，太多信息了
+          logging: process.env.NODE_ENV === 'development' ? false : 'all',
+          ...config,
         }
       },
     }),
@@ -149,9 +165,51 @@ const fileOption: FileTransportOptions = {
     SseTestModule,
     VideoModule,
     MinioModule,
+    TeamsModule,
+    ProjectsModule,
+    ScreenshotModule,
+    LocaleModule,
+    ElectronAppModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'schema.gql',
+      transformSchema: (schema) => upperDirectiveTransformer(schema, 'upper'),
+      installSubscriptionHandlers: true,
+      buildSchemaOptions: {
+        directives: [
+          new GraphQLDirective({
+            name: 'upper',
+            locations: [DirectiveLocation.FIELD_DEFINITION],
+          }),
+        ],
+      },
+    }),
+    RecipesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: GlobalErrorFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: TypeORMErrorFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HeaderInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule, OnModuleInit {
   constructor(private readonly service: AppService) {}

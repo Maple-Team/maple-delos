@@ -1,10 +1,8 @@
-import { Controller, Get, Inject, Param, UseInterceptors } from '@nestjs/common'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
+import { Controller, Get, Inject, Param } from '@nestjs/common'
 import { Cache } from 'cache-manager'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 
 @Controller('mock')
-@UseInterceptors(TransformInterceptor)
 export class MockController {
   constructor(@Inject(CACHE_MANAGER) private cacheService: Cache) {}
 

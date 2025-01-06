@@ -36,10 +36,10 @@ export class FictionController {
     // };
     // const labels: (number | string)[] = data.labels;
     // const ids: number[] = labels.filter(isNumber) as number[];
-    // const strs: string[] = labels.filter((s) => !isNumber(s)) as string[];
+    // const sts: string[] = labels.filter((s) => !isNumber(s)) as string[];
 
     // const { identifiers } = await this.labelService.batchCreate(
-    //   strs.map((str) => {
+    //   sts.map((str) => {
     //     return {
     //       name: str,
     //       type: 'fiction',
@@ -116,14 +116,16 @@ export class FictionController {
           const _content = chapterContent.replaceAll(/<a.*>(.*)<\/a>/g, (_, p1) => p1)
           const words = _content.length
 
-          this.fictionService.create({
-            bookName,
-            chapterContent: _content,
-            words,
-            chapterNo,
-            chapterName,
-            labels: [],
-          })
+          this.fictionService
+            .create({
+              bookName,
+              chapterContent: _content,
+              words,
+              chapterNo,
+              chapterName,
+              labels: [],
+            })
+            .catch(console.error)
         }),
       Promise.resolve()
     )

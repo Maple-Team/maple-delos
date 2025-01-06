@@ -1,10 +1,8 @@
-import { Body, Controller, Get, HttpCode, Inject, Post, Query, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Inject, Post, Query } from '@nestjs/common'
 import { ClientProxy, MessagePattern } from '@nestjs/microservices'
 import { SendCommandParams } from '@liutsing/types-utils'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 
 @Controller('vehicle-control')
-@UseInterceptors(TransformInterceptor)
 export class ControlController {
   constructor(
     @Inject('REMOTE_CONTROL_SERVICE') private controlClient: ClientProxy,

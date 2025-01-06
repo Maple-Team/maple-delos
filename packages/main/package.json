@@ -1,12 +1,12 @@
 {
-  "name": "@maple/delos-main",
-  "version": "0.0.7",
+  "name": "@liutsing/delos-main",
+  "version": "0.0.8",
   "private": true,
   "description": "",
   "license": "UNLICENSED",
   "author": "",
+  "packageManager": "pnpm@9.9.0",
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "cross-env NODE_ENV=production nest build --config tsconfig.build.json",
     "predeploy": "pnpm run build",
     "deploy": "node scripts/deploy.js",
@@ -25,28 +25,14 @@
     "auto": "openapi --input http://localhost:4004/api-json --output ./generated --client axios"
   },
   "prettier": "@liutsing/prettier-config",
-  "jest": {
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testEnvironment": "node",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    }
-  },
   "dependencies": {
+    "@apollo/server": "^4.10.4",
+    "@graphql-tools/utils": "^10.2.2",
     "@liutsing/enums": "^1.0.3",
     "@liutsing/node-utils": "^0.0.3",
-    "@liutsing/utils": "^0.0.9",
+    "@liutsing/utils": "^0.5.1",
     "@nestjs-modules/ioredis": "^2.0.1",
+    "@nestjs/apollo": "^12.1.0",
     "@nestjs/axios": "^3.0.1",
     "@nestjs/bull": "^10.0.0",
     "@nestjs/cache-manager": "^2.0.1",
@@ -54,6 +40,7 @@
     "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^10.3.3",
     "@nestjs/event-emitter": "^2.0.3",
+    "@nestjs/graphql": "^12.1.1",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "^2.0.2",
     "@nestjs/microservices": "^10.3.3",
@@ -69,6 +56,7 @@
     "@socket.io/redis-adapter": "^8.2.1",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
     "bull": "^4.9.0",
     "cache-manager": "^5.2.3",
     "cache-manager-redis-store": "^3.0.1",
@@ -77,6 +65,10 @@
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",
     "express": "^4.19.2",
+    "file-stream-rotator": "^1.0.0",
+    "graphql": "^16.8.1",
+    "graphql-query-complexity": "^1.0.0",
+    "graphql-subscriptions": "^2.0.0",
     "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
@@ -90,8 +82,11 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "socket.io": "^4.7.1",
+    "tslib": "^2.6.0",
     "typeorm": "^0.3.17",
     "winston": "^3.11.0",
+    "mongodb": "5.6.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "ws": "^8.13.0"
   },
   "devDependencies": {
@@ -121,7 +116,6 @@
     "ts-loader": "^9.4.4",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.2.0",
-    "tslib": "^2.6.0",
     "typescript": "^5.1.6"
   }
 }

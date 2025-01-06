@@ -1,7 +1,7 @@
 import { Controller, Get, Sse } from '@nestjs/common'
 import { Observable, fromEvent, interval, map } from 'rxjs'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { Public } from '../../auth/decorators/public.decorator'
+import { Public } from '@/auth/decorators'
 
 // https://docs.nestjs.com/techniques/server-sent-events
 @Controller('sse-test')

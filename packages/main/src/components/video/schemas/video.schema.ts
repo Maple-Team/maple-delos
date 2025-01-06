@@ -4,17 +4,34 @@ import type { Document } from 'mongoose'
 export type VideoDocument = Video & Document
 export type ActressDocument = Actress & Document
 
+export interface IActress {
+  name: string
+  avatar?: string
+  birthDay?: Date
+  height?: number
+}
+
 @Schema({ collection: 'actresses' })
-export class Actress {
+export class Actress implements IActress {
+  /** 姓名 */
   @Prop({ required: true })
   name: string
 
-  @Prop({ required: true })
+  /** 头像 */
+  @Prop({ required: false })
   avatar: string
+
+  /** 出生日期 */
+  @Prop({ required: false })
+  birthDay: Date
+
+  /** 身高 */
+  @Prop({ required: false })
+  height: number
 }
 
 @Schema({ collection: 'adult-videos' })
-export class Video {
+export class Video implements IVideo {
   @Prop({ required: true })
   title: string
 
@@ -22,41 +39,71 @@ export class Video {
   code: string
 
   @Prop({ required: true })
-  no: string
-
-  @Prop({ required: true })
-  actresses: Actress[]
+  actresses: string[]
 
   @Prop({ required: false })
-  tages: string[]
+  tags: string[]
 
   @Prop({ required: false })
   comments: string
 
-  @Prop({ required: true })
-  date: string
+  @Prop({ required: false })
+  releaseDate: Date
 
+  /** 预览图 */
   @Prop({ required: false })
   previews: string[]
 
-  @Prop({ required: true })
+  /** 小图 */
+  @Prop({ required: false })
+  thumb: string
+
+  @Prop({ required: false })
   cover: string
 
   @Prop({ required: false })
   series: string
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   director: string
 
   @Prop({ required: false })
-  waiting: boolean
-
-  @Prop({ required: true, type: 'Number' })
-  relaseDate: Date
+  hasVideo: boolean
 
   @Prop({ required: false })
-  previewes: string[]
+  hasPreview: boolean
+
+  @Prop({ required: false })
+  hasDetail: boolean
 }
 
-export const VideoSchema = SchemaFactory.createForClass(Video)
-export const ActressSchema = SchemaFactory.createForClass(Actress)
+export interface IVideo {
+  title: string
+  code: string
+  actresses: string[]
+  tags?: string[]
+  series?: string
+  releaseDate?: Date
+  previews?: string[]
+  cover?: string
+  thumb?: string
+  director?: string
+  comments?: string
+
+  hasVideo?: boolean // 是否有视频
+  hasPreview?: boolean // 是否有预览图
+  hasDetail?: boolean // 是否有详细数据
+}
+
+export const VideoSchema = SchemaFactory.createForClass<IVideo>(Video)
+export const ActressSchema = SchemaFactory.createForClass<IActress>(Actress)
+
+// @https://docs.nestjs.com/techniques/mongodb
+// FIXME hook
+VideoSchema.post('save', (doc: VideoDocument) => {
+  console.log('post save:', {
+    thumb: doc.thumb,
+    previews: doc.previews,
+    cover: doc.cover,
+  })
+})

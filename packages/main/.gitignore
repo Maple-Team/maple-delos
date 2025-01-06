@@ -35,3 +35,8 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 generated
+# 日志轮转
+audit.json
+
+# env
+.env.development

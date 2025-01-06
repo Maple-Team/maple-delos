@@ -1,4 +1,3 @@
-import { Label } from 'src/components/label/entities/label.entity'
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Label } from '@/components/label/entities/label.entity'
 
 @Entity()
 export class Fiction {

@@ -4,11 +4,14 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 import { Exclude } from 'class-transformer'
 import { UserRole } from '@liutsing/enums'
+import { Team } from '@/components/i18n/teams/entities/team.entity'
 
 @Entity()
 export class User extends BaseEntity {
@@ -61,4 +64,11 @@ export class User extends BaseEntity {
     type: 'timestamp',
   })
   deletedAt: Date
+
+  @ManyToMany(() => Team, (team) => team.users)
+  @JoinColumn({
+    name: 'team_id',
+    // referencedColumnName: 'albumName', FIXME
+  })
+  teams: Team[]
 }

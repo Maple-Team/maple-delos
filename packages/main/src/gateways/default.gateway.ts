@@ -8,12 +8,13 @@ import {
 } from '@nestjs/websockets'
 import { Namespace, Socket } from 'socket.io'
 import { OnModuleDestroy } from '@nestjs/common'
+import { uuid } from '@liutsing/utils'
 import { ServerToClientEvents } from './type'
 
 type CustomServerToClientEvents = Pick<ServerToClientEvents, 'notification'> & {
   [key: string]: (...rest: unknown[]) => void
 }
-
+// 测试地址：https://piehost.com/socketio-tester
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -31,9 +32,43 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
   intervalId: NodeJS.Timeout
 
+  /**
+   * socket连接信息(重写的方法)
+   * @param client
+   * @param rest
+   */
   handleConnection(client: Socket, ...rest: unknown[]) {
-    console.log('default gateway client connected', client.id, rest)
+    console.log('socket.io default gateway client connected', client.id, rest)
     this.testLoopSendMessage(client)
+    this.listenClientMessage(client)
+  }
+
+  private listenClientMessage(client: Socket) {
+    client.on('message', (message) => {
+      console.log('socket.io收到客户端的消息', message, client.id)
+      client.emit('message', `单发：hello ${client.id}`)
+      this.server.emit('message', `广播: hello ${client.id}`)
+    })
+    client.on('stopCmd', () => {
+      console.log('socket.io收到客户端的消息: stopCmd')
+      const status = Math.random() > 0.5
+      client.emit('stopStatus', status, client.id)
+    })
+    client.on('unStopCmd', () => {
+      console.log('socket.io收到客户端的消息: unStopCmd', client.id)
+      const status = Math.random() > 0.5
+      client.emit('stopStatus', status, client.id)
+    })
+    this.server.on('chat-message', (message) => {
+      console.log('socket.io收到客户端的消息', message, client.id)
+      client.emit('chat-message', `单发：hello ${client.id}`)
+      //   this.server.emit('chat-message', `广播: hello ${client.id}`)
+    })
+    client.on('chat-message', (message) => {
+      console.log('socket.io收到客户端的消息', message, client.id)
+      client.emit('chat-message', `单发：hello ${client.id}`)
+      //   this.server.emit('chat-message', `广播: hello ${client.id}`)
+    })
   }
 
   /**
@@ -43,10 +78,16 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
    */
   private testLoopSendMessage(client: Socket) {
     this.intervalId && clearInterval(this.intervalId)
+    let prevUUID = uuid()
     this.intervalId = setInterval(() => {
-      const message = { ts: new Date().getTime() }
-      client.send(message)
-    }, 100)
+      const message = {
+        ts: new Date().getTime(),
+        payload: { uuid: prevUUID },
+      }
+      if (Math.random() > 0.999) prevUUID = uuid()
+
+      client.emit('interval', message)
+    }, 10 * 1000)
   }
 
   handleDisconnect(client: Socket) {
@@ -79,6 +120,7 @@ export class DefaultGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   customMiddleware = (socket: Socket, next: (err?: AnyToFix) => void) => {
     // Custom middleware logic here
     const _token = socket.handshake.query.token // 假设通过查询参数传递令牌
+    console.log(socket.handshake.query, 'query')
     // TODO 根据token解析用户信息，再关联socket id
     next() // Call next() to continue with the execution of other middleware or the actual event handlers
   }

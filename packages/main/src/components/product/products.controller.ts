@@ -1,14 +1,10 @@
-import { Controller, Get, Param, Query, UseFilters, UseInterceptors } from '@nestjs/common'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
-import { HttpExceptionFilter } from '../../http-exception.filter'
+import { Controller, Get, Param, Query } from '@nestjs/common'
 import { ProductService } from './products.service'
 
 @Controller({
   path: 'products',
   version: 'v1', // controll level
 })
-@UseFilters(new HttpExceptionFilter())
-@UseInterceptors(TransformInterceptor)
 export class ProductController {
   constructor(private readonly service: ProductService) {}
 
@@ -26,7 +22,7 @@ export class ProductController {
 
   // @Post()
   // @HttpCode(200)
-  // storePruducts() {
+  // storeProducts() {
   //   return this.productService.store();
   // }
 }

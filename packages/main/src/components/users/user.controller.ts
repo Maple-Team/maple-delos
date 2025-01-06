@@ -10,16 +10,15 @@ import {
   HttpException,
   HttpStatus,
   Inject,
-  Logger,
   Param,
   Post,
   Put,
   Query,
   Request,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
 import { UserRole } from '@liutsing/enums'
 import { BaseParams, ChangePwdDto } from '@liutsing/types-utils'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -27,12 +26,15 @@ import { mkdirSafeSync } from '@liutsing/node-utils'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import type { Request as ExpressRequest } from 'express'
 import type { UpdateResult } from 'typeorm'
+import { Logger } from 'winston'
 import { Roles } from '../../auth/decorators'
 import { User } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UserService } from './user.service'
+import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard'
+import { RolesGuard } from '@/auth/guards/roles.guard'
 
-@UseInterceptors(TransformInterceptor)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 @Controller('users')
 export class UserController {
@@ -42,7 +44,6 @@ export class UserController {
   ) {}
 
   @Post()
-  @HttpCode(200)
   @UseInterceptors(FileInterceptor('avatar'))
   async create(@UploadedFile() file: Express.Multer.File, @Body() createUserDto: CreateUserDto) {
     const res = await this.service.create(createUserDto)
@@ -78,11 +79,6 @@ export class UserController {
     return this.service.findAllModuleUsers()
   }
 
-  //   @Get(':id')
-  //   findOne(@Param('id') id: string) {
-  //     return this.usersService.findOne(+id)
-  //   }
-
   @HttpCode(200)
   @Roles(UserRole.USER, UserRole.DEVICE, UserRole.ADMIN)
   @Post('changePwd')
@@ -103,6 +99,12 @@ export class UserController {
       pageSize: +pageSize,
       ...rest,
     })
+  }
+
+  @Get('profile')
+  @Roles(UserRole.USER, UserRole.ADMIN)
+  profile(@Request() req: ExpressRequest) {
+    return this.service.findUserInfo(req.user.id)
   }
 
   @Put(':id')
@@ -136,7 +138,7 @@ export class UserController {
   @Get('menus')
   getMenu() {
     // TODO 从数据库中读取
-    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel']
+    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel', '/graphql', '/socket-io-chat']
   }
 
   @Roles(UserRole.USER, UserRole.ADMIN)
@@ -146,6 +148,12 @@ export class UserController {
     if (id > 0.5) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
 
     // TODO 从数据库中读取
-    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel']
+    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel', '/graphql', '/socket-io-chat']
+  }
+
+  // NOTE 路由顺序很重要
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(+id)
   }
 }

@@ -1,10 +1,8 @@
-import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common'
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor'
+import { Controller, Get, Param, Query } from '@nestjs/common'
 import type { MeituluFilterKey } from './meitulu.service'
 import { MeituluService } from './meitulu.service'
 
 @Controller('meitulu')
-@UseInterceptors(TransformInterceptor)
 export class MeituluController {
   constructor(private readonly meituluService: MeituluService) {}
 

@@ -1,15 +1,7 @@
-version: '2'
-
-networks:
-  maple-network:
-    external:
-      name: maple-network
 services:
   main:
-    container_name: nestjs-main
-    build:
-      context: ./packages/main
-      dockerfile: 'Dockerfile'
+    container_name: maple-gateway
+    image: liutsing/delos-main:latest
     ports:
       - 3001:3000
     restart: always
@@ -19,11 +11,15 @@ services:
       - MINIO_SERVICE=nestjs-minio
   minio:
     container_name: nestjs-minio
-    build:
-      context: ./packages/minio
-      dockerfile: 'Dockerfile'
-    # ports:
-    #   - 8801:8801
+    image: liutsing/delos-minio:latest
+    environment:
+      - MINIO_ACCESS_KEY=XpiUE5sGLAXt4EtKgKiH
+      - MINIO_SECRET_KEY=8qnIB6KhE5n5hxpxePeDewWpD47XLTs4K9CsUKKk
+      - MINIO_I18N_BUCKET=i18n
     restart: always
     networks:
       - maple-network
+networks:
+  maple-network:
+    name: maple-network
+    external: true

@@ -1,28 +1,32 @@
 # building
-FROM node:18-alpine3.14 AS development
+FROM node:20.18-alpine3.19 AS development
 
-WORKDIR app
+WORKDIR /app
 
 COPY package.json ./
+COPY tsconfig.json ./
 COPY tsconfig.build.json ./
 
-RUN npm install -g pnpm --registry=https://registry.npmmirror.com/ 
-RUN pnpm install --registry=https://registry.npmmirror.com/ 
+RUN npm config --global set registry https://registry.npmmirror.com/ && \
+    npm install --location=global pnpm@9.9.0
+RUN pnpm install 
 
 COPY . .
 
 RUN pnpm run build
 
 # running
-FROM node:18-alpine3.14 AS production
+FROM node:20.18-alpine3.19 AS production
 
-WORKDIR app
+WORKDIR /app
 
 COPY package.json ./
+COPY tsconfig.json ./
 COPY tsconfig.build.json ./
 
-RUN npm install -g pnpm --registry=https://registry.npmmirror.com/ 
-RUN pnpm install --only=production --registry=https://registry.npmmirror.com/ 
+RUN npm config --global set registry https://registry.npmmirror.com/ && \
+    npm install --location=global pnpm@9.9.0
+RUN pnpm install --only=production  
 
 COPY . .
 

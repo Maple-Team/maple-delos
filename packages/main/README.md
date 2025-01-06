@@ -102,3 +102,30 @@ docker-compose up -d
 13. @compodoc/compodoc
 14. Nest-commander
 15. Geolib & Turfjs:"
+
+## environment
+
+> .env.development
+
+```conf
+REDIS_HOST=localhost
+MONGODB_HOST=localhost:27017
+PORT=4003
+REMOTE_CONTROL_SERVICE=control-microservice
+LOG_SERVICE=log-microservice
+MQTT_SERVICE=mqtt-server:1883
+MQTT_SERVICE_CLIENT_ID=nestjs-rc-client
+MINIO_SERVICE=nestjs-minio
+# 主从配置
+MYSQL_MASTER_HOST=mysql-master
+MYSQL_MASTER_PORT=3306
+MYSQL_SLAVE1_HOST=mysql-slave1
+MYSQL_SLAVE1_PORT=3306
+MYSQL_SLAVE2_HOST=mysql-slave2
+MYSQL_SLAVE2_PORT=3306
+# 是否使用主从配置
+USE_MASTER_SLAVE_MYSQL=false
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+
+```

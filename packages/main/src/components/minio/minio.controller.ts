@@ -1,11 +1,8 @@
-import { BadRequestException, Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common'
 import { MinioService } from './minio.service'
-import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { Public } from '@/auth/decorators'
-import { LocaleData } from '@/type'
 
 @Controller('minio')
-@UseInterceptors(TransformInterceptor)
 export class MinioController {
   constructor(private readonly service: MinioService) {}
 
