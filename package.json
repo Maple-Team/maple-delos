@@ -11,6 +11,7 @@
     "prettier": "prettier . -w",
     "deploy": "nx run-many --target=deploy --all",
     "docker": "node scripts/docker.cjs",
+    "postdocker": "docker-compose up -d",
     "lint": "nx run-many --target=deploy --all"
   },
   "prettier": "@liutsing/prettier-config",
