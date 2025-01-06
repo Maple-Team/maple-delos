@@ -1,6 +1,6 @@
 {
   "name": "delos",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "private": true,
   "description": "",
   "license": "UNLICENSED",
@@ -11,6 +11,8 @@
     "prettier": "prettier . -w",
     "deploy": "nx run-many --target=deploy --all",
     "docker": "node scripts/docker.cjs",
+    "postdocker": "docker-compose up -d",
+    "postversion": "pnpm run docker",
     "lint": "nx run-many --target=deploy --all"
   },
   "prettier": "@liutsing/prettier-config",

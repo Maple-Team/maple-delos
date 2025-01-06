@@ -5,6 +5,8 @@ FROM node:18.20-alpine3.18 AS base
 WORKDIR /app
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV COREPACK_NPM_REGISTRY="https://registry.npmmirror.com"
+RUN npm config set registry https://registry.npmmirror.com
 RUN corepack enable pnpm
 ARG APP_VERSION
 
