@@ -39,7 +39,6 @@ export class VideoService {
     }
 
     const total = await this.model.find({ ...filterKeys }).count()
-
     const data = await this.model
       .find({
         ...filterKeys,

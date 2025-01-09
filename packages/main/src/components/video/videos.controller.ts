@@ -1,11 +1,8 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { isEmpty } from 'lodash'
-import { UserRole } from '@liutsing/enums'
 import { VideoService } from './videos.service'
 import { Video } from './schemas/video.schema'
-import { Public, Roles } from '@/auth/decorators'
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard'
-import { RolesGuard } from '@/auth/guards/roles.guard'
+import { Public } from '@/auth/decorators'
 
 @Public()
 @Controller('videos')
@@ -24,8 +21,6 @@ export class VideoController {
     return this.service.add(data)
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
   @Get('pages')
   findWithPagination(@Query() query: { page: number; pageSize: number }) {
     const { page = 1, pageSize = 30, ...rest } = query
