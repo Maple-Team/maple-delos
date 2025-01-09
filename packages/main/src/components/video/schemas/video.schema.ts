@@ -35,6 +35,9 @@ export class Video implements IVideo {
   @Prop({ required: true })
   title: string
 
+  @Prop({ required: false })
+  enTitle: string
+
   @Prop({ required: true, index: true })
   code: string
 
@@ -79,6 +82,7 @@ export class Video implements IVideo {
 
 export interface IVideo {
   title: string
+  enTitle?: string
   code: string
   actresses: string[]
   tags?: string[]
