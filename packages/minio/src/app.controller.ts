@@ -26,7 +26,6 @@ export class AppController {
 
   @EventPattern('upload-proxy')
   uploadProxy(@Payload() payload) {
-    console.log(payload)
     let data = payload.buffer
     const contentType = payload.contentType
     // 检查 payload 是否为 Buffer 对象的序列化形式

@@ -61,6 +61,8 @@ export class ProxyService {
         res.status(HttpStatus.OK).send(Buffer.from(data))
       }
       return
+    } else {
+      this.logger.warn(`[cache not hit]: ${cacheKey}`)
     }
 
     // 调用axios去代理请求数据
@@ -117,22 +119,26 @@ export class ProxyService {
       .request({
         method,
         url,
-        data,
+        // data,
         responseType,
-        headers,
+        // headers,
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        },
       })
       .then(async (response) => {
         const contentType = response.headers['content-type']
 
-        this.logger.debug('content-type: %s, responseType: %s', contentType, responseType)
+        // this.logger.debug('content-type: %s, responseType: %s', contentType, responseType)
         const responseData = response.data
         let buffer: Buffer | string
-        console.log(
-          responseData,
-          responseData instanceof ArrayBuffer, // arraybuffer/false
-          responseData instanceof Blob, // arraybuffer/false
-          responseData instanceof Buffer // arraybuffer/true
-        )
+        // console.log(
+        //   responseData,
+        //   responseData instanceof ArrayBuffer, // arraybuffer/false
+        //   responseData instanceof Blob, // arraybuffer/false
+        //   responseData instanceof Buffer // arraybuffer/true
+        // )
         if (responseData instanceof Blob) buffer = Buffer.from(await responseData.arrayBuffer())
         else if (responseData instanceof ArrayBuffer) buffer = Buffer.from(responseData)
         else buffer = responseData
@@ -141,7 +147,6 @@ export class ProxyService {
         this.minioClient.send('upload-proxy', { buffer, contentType }).subscribe({
           next: (filePath: string) => {
             const cacheKey = `proxy:${JSON.stringify(query)}`
-            this.logger.debug('保存结果: %s, key: %s', filePath, cacheKey)
             this.cacheService.set(cacheKey, { filePath, contentType }).catch(this.logger.error)
           },
           error: (error: Error) => {
@@ -151,12 +156,12 @@ export class ProxyService {
             // this.logger.debug('Completed')
           },
         })
-        this.logger.debug('return')
         return { data: responseData, contentType }
       })
       .catch((error: AxiosError) => {
         error.status === 502 && console.error('502可能是代理服务器的问题')
         this.logger.error(error.stack)
+        console.error(error.config.url)
         return new HttpException(error.message, error.response.status)
       })
   }
