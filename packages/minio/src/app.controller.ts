@@ -1,5 +1,6 @@
+import { Buffer } from 'buffer'
 import { Controller } from '@nestjs/common'
-import { EventPattern } from '@nestjs/microservices'
+import { EventPattern, Payload } from '@nestjs/microservices'
 import { AppService } from './app.service'
 import { LocaleData } from './type'
 
@@ -21,5 +22,21 @@ export class AppController {
   @EventPattern('upload-locale-image')
   uploadLocaleImage(data: string) {
     return this.service.uploadLocaleImage(data)
+  }
+
+  @EventPattern('upload-proxy')
+  uploadProxy(@Payload() payload) {
+    console.log(payload)
+    let data = payload.buffer
+    const contentType = payload.contentType
+    // 检查 payload 是否为 Buffer 对象的序列化形式
+    if (payload.buffer.type === 'Buffer') data = Buffer.from(payload.buffer.data)
+
+    return this.service.uploadProxy(data, contentType)
+  }
+
+  @EventPattern('get-proxy')
+  getProxy(@Payload() filePath) {
+    return this.service.getProxy(filePath)
   }
 }

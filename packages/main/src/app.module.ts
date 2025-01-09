@@ -57,6 +57,7 @@ import {
 } from './components'
 import { TransformInterceptor } from './interceptor/transform.interceptor'
 import { HeaderInterceptor } from './interceptor/header.interceptor'
+import { ProxyModule } from './components/proxy/proxy.module'
 
 const envFiles = {
   development: '.env.development',
@@ -138,7 +139,7 @@ const envFiles = {
           charset: 'utf8mb4',
           // typeorm 日志
           maxQueryExecutionTime: 1000,
-          logger: new CustomTypeormLogger(),
+          logger: process.env.NODE_ENV === 'development' ? null : new CustomTypeormLogger(),
           //   debug: true, // 开启debug，太多信息了
           logging: process.env.NODE_ENV === 'development' ? false : 'all',
           ...config,
@@ -185,6 +186,7 @@ const envFiles = {
       },
     }),
     RecipesModule,
+    ProxyModule,
   ],
   controllers: [AppController],
   providers: [
@@ -215,6 +217,7 @@ export class AppModule implements NestModule, OnModuleInit {
   constructor(private readonly service: AppService) {}
 
   configure(consumer: MiddlewareConsumer) {
+    // FIXME exclude不生效 exclude({ path: '/api/proxy', method: RequestMethod.GET })
     consumer.apply(RequestLoggingMiddleware).forRoutes('*')
   }
 

@@ -18,7 +18,7 @@ export class AppService {
       secretKey: process.env.MINIO_SECRET_KEY,
     })
     minioClient.getBucketPolicy(bucketName, (e) => {
-      console.log(e)
+      e && console.log(e)
     })
     this.minioClient = minioClient
   }
@@ -64,6 +64,60 @@ export class AppService {
       await this.minioClient.putObject(bucketName, file, imageData, { 'Content-Type': mime }).catch(console.error)
 
       return file
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
+  }
+
+  padStart(num: number) {
+    return `${num}`.padStart(2, '0')
+  }
+
+  async uploadProxy(data: string | Buffer, contentType: string) {
+    try {
+      const [_, ext] = contentType.split('/')
+      const date = new Date()
+      const dir = `${date.getFullYear()}-${this.padStart(date.getMonth() + 1)}-${this.padStart(date.getDate())}`
+      const file = `${dir}/${uuid()}.${ext}`
+
+      await this.minioClient
+        .putObject('proxy-bucket', file, data, { 'Content-Type': contentType })
+        .then((...rest) => {
+          console.log('保存成功', rest)
+        })
+        .catch(console.error)
+
+      return file
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
+  }
+
+  getProxy(filePath: string) {
+    try {
+      return new Promise((resolve, reject) => {
+        this.minioClient.getObject('proxy-bucket', filePath, (err, stream) => {
+          if (err) {
+            reject(err)
+            return
+          }
+
+          const chunks = []
+          stream.on('data', (chunk) => {
+            chunks.push(chunk)
+          })
+
+          stream.on('end', () => {
+            const buffer = Buffer.concat(chunks)
+            resolve(buffer)
+          })
+
+          stream.on('error', (err) => {
+            reject(err)
+            console.error('Error reading stream:', err)
+          })
+        })
+      })
     } catch (error) {
       throw new BadRequestException(error)
     }

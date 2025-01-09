@@ -20,14 +20,15 @@ export class RequestLoggingMiddleware implements NestMiddleware {
     // FIXME 输出两次？
     const t1 = performance.now()
     const { method, ip, originalUrl, headers } = req
+
     // console.log('headers: ', headers['user-agent'], body, ip)
+
     const info: RequestLogInfo = {
       method,
       ip,
       url: originalUrl,
       ua: headers['user-agent'],
     }
-
     const rawSend = res.send
     // NOTE 重要的解决方案
     res.send = (body) => {
@@ -37,15 +38,12 @@ export class RequestLoggingMiddleware implements NestMiddleware {
         let status: number = HttpStatus.INTERNAL_SERVER_ERROR
         try {
           // may be undefined
+          // FIXME 优雅的处理这个响应状态
           status = JSON.parse(body).status
           // 业务ok的请求，日志中的状态更新展示为200
           if (status === 0) status = 200
           if (status === undefined) status = HttpStatus.INTERNAL_SERVER_ERROR
-        } catch (error) {
-          // 空body导致的错误
-          // controller层没有使用
-          this.logger.error('body error: %o', error)
-        }
+        } catch (error) {}
         const method = info.method.toUpperCase()
         const usedTime = performance.now() - t1
 
@@ -55,7 +53,11 @@ export class RequestLoggingMiddleware implements NestMiddleware {
           method,
           `\x1b[34m${info.url}\x1b[0m`,
           info.ip,
-          info.url === '/api/auth/mqtt' ? (status === HttpStatus.INTERNAL_SERVER_ERROR ? 200 : status) : status,
+          info.url === '/api/auth/mqtt' || info.url === '/api/proxy'
+            ? status === HttpStatus.INTERNAL_SERVER_ERROR
+              ? 200
+              : status
+            : status,
           usedTime.toFixed(1),
           info.ua
         )
@@ -68,7 +70,6 @@ export class RequestLoggingMiddleware implements NestMiddleware {
       // NOTE 调用原始的res.send()方法发送响应
       return rawSend.call(res, body)
     }
-
     next()
   }
 }

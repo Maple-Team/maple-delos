@@ -14,11 +14,18 @@ interface Token {
 @Injectable()
 export class HeaderInterceptor implements NestInterceptor<AnyToFix, Token> {
   intercept(context: ExecutionContext, next: CallHandler): Observable<Token> {
+    const req: Request = context.switchToHttp().getRequest()
+    const url = req.url
+
+    if (url.includes('/api/proxy')) {
+      // 代理请求直接返回
+      return next.handle()
+    }
+
     return next.handle().pipe(
       tap((data) => {
         const res = context.switchToHttp().getResponse()
-        const req: Request = context.switchToHttp().getRequest()
-        const url = req.url
+
         if (url === '/api/auth/refresh') {
           //
         }

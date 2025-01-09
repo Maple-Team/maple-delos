@@ -10,8 +10,8 @@ export class TransformInterceptor<T> implements NestInterceptor<T, BaseResponse<
     const request: Request = context.switchToHttp().getRequest()
     const url = request.url
 
-    if (url.includes('/api/auth/mqtt')) {
-      // mqtt 认证成功直接返回
+    if (url.includes('/api/auth/mqtt') || url.includes('/api/proxy')) {
+      // mqtt 认证成功直接返回或者代理请求直接返回
       return next.handle()
     }
 
