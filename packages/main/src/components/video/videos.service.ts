@@ -42,6 +42,7 @@ export class VideoService {
     const data = await this.model
       .find({
         ...filterKeys,
+        hasVideo: true,
       })
       .skip((page - 1) * pageSize)
       .limit(pageSize)
