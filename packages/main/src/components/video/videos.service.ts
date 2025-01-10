@@ -38,12 +38,14 @@ export class VideoService {
       }
     }
 
-    const total = await this.model.find({ ...filterKeys }).count()
+    const condition = {
+      ...filterKeys,
+      hasDetail: true,
+    }
+
+    const total = await this.model.find(condition).count()
     const data = await this.model
-      .find({
-        ...filterKeys,
-        hasVideo: true,
-      })
+      .find(condition)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .sort({ ts: -1 })
