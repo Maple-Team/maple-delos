@@ -78,6 +78,7 @@ export class Video implements IVideo {
 
   @Prop({ required: false })
   hasDetail: boolean
+  // FIXME 时间戳
 }
 
 export interface IVideo {

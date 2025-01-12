@@ -199,4 +199,51 @@ export class VideoService {
         .exec()
     )
   }
+
+  async getVideosByActress(actress: string, page: number, pageSize: number) {
+    const total = await this.model.find({ actresses: actress }).count()
+    const data = await this.model
+      .find({
+        actresses: actress,
+      })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .sort({ ts: -1 })
+      .exec()
+
+    return {
+      pagination: {
+        total,
+        current: +page,
+        pageSize,
+      },
+      records: data,
+    }
+  }
+
+  async getAllActresses(page: number, pageSize: number) {
+    const total = await this.model.distinct('actresses').count()
+
+    const skip = (page - 1) * pageSize
+
+    const data = await this.model
+      .aggregate([
+        { $match: { actresses: { $not: { $size: 0 } } } }, // 过滤掉 actresses 为空数组的文档
+        { $unwind: '$actresses' }, // 展开 actresses 数组
+        { $group: { _id: '$actresses', actresses: { $addToSet: '$actresses' } } }, // 去重
+
+        { $skip: skip }, // 跳过指定数量的文档
+        { $limit: pageSize }, // 限制返回的文档数量
+      ])
+      .exec()
+
+    return {
+      pagination: {
+        total,
+        current: +page,
+        pageSize,
+      },
+      records: data,
+    }
+  }
 }

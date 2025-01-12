@@ -33,6 +33,18 @@ export class VideoController {
     return this.service.batchAdd(data)
   }
 
+  @Get('actress')
+  getVideosByActress(@Query() query: { actress: string; page?: number; pageSize?: number }) {
+    const { page = 1, pageSize = 30, actress } = query
+    return this.service.getVideosByActress(actress, +page, +pageSize)
+  }
+
+  @Get('actresses')
+  getAllActresses(@Query() query: { page?: number; pageSize?: number }) {
+    const { page = 1, pageSize = 30 } = query
+    return this.service.getAllActresses(+page, +pageSize)
+  }
+
   @Get(':code')
   info(@Param() { code }: { code: string }) {
     if (!code) throw new BadRequestException('wrong parameters')
