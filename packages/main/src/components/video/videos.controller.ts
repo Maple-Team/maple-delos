@@ -1,7 +1,8 @@
 import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { isEmpty } from 'lodash'
 import { VideoService } from './videos.service'
-import { Actress, Video } from './schemas/video.schema'
+import { Video } from './schemas/video.schema'
+import { Actress } from './schemas/actress.schema'
 import { Public } from '@/auth/decorators'
 
 @Public()
@@ -33,16 +34,15 @@ export class VideoController {
     return this.service.batchAdd(data)
   }
 
-  @Get('actress')
-  getVideosByActress(@Query() query: { actress: string; page?: number; pageSize?: number }) {
-    const { page = 1, pageSize = 30, actress } = query
-    return this.service.getVideosByActress(actress, +page, +pageSize)
-  }
-
   @Get('actresses')
   getAllActresses(@Query() query: { page?: number; pageSize?: number }) {
-    const { page = 1, pageSize = 30 } = query
+    const { page = 1, pageSize = 3000 } = query
     return this.service.getAllActresses(+page, +pageSize)
+  }
+
+  @Get('distinct-actresses')
+  getAllDistinctActresses() {
+    return this.service.getAllDistinctActresses()
   }
 
   @Post('actresses-batch-add')

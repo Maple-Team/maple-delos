@@ -34,7 +34,7 @@ export class ProxyService {
       this.minioClient.send('get-proxy', filePath).subscribe({
         next: resolve,
         error: (error: Error) => {
-          this.logger.error('获取出错: %o', error.stack)
+          this.logger.error('oss获取出错: %o', error.stack)
           reject(error)
         },
         complete: () => {},
@@ -48,7 +48,6 @@ export class ProxyService {
     const cacheKey = `proxy:${JSON.stringify(req.query)}`
     const cachedFilePath: { filePath: string; contentType: string } | undefined = await this.cacheService.get(cacheKey)
     if (cachedFilePath) {
-      this.logger.info(`[cache hit]: ${cacheKey}`)
       // url被缓存，使用缓存数据去oss中获取数据
       const { data, type } = (await this.fetchFileByMinioFilePath(cachedFilePath.filePath)) as {
         data: number[]
@@ -61,8 +60,6 @@ export class ProxyService {
         res.status(HttpStatus.OK).send(Buffer.from(data))
       }
       return
-    } else {
-      this.logger.warn(`[cache not hit]: ${cacheKey}`)
     }
 
     // 调用axios去代理请求数据
@@ -104,8 +101,6 @@ export class ProxyService {
     method: string,
     url: string,
     {
-      data,
-      headers,
       responseType,
       query,
     }: {

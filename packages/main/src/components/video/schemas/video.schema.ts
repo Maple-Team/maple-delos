@@ -2,42 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import type { Document } from 'mongoose'
 
 export type VideoDocument = Video & Document
-export type ActressDocument = Actress & Document
-
-export interface IActress {
-  name: string
-  avatar?: string
-  birthDay?: Date
-  height?: number
-}
-
-@Schema({
-  collection: 'actresses',
-  _id: false,
-  id: true,
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-  },
-  versionKey: false,
-})
-export class Actress implements IActress {
-  /** 姓名 */
-  @Prop({ required: true })
-  name: string
-
-  /** 头像 */
-  @Prop({ required: false })
-  avatar: string
-
-  /** 出生日期 */
-  @Prop({ required: false })
-  birthDay: Date
-
-  /** 身高 */
-  @Prop({ required: false })
-  height: number
-}
 
 @Schema({
   collection: 'adult-videos',
@@ -119,7 +83,6 @@ export interface IVideo {
 }
 
 export const VideoSchema = SchemaFactory.createForClass<IVideo>(Video)
-export const ActressSchema = SchemaFactory.createForClass<IActress>(Actress)
 
 // @https://docs.nestjs.com/techniques/mongodb
 // FIXME hook

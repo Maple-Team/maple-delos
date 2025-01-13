@@ -6,18 +6,21 @@ import dayjs from 'dayjs'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import type { AnyBulkWriteOperation } from 'mongodb'
-import type { Actress, ActressDocument, VideoDocument } from './schemas/video.schema'
+import type { VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
+import { Actress } from './schemas/actress.schema'
+import type { ActressDocument } from './schemas/actress.schema'
 
 interface RestParams {
   code?: Video['code']
-  actress?: string | AnyToFix
+  actress?: string
+  actresses?: string
 }
 @Injectable()
 export class VideoService {
   constructor(
     @InjectModel(Video.name) private model: Model<VideoDocument>,
-    @InjectModel(Video.name) private actressModel: Model<ActressDocument>,
+    @InjectModel(Actress.name) private actressModel: Model<ActressDocument>,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
   ) {
     this.model.schema.post('save', (res, next) => {
@@ -31,13 +34,7 @@ export class VideoService {
   async findWithPagination(page: number, pageSize: number, rest: RestParams): Promise<BaseList<Video>> {
     const filterKeys: RestParams = {}
     if (rest.code) filterKeys.code = rest.code
-    if (rest.actress) {
-      filterKeys.actress = {
-        $elemMatch: {
-          name: filterKeys.actress,
-        },
-      }
-    }
+    if (rest.actress) filterKeys.actresses = rest.actress
 
     const condition = {
       ...filterKeys,
@@ -201,27 +198,6 @@ export class VideoService {
     )
   }
 
-  async getVideosByActress(actress: string, page: number, pageSize: number) {
-    const total = await this.model.find({ actresses: actress }).count()
-    const data = await this.model
-      .find({
-        actresses: actress,
-      })
-      .skip((page - 1) * pageSize)
-      .limit(pageSize)
-      .sort({ ts: -1 }) // TODO ~
-      .exec()
-
-    return {
-      pagination: {
-        total,
-        current: +page,
-        pageSize,
-      },
-      records: data,
-    }
-  }
-
   async getAllActresses(page: number, pageSize: number) {
     const condition = {}
     const total = await this.actressModel.find(condition).count()
@@ -241,6 +217,15 @@ export class VideoService {
       },
       records: data,
     }
+  }
+
+  async getAllDistinctActresses() {
+    const data = await this.model
+      .distinct('actresses', {
+        hasVideo: true,
+      })
+      .exec()
+    return data
   }
 
   batchAddActress(data: Actress[]) {
