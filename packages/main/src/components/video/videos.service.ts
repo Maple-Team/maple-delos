@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import type { AnyBulkWriteOperation } from 'mongodb'
-import type { VideoDocument } from './schemas/video.schema'
+import type { Actress, ActressDocument, VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
 
 interface RestParams {
@@ -17,6 +17,7 @@ interface RestParams {
 export class VideoService {
   constructor(
     @InjectModel(Video.name) private model: Model<VideoDocument>,
+    @InjectModel(Video.name) private actressModel: Model<ActressDocument>,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
   ) {
     this.model.schema.post('save', (res, next) => {
@@ -208,7 +209,7 @@ export class VideoService {
       })
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .sort({ ts: -1 })
+      .sort({ ts: -1 }) // TODO ~
       .exec()
 
     return {
@@ -222,19 +223,14 @@ export class VideoService {
   }
 
   async getAllActresses(page: number, pageSize: number) {
-    const total = await this.model.distinct('actresses').count()
+    const condition = {}
+    const total = await this.actressModel.find(condition).count()
 
-    const skip = (page - 1) * pageSize
-
-    const data = await this.model
-      .aggregate([
-        { $match: { actresses: { $not: { $size: 0 } } } }, // 过滤掉 actresses 为空数组的文档
-        { $unwind: '$actresses' }, // 展开 actresses 数组
-        { $group: { _id: '$actresses', actresses: { $addToSet: '$actresses' } } }, // 去重
-
-        { $skip: skip }, // 跳过指定数量的文档
-        { $limit: pageSize }, // 限制返回的文档数量
-      ])
+    const data = await this.actressModel
+      .find(condition)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .sort({ createdAt: -1 })
       .exec()
 
     return {
@@ -245,5 +241,26 @@ export class VideoService {
       },
       records: data,
     }
+  }
+
+  batchAddActress(data: Actress[]) {
+    return this.model.bulkWrite(
+      data.map((item) => {
+        const config: AnyBulkWriteOperation<Actress> = {
+          // 这个操作只会更新匹配到的第一个文档。如果查询条件匹配到多个文档，只有第一个文档会被更新
+          updateOne: {
+            // updateMany：这个操作会更新所有匹配到的文档。如果查询条件匹配到多个文档，所有这些文档都会被更新
+            filter: { name: item.name },
+            update: {
+              $set: {
+                ...item,
+              },
+            },
+            upsert: true,
+          },
+        }
+        return config
+      })
+    )
   }
 }

@@ -11,7 +11,16 @@ export interface IActress {
   height?: number
 }
 
-@Schema({ collection: 'actresses' })
+@Schema({
+  collection: 'actresses',
+  _id: false,
+  id: true,
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+  versionKey: false,
+})
 export class Actress implements IActress {
   /** 姓名 */
   @Prop({ required: true })
@@ -30,7 +39,16 @@ export class Actress implements IActress {
   height: number
 }
 
-@Schema({ collection: 'adult-videos' })
+@Schema({
+  collection: 'adult-videos',
+  _id: false,
+  id: true,
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+  versionKey: false,
+})
 export class Video implements IVideo {
   @Prop({ required: true })
   title: string

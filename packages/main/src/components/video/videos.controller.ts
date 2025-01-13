@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { isEmpty } from 'lodash'
 import { VideoService } from './videos.service'
-import { Video } from './schemas/video.schema'
+import { Actress, Video } from './schemas/video.schema'
 import { Public } from '@/auth/decorators'
 
 @Public()
@@ -28,7 +28,7 @@ export class VideoController {
   }
 
   @Post('batch-add')
-  async batchAdd(@Body() data: Partial<Video[]>): Promise<AnyToFix> {
+  async batchAdd(@Body() data: Partial<Video[]>) {
     if (!data || isEmpty(data)) throw new BadRequestException('empty request body')
     return this.service.batchAdd(data)
   }
@@ -45,6 +45,13 @@ export class VideoController {
     return this.service.getAllActresses(+page, +pageSize)
   }
 
+  @Post('actresses-batch-add')
+  async batchAddActress(@Body() data: Partial<Actress[]>) {
+    if (!data || isEmpty(data)) throw new BadRequestException('empty request body')
+    return this.service.batchAddActress(data)
+  }
+
+  // NOTE 保持在最后
   @Get(':code')
   info(@Param() { code }: { code: string }) {
     if (!code) throw new BadRequestException('wrong parameters')
