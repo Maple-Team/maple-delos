@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer'
 import { HttpStatus, Inject, Injectable, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
@@ -37,9 +38,13 @@ export class RequestLoggingMiddleware implements NestMiddleware {
         // 政策法规下：请求体和响应体的信息不能够存储
         let status: number = HttpStatus.INTERNAL_SERVER_ERROR
         try {
-          // may be undefined
-          // FIXME 优雅的处理这个响应状态
-          status = JSON.parse(body).status
+          if (body instanceof Buffer) {
+            status = HttpStatus.OK
+          } else {
+            // may be undefined
+            // FIXME 优雅的处理这个响应状态
+            status = JSON.parse(body).status
+          }
           // 业务ok的请求，日志中的状态更新展示为200
           if (status === 0) status = 200
           if (status === undefined) status = HttpStatus.INTERNAL_SERVER_ERROR
