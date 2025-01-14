@@ -46,7 +46,7 @@ export class VideoController {
   }
 
   @Post('actresses-batch-add')
-  async batchAddActress(@Body() data: Partial<Actress[]>) {
+  async batchAddActress(@Body() data: Partial<Actress[]>): Promise<AnyToFix> {
     if (!data || isEmpty(data)) throw new BadRequestException('empty request body')
     return this.service.batchAddActress(data)
   }

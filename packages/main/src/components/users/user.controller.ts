@@ -47,7 +47,8 @@ export class UserController {
   @UseInterceptors(FileInterceptor('avatar'))
   async create(@UploadedFile() file: Express.Multer.File, @Body() createUserDto: CreateUserDto) {
     const res = await this.service.create(createUserDto)
-    file && this.upload(file, res.id)
+    if (file) this.upload(file, res.id).catch((e) => this.logger.error(e))
+
     return res
   }
 
@@ -133,14 +134,18 @@ export class UserController {
       .filter(({ count }) => count > 0)
   }
 
-  @HttpCode(200)
   @Roles(UserRole.USER, UserRole.ADMIN)
   @Get('menus')
-  getMenu() {
-    // TODO 从数据库中读取
-    return ['/dashboard', '/react-demo', '/react-amap', '/react-panel', '/graphql', '/socket-io-chat']
+  getMenu(@Request() req: ExpressRequest) {
+    const user = req.user
+    return this.service.getMenus(user.id)
   }
 
+  /**
+   * @deprecated
+   * @param query
+   * @returns
+   */
   @Roles(UserRole.USER, UserRole.ADMIN)
   @Get('data-permission')
   getDataPermission(@Query() query) {

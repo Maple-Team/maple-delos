@@ -147,37 +147,36 @@ export class VideoService {
    * @returns
    */
   async batchAdd(data: Partial<Video[]>): Promise<AnyToFix> {
-    return this.model.bulkWrite(
-      data.map((item) => {
-        const { title, ...rest } = item
-        const titleObj = this.containsJapanese(title)
-          ? {
-              title,
-            }
-          : {
-              enTitle: title,
-            }
+    const bulkData = data.map((item) => {
+      const { title, ...rest } = item
+      const titleObj = this.containsJapanese(title)
+        ? {
+            title,
+          }
+        : {
+            enTitle: title,
+          }
 
-        const config: AnyBulkWriteOperation<Video> = {
-          // 这个操作只会更新匹配到的第一个文档。如果查询条件匹配到多个文档，只有第一个文档会被更新
-          updateOne: {
-            // updateMany：这个操作会更新所有匹配到的文档。如果查询条件匹配到多个文档，所有这些文档都会被更新
-            filter: { code: item.code },
-            update: {
-              $set: {
-                ...rest,
-                ...titleObj,
-              },
-              $setOnInsert: {
-                hasDetail: false,
-              },
+      const config: AnyBulkWriteOperation<Video> = {
+        // 这个操作只会更新匹配到的第一个文档。如果查询条件匹配到多个文档，只有第一个文档会被更新
+        updateOne: {
+          // updateMany：这个操作会更新所有匹配到的文档。如果查询条件匹配到多个文档，所有这些文档都会被更新
+          filter: { code: item.code },
+          update: {
+            $set: {
+              ...rest,
+              ...titleObj,
             },
-            upsert: true,
+            $setOnInsert: {
+              hasDetail: false,
+            },
           },
-        }
-        return config
-      })
-    )
+          upsert: true,
+        },
+      }
+      return config
+    })
+    return this.model.bulkWrite(bulkData)
   }
 
   /**
@@ -228,7 +227,7 @@ export class VideoService {
     return data
   }
 
-  batchAddActress(data: Actress[]) {
+  batchAddActress(data: Actress[]): Promise<AnyToFix> {
     return this.model.bulkWrite(
       data.map((item) => {
         const config: AnyBulkWriteOperation<Actress> = {
