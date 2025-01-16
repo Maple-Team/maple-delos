@@ -36,7 +36,7 @@ export class VideoController {
 
   @Get('actresses')
   getAllActresses(@Query() query: { page?: number; pageSize?: number }) {
-    const { page = 1, pageSize = 3000 } = query
+    const { page = 1, pageSize = 30 } = query
     return this.service.getAllActresses(+page, +pageSize)
   }
 

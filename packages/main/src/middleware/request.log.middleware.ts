@@ -20,15 +20,16 @@ export class RequestLoggingMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     // FIXME 输出两次？
     const t1 = performance.now()
-    const { method, ip, originalUrl, headers } = req
+    const { method, ip, originalUrl, headers, body: payload } = req
 
-    // console.log('headers: ', headers['user-agent'], body, ip)
+    // console.log('headers: ', headers, payload)
 
     const info: RequestLogInfo = {
       method,
       ip,
       url: originalUrl,
       ua: headers['user-agent'],
+      payload,
     }
     const rawSend = res.send
     // NOTE 重要的解决方案
@@ -41,31 +42,39 @@ export class RequestLoggingMiddleware implements NestMiddleware {
           if (body instanceof Buffer) {
             status = HttpStatus.OK
           } else {
-            // may be undefined
+            // NOTE may be undefined
             // FIXME 优雅的处理这个响应状态
             status = JSON.parse(body).status
           }
           // 业务ok的请求，日志中的状态更新展示为200
           if (status === 0) status = 200
           if (status === undefined) status = HttpStatus.INTERNAL_SERVER_ERROR
-        } catch (error) {}
+        } catch (error) {
+          this.logger.debug('error: %o', error)
+        }
         const method = info.method.toUpperCase()
         const usedTime = performance.now() - t1
-
-        // 记录请求日志
-        this.logger.info(
-          '%s %s %s %d %sms %s',
-          method,
-          `\x1b[34m${info.url}\x1b[0m`,
-          info.ip,
-          info.url === '/api/auth/mqtt' || info.url === '/api/proxy'
-            ? status === HttpStatus.INTERNAL_SERVER_ERROR
-              ? 200
-              : status
-            : status,
-          usedTime.toFixed(1),
-          info.ua
-        )
+        // TODO 记录响应体
+        method.toLowerCase() === 'get'
+          ? this.logger.info(
+              '%s %s %s %d %sms %s',
+              method,
+              `\x1b[34m${info.url}\x1b[0m`,
+              info.ip,
+              status,
+              usedTime.toFixed(1),
+              info.ua || 'N/A'
+            )
+          : this.logger.info(
+              '%s %s %s %d %sms %s %o',
+              method,
+              `\x1b[34m${info.url}\x1b[0m`,
+              info.ip,
+              status,
+              usedTime.toFixed(1),
+              info.ua || 'N/A',
+              info.payload
+            )
         // 用户指纹 https://www.npmjs.com/package/@binance/fingerprint
         // https://www.npmjs.com/package/express-fingerprint
         // console.log(o.username, o.uid)

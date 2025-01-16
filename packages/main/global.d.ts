@@ -15,8 +15,8 @@ declare interface RequestLogInfo {
   ip: string
   url: string
   ua: string
-  reqBody?: string
+  payload?: string
   uid?: string
   username?: string
-  resBody?: string
+  body?: string
 }

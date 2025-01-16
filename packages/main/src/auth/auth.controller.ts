@@ -72,6 +72,7 @@ Body:
     return {
       result: 'allow',
       is_superuser: false,
+      status: HttpStatus.OK,
     }
   }
 
