@@ -7,13 +7,18 @@ import { ProxyController } from './proxy.controller'
   controllers: [ProxyController],
   providers: [ProxyService],
   imports: [
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'MINIO_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: process.env.MINIO_SERVICE,
-          port: 3002,
+        useFactory: () => {
+          console.log('MINIO_SERVICE', process.env.MINIO_SERVICE, process.env.MINIO_PORT)
+          return {
+            transport: Transport.TCP,
+            options: {
+              host: process.env.MINIO_SERVICE,
+              port: +process.env.MINIO_PORT,
+            },
+          }
         },
       },
     ]),

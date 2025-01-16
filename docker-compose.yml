@@ -13,8 +13,8 @@ services:
     container_name: nestjs-minio
     image: liutsing/delos-minio:latest
     environment:
-      - MINIO_ACCESS_KEY=XpiUE5sGLAXt4EtKgKiH
-      - MINIO_SECRET_KEY=8qnIB6KhE5n5hxpxePeDewWpD47XLTs4K9CsUKKk
+      - MINIO_ACCESS_KEY=363wbyRsqOAsWXt7jsWB
+      - MINIO_SECRET_KEY=sUjdiu0xgCiGwwdFCsrG4YDR1u1xepC7KxjQqgZg
       - MINIO_I18N_BUCKET=i18n
     restart: always
     networks:

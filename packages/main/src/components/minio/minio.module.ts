@@ -7,17 +7,21 @@ import { MinioController } from './minio.controller'
   controllers: [MinioController],
   providers: [MinioService],
   imports: [
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'MINIO_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: process.env.MINIO_SERVICE,
-          port: 3002,
+        useFactory: () => {
+          return {
+            transport: Transport.TCP,
+            options: {
+              host: process.env.MINIO_SERVICE,
+              port: +process.env.MINIO_PORT,
+            },
+          }
         },
       },
     ]),
   ],
-  exports: [MinioService]
+  exports: [MinioService],
 })
 export class MinioModule {}
