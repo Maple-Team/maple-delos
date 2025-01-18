@@ -21,6 +21,8 @@ const baseRotateFileOption: WinstonDailyRotateFile.DailyRotateFileTransportOptio
   level: 'info',
   filename: '%DATE%',
   extension: '.log', // 文件后缀
+  //   createSymlink: true,
+  //   symlinkName: 'request.log',
 }
 
 const formats = [
@@ -42,18 +44,15 @@ export const winstonConfig: WinstonModuleOptions = {
   level: 'info',
   format: winston.format.combine(...formats),
   transports: [
-    process.env.NODE_ENV !== 'production'
-      ? new winston.transports.Console({
-          level: 'debug',
-          format: winston.format.combine(
-            winston.format.cli({
-              level: true,
-            }),
-            ...formats
-          ),
-        })
-      : null,
-
+    new winston.transports.Console({
+      level: 'debug',
+      format: winston.format.combine(
+        winston.format.cli({
+          level: true,
+        }),
+        ...formats
+      ),
+    }),
     new WinstonDailyRotateFile({
       ...baseRotateFileOption,
       level: 'info',

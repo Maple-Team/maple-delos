@@ -45,6 +45,10 @@ RUN apk add --no-cache tzdata
 ENV TZ=Asia/Shanghai
 ENV APP_VERSION=${APP_VERSION}
 EXPOSE 3000
+
+RUN mkdir -p /app/logs
+RUN ln -sf /dev/stderr /app/logs/error.log
+
 # 足够的等待时间
 CMD [ "sh", "-c", "npm run start:prod"]
 
@@ -62,6 +66,8 @@ RUN apk add --no-cache tzdata
 ENV TZ=Asia/Shanghai
 ENV APP_VERSION=${APP_VERSION}
 
+RUN mkdir -p /app/logs
+RUN ln -sf /dev/stderr /app/logs/error.log
 EXPOSE 8801
 # 足够的等待时间
 CMD [ "sh", "-c", "npm run start:prod"]
