@@ -22,3 +22,10 @@ export class Timeline {
 }
 
 export const TimelineSchema = SchemaFactory.createForClass(Timeline)
+
+TimelineSchema.methods.toJSON = function () {
+  const obj = this.toObject()
+  obj.id = obj._id
+  delete obj._id
+  return obj
+}

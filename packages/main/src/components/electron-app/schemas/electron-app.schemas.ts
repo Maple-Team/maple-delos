@@ -39,3 +39,10 @@ export class ElectronApp {
 
 export const ElectronAppSchema = SchemaFactory.createForClass(ElectronApp)
 // TODO 多字段组成唯一值
+ElectronAppSchema.methods.toJSON = function () {
+  const obj = this.toObject()
+  obj.id = obj._id
+  delete obj._id
+
+  return obj
+}
