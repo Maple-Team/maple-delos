@@ -1,5 +1,5 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import fs from 'fs'
+import path from 'path'
 import { AbstractLogger, LogLevel, LogMessage, Logger, QueryRunner } from 'typeorm'
 import { logStream } from './logger'
 

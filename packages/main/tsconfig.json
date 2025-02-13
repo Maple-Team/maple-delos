@@ -12,17 +12,17 @@
     "strictBindCallApply": false,
     "strictNullChecks": false,
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "paths": {
       "@/*": ["src/*"]
     },
     "declaration": true,
     "removeComments": true,
-    "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "incremental": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "resolveJsonModule": true
   },
   "include": ["src/**/*", "global.d.ts"]

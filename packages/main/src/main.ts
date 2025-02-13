@@ -2,7 +2,7 @@ import { VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import * as bodyParser from 'body-parser'
+import bodyParser from 'body-parser'
 import { AppModule } from './app.module'
 
 /**

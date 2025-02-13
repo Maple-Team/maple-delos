@@ -16,3 +16,5 @@ pnpm run docker
 
 - 一键起全部服务
 - 一键部署
+
+### 理解 nestjs 中的各个概念

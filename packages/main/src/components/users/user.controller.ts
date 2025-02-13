@@ -1,6 +1,6 @@
 import { createWriteStream } from 'node:fs'
 import { resolve } from 'node:path'
-import * as crypto from 'crypto'
+import crypto from 'crypto'
 import {
   Body,
   Controller,

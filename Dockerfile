@@ -5,15 +5,18 @@ FROM node:18.20-alpine3.18 AS base
 WORKDIR /app
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-ENV COREPACK_NPM_REGISTRY="https://registry.npmmirror.com"
-RUN npm config set registry https://registry.npmmirror.com
+ENV registry="https://registry.npmmirror.com"
+ENV COREPACK_NPM_REGISTRY=${registry}
+
+RUN npm config set registry ${registry}
+RUN npm install -g corepack@latest
 RUN corepack enable pnpm
 ARG APP_VERSION
 
 FROM base AS build
 COPY . /app
 # RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --registry=https://registry.npmmirror.com/  --frozen-lockfile
-RUN pnpm install --registry=https://registry.npmmirror.com/ --frozen-lockfile
+RUN pnpm install --registry=${registry} --frozen-lockfile
 # RUN pnpx browserslist@latest --update-db
 # RUN pnpm up caniuse-lite
 

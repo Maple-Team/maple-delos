@@ -1,6 +1,6 @@
-import * as path from 'path'
+import path from 'path'
 import { FileTransportOptions } from 'winston/lib/winston/transports'
-import * as winston from 'winston'
+import winston from 'winston'
 import { WinstonModuleOptions } from 'nest-winston'
 import WinstonDailyRotateFile from 'winston-daily-rotate-file'
 

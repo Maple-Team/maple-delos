@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 import { FindOptionsWhere, Like, Not, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import * as bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt'
 import { BaseList, BaseParams } from '@liutsing/types-utils'
 import { OperationType, UserRole } from '@liutsing/enums'
 import type { ChangePwdDto } from '@liutsing/types-utils'

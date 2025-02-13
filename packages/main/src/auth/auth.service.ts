@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import * as bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt'
 import { UserRole } from '@liutsing/enums'
 import { sleep } from '@liutsing/utils'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'

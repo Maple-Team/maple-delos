@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import type { BaseList } from '@liutsing/types-utils'
 import { Product } from './product.entity'
-// import * as productData from './dummy.json';
+// import  productData from './dummy.json';
 
 @Injectable()
 export class ProductService {
