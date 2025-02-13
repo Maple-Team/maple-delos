@@ -46,7 +46,7 @@ export class VideoService {
       .find(condition)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .sort({ ts: -1 })
+      .sort({ ts: -1, id: -1 })
       .exec()
 
     return {

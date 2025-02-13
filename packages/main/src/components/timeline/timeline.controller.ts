@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Delete, Get, Param, Query } from '@nestjs/common'
 import { TimelineService } from './timeline.service'
 import { Public } from '@/auth/decorators'
 
@@ -8,8 +8,14 @@ export class TimelineController {
 
   @Get()
   @Public()
-  findWithPagination(@Query() query: { page: number; pageSize: number }) {
-    const { page = 1, pageSize = 30, ...rest } = query
-    return this.service.findWithPagination(+page, +pageSize, { ...rest })
+  findWithPagination(@Query() query: { current: number; pageSize: number }) {
+    const { current = 1, pageSize = 30, ...rest } = query
+    return this.service.findWithPagination(current, +pageSize, { ...rest })
+  }
+
+  @Delete(':id')
+  @Public()
+  deleteById(@Param() params: { id: string }) {
+    return this.service.deleteById(params.id)
   }
 }

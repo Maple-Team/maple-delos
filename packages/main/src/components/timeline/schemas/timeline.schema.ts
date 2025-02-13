@@ -3,8 +3,20 @@ import type { Document } from 'mongoose'
 
 export type TimelineDocument = Timeline & Document
 
+export interface ITimeline {
+  content: string
+  date: string
+  time: string
+  type: 'timeline' | 'treehole'
+  ts: number
+  id?: string
+}
+
 @Schema({})
-export class Timeline {
+export class Timeline implements ITimeline {
+  @Prop({ required: false })
+  id?: string
+
   @Prop({ required: true })
   content: string
 

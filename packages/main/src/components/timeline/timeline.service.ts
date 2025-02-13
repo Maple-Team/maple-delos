@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import type { BaseList } from '@liutsing/types-utils'
+import { sleep } from '@liutsing/utils'
 import type { TimelineDocument } from './schemas/timeline.schema'
 import { Timeline } from './schemas/timeline.schema'
 
@@ -33,5 +34,11 @@ export class TimelineService {
       },
       records: data,
     }
+  }
+
+  async deleteById(id: string) {
+    await sleep(1000 * 5)
+    // if (Math.random() > 0.5) throw new Error('删除失败')
+    return this.model.findByIdAndDelete(id).exec()
   }
 }
