@@ -20,9 +20,12 @@ export class RequestLoggingMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     // FIXME 输出两次？
     const t1 = performance.now()
-    const { method, ip, originalUrl, headers, body: payload } = req
+    const { method, ip, originalUrl, headers, url, body: payload, statusCode } = req
 
-    // console.log('headers: ', headers, payload)
+    if (process.env.NODE_ENV === 'development') {
+      const timestamp = Date.now()
+      console.log(`Request URL: ${url} - ${originalUrl} - Timestamp: ${timestamp} - ${statusCode}`)
+    }
 
     const info: RequestLogInfo = {
       method,
@@ -33,6 +36,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
     }
     const rawSend = res.send
     // NOTE 重要的解决方案
+    // NOTE 什么时候触发
     res.send = (body) => {
       if (!req.hasLogged) {
         // 在这里，你可以修改响应体，例如记录日志或进行其他操作
@@ -78,12 +82,12 @@ export class RequestLoggingMiddleware implements NestMiddleware {
         // 用户指纹 https://www.npmjs.com/package/@binance/fingerprint
         // https://www.npmjs.com/package/express-fingerprint
         // console.log(o.username, o.uid)
-        req.hasLogged = true
       }
-
+      req.hasLogged = true
       // NOTE 调用原始的res.send()方法发送响应
       return rawSend.call(res, body)
     }
+    // NOTE 作用
     next()
   }
 }
