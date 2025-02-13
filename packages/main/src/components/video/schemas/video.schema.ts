@@ -20,7 +20,12 @@ export class Video implements IVideo {
   @Prop({ required: false })
   enTitle: string
 
-  @Prop({ required: true, index: true })
+  @Prop({
+    required: true,
+    index: true,
+    unique: true,
+    // uppercase: true, lowercase: false
+  })
   code: string
 
   @Prop({ required: true })

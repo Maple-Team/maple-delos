@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import type { Model } from 'mongoose'
+import { Model } from 'mongoose'
 import type { BaseList } from '@liutsing/types-utils'
 import dayjs from 'dayjs'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
@@ -41,12 +41,14 @@ export class VideoService {
       hasDetail: true,
     }
 
-    const total = await this.model.find(condition).count()
-    const data = await this.model
-      .find(condition)
+    const total = await this.model.countDocuments(condition).exec()
+
+    const query = this.model.find(condition)
+    // @https://github.com/scalablescripts/nest-search-mongo
+    // https://article.arunangshudas.com/top-10-advanced-pagination-techniques-with-mongoose-2320a6ac49a7
+    const data = await query
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .sort({ ts: -1, id: -1 })
       .exec()
 
     return {
@@ -201,8 +203,9 @@ export class VideoService {
     const condition = {}
     const total = await this.actressModel.find(condition).count()
 
-    const data = await this.actressModel
-      .find(condition)
+    const query = this.actressModel.find(condition)
+
+    const data = await query
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .sort({ createdAt: -1 })
