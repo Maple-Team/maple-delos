@@ -92,7 +92,6 @@ export interface IVideo {
 }
 
 export const VideoSchema = SchemaFactory.createForClass<IVideo>(Video)
-VideoSchema.index({ code: 1 }, { unique: true })
 
 VideoSchema.methods.toJSON = function () {
   const obj = this.toObject()

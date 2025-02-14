@@ -38,12 +38,23 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
     const status = exception.getStatus()
 
-    this.logger.error('HttpExceptionFilter error: %o, stack: %s, url: %s', exception, exception.stack, request.url) // NOTE 错误日志->console和文件的输出会有差别
-    response.status(status).header('X-Version', process.env.APP_VERSION).json({
-      status,
-      timestamp: new Date().getTime(),
-      path: request.url,
-      message: exception.message,
-    })
+    const exceptionRes = exception.getResponse()
+    this.logger.error(
+      'HttpExceptionFilter url: %s, exception: %o, stack: %s',
+      `\x1b[34m${request.url}\x1b[0m`,
+      exceptionRes,
+      exception.stack
+    ) // NOTE 错误日志->console和文件的输出会有差别
+
+    response
+      .status(status)
+      .header('X-Version', process.env.APP_VERSION)
+      .json({
+        status,
+        timestamp: new Date().getTime(),
+        path: request.url,
+        message: exception.message,
+        ...(typeof exceptionRes === 'string' ? { errors: [exceptionRes] } : exceptionRes),
+      })
   }
 }

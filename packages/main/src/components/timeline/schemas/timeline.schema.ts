@@ -1,18 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import type { Document } from 'mongoose'
+import type { Document, SchemaTimestampsConfig } from 'mongoose'
+import { TimelineEnum } from '../dto/create-timeline.dto'
 
-export type TimelineDocument = Timeline & Document
+export type TimelineDocument = Timeline & Document & SchemaTimestampsConfig
 
 export interface ITimeline {
   content: string
-  date: string
-  time: string
   type: 'timeline' | 'treehole'
-  ts: number
   id?: string
 }
 
-@Schema({})
+@Schema({
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+})
 export class Timeline implements ITimeline {
   @Prop({ required: false })
   id?: string
@@ -21,16 +24,7 @@ export class Timeline implements ITimeline {
   content: string
 
   @Prop({ required: true })
-  date: string
-
-  @Prop({ required: true })
-  time: string
-
-  @Prop({ required: true })
-  type: 'timeline' | 'treehole'
-
-  @Prop({ required: true })
-  ts: number
+  type: TimelineEnum
 }
 
 export const TimelineSchema = SchemaFactory.createForClass(Timeline)
@@ -39,5 +33,6 @@ TimelineSchema.methods.toJSON = function () {
   const obj = this.toObject()
   obj.id = obj._id
   delete obj._id
+  delete obj.__v
   return obj
 }

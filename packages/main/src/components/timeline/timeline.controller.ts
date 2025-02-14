@@ -1,5 +1,7 @@
-import { Controller, Delete, Get, Param, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
 import { TimelineService } from './timeline.service'
+import { CreateTimelineDto } from './dto/create-timeline.dto'
+import { Timeline } from './schemas/timeline.schema'
 import { Public } from '@/auth/decorators'
 
 @Controller('timeline')
@@ -17,5 +19,11 @@ export class TimelineController {
   @Public()
   deleteById(@Param() params: { id: string }) {
     return this.service.deleteById(params.id)
+  }
+
+  @Post()
+  @Public()
+  create(@Body() createDto: CreateTimelineDto): Promise<Timeline> {
+    return this.service.create(createDto)
   }
 }

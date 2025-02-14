@@ -32,7 +32,7 @@ const formats = [
   winston.format.splat(),
   winston.format.errors({ stack: true }),
   winston.format.printf(({ timestamp, level, message }) => {
-    return `[${timestamp}] ${level} ${message}`
+    return `[${timestamp}] [${level}] ${message}`
   }),
 ]
 
