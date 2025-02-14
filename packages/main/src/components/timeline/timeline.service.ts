@@ -17,7 +17,7 @@ export class TimelineService {
     const filterKeys: RestParams = {}
     if (rest.type) filterKeys.type = rest.type
 
-    const total = await this.model.find({ ...filterKeys }).count()
+    const total = await this.model.countDocuments({ ...filterKeys })
 
     const data = await this.model
       .find({ ...filterKeys })
@@ -38,7 +38,6 @@ export class TimelineService {
 
   async deleteById(id: string) {
     await sleep(1000 * 5)
-    // if (Math.random() > 0.5) throw new Error('删除失败')
     return this.model.findByIdAndDelete(id).exec()
   }
 }

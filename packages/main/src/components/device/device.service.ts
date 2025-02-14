@@ -19,7 +19,7 @@ export class DeviceService {
   }
 
   async remove(id: string) {
-    return this.DeviceModel.findByIdAndRemove(id)
+    return this.DeviceModel.findByIdAndDelete(id)
   }
 
   async insertMany(data: Device[]) {

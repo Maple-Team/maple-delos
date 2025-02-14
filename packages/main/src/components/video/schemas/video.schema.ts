@@ -3,6 +3,9 @@ import type { Document } from 'mongoose'
 
 export type VideoDocument = Video & Document
 
+// https://wdk-docs.github.io/nest-docs/techniques/mongo/#_8
+// https://docs.nestjs.com/techniques/mongodb
+
 @Schema({
   collection: 'adult-videos',
   _id: false,
@@ -24,7 +27,8 @@ export class Video implements IVideo {
     required: true,
     index: true,
     unique: true,
-    // uppercase: true, lowercase: false
+    uppercase: true,
+    lowercase: false,
   })
   code: string
 
@@ -88,16 +92,7 @@ export interface IVideo {
 }
 
 export const VideoSchema = SchemaFactory.createForClass<IVideo>(Video)
-
-// @https://docs.nestjs.com/techniques/mongodb
-// FIXME hook
-VideoSchema.post('save', (doc: VideoDocument) => {
-  console.log('post save:', {
-    thumb: doc.thumb,
-    previews: doc.previews,
-    cover: doc.cover,
-  })
-})
+VideoSchema.index({ code: 1 }, { unique: true })
 
 VideoSchema.methods.toJSON = function () {
   const obj = this.toObject()

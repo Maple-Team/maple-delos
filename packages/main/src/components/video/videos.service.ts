@@ -1,11 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { AnyBulkWriteOperation, Model } from 'mongoose'
 import type { BaseList } from '@liutsing/types-utils'
 import dayjs from 'dayjs'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
-import type { AnyBulkWriteOperation } from 'mongodb'
 import type { VideoDocument } from './schemas/video.schema'
 import { Video } from './schemas/video.schema'
 import { Actress } from './schemas/actress.schema'
@@ -22,14 +21,7 @@ export class VideoService {
     @InjectModel(Video.name) private model: Model<VideoDocument>,
     @InjectModel(Actress.name) private actressModel: Model<ActressDocument>,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
-  ) {
-    this.model.schema.post('save', (res, next) => {
-      // FIXME hook
-      const { thumb, previews, cover } = res
-      this.logger.debug('post save: %o', { thumb, previews, cover })
-      next()
-    })
-  }
+  ) {}
 
   async findWithPagination(page: number, pageSize: number, rest: RestParams): Promise<BaseList<Video>> {
     const filterKeys: RestParams = {}
@@ -163,7 +155,11 @@ export class VideoService {
         // 这个操作只会更新匹配到的第一个文档。如果查询条件匹配到多个文档，只有第一个文档会被更新
         updateOne: {
           // updateMany：这个操作会更新所有匹配到的文档。如果查询条件匹配到多个文档，所有这些文档都会被更新
-          filter: { code: item.code },
+          filter: {
+            code: {
+              $eq: item.code,
+            },
+          },
           update: {
             $set: {
               ...rest,
@@ -178,6 +174,7 @@ export class VideoService {
       }
       return config
     })
+
     return this.model.bulkWrite(bulkData)
   }
 
@@ -201,7 +198,7 @@ export class VideoService {
 
   async getAllActresses(page: number, pageSize: number) {
     const condition = {}
-    const total = await this.actressModel.find(condition).count()
+    const total = await this.actressModel.countDocuments(condition)
 
     const query = this.actressModel.find(condition)
 

@@ -30,7 +30,7 @@ export class SonyoonjooService {
         $regex: new RegExp(rest.path),
       }
     }
-    const total = await this.model.find({ ...filterKeys }).count()
+    const total = await this.model.countDocuments({ ...filterKeys })
 
     const data = await this.model
       .find({ ...filterKeys })

@@ -38,7 +38,7 @@ export class MeituluService {
         $regex: new RegExp(rest.orgName),
       }
     }
-    const total = await this.model.find({ ...filterKeys }).count()
+    const total = await this.model.countDocuments({ ...filterKeys })
 
     const data = await this.model
       .find({ ...filterKeys })

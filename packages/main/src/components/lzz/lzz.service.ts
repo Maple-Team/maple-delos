@@ -18,7 +18,7 @@ export class LzzService {
   }
 
   async findWithPagination(page: number, pageSize: number): Promise<BaseList<Lzz>> {
-    const total = await this.model.find({}).count()
+    const total = await this.model.countDocuments({})
 
     const data = await this.model
       .find()
