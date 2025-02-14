@@ -1,29 +1,41 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
+import { sleep } from '@liutsing/utils'
 import { TimelineService } from './timeline.service'
 import { CreateTimelineDto } from './dto/create-timeline.dto'
 import { Timeline } from './schemas/timeline.schema'
-import { Public } from '@/auth/decorators'
+import { UpdateTimelineDto } from './dto/update-timeline.dto'
 
-@Controller('timeline')
+@Controller('timelines')
 export class TimelineController {
   constructor(private readonly service: TimelineService) {}
 
   @Get()
-  @Public()
   findWithPagination(@Query() query: { current: number; pageSize: number }) {
     const { current = 1, pageSize = 30, ...rest } = query
     return this.service.findWithPagination(current, +pageSize, { ...rest })
   }
 
   @Delete(':id')
-  @Public()
-  deleteById(@Param() params: { id: string }) {
+  async deleteById(@Param() params: { id: string }) {
+    await sleep(1000 * 1)
     return this.service.deleteById(params.id)
   }
 
   @Post()
-  @Public()
-  create(@Body() createDto: CreateTimelineDto): Promise<Timeline> {
+  async create(@Body() createDto: CreateTimelineDto): Promise<Timeline> {
+    await sleep(1000 * 1)
     return this.service.create(createDto)
+  }
+
+  @Put(':id')
+  async update(@Param() params: { id: string }, @Body() updateDto: UpdateTimelineDto) {
+    await sleep(1000 * 1)
+    return this.service.update(params.id, updateDto)
+  }
+
+  @Get(':id')
+  async findById(@Param() params: { id: string }) {
+    await sleep(1000 * 1)
+    return this.service.findById(params.id)
   }
 }

@@ -12,8 +12,8 @@ export interface ITimeline {
 
 @Schema({
   timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    createdAt: 'created_at', // 自定义字段名
+    updatedAt: 'updated_at', // 自定义字段名
   },
 })
 export class Timeline implements ITimeline {
@@ -34,5 +34,12 @@ TimelineSchema.methods.toJSON = function () {
   obj.id = obj._id
   delete obj._id
   delete obj.__v
+
+  // 确保包含自定义的时间戳字段
+  obj.createdAt = obj.created_at
+  obj.updatedAt = obj.updated_at
+  // 删除原始字段
+  delete obj.created_at
+  delete obj.updated_at
   return obj
 }

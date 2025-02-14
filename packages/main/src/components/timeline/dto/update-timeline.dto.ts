@@ -1,7 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types'
 import { CreateTimelineDto } from './create-timeline.dto'
 
-export class UpdateTimelineDto extends PartialType(CreateTimelineDto) {}
+export class UpdateTimelineDto extends PartialType(CreateTimelineDto) {
+  //   @ApiProperty({ description: 'id主键', example: 'xxxx' })
+  //   @IsNotEmpty({ message: 'id主键不能为空' })
+  //   @IsString({ message: 'id主键必须是字符串' })
+  //   id: string
+}
 
 // https://kimi.moonshot.cn/chat/cu1reu76rtpci1kl9l2g
 // 在 NestJS 中，当你使用 PartialType 自动生成 UpdateTimelineDto 类时，该类的字段会自动从 CreateTimelineDto 继承，但所有字段都会变为可选的。这意味着在更新操作中，客户端可以只发送需要更新的字段。

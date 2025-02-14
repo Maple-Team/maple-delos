@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import type { BaseList } from '@liutsing/types-utils'
-import { sleep } from '@liutsing/utils'
 import type { TimelineDocument } from './schemas/timeline.schema'
 import { Timeline } from './schemas/timeline.schema'
 import { CreateTimelineDto } from './dto/create-timeline.dto'
+import { UpdateTimelineDto } from './dto/update-timeline.dto'
 
 interface RestParams {
   type?: Timeline['type']
@@ -20,10 +20,11 @@ export class TimelineService {
 
     const total = await this.Model.countDocuments({ ...filterKeys })
 
-    const data = await this.Model.find({ ...filterKeys })
+    const query = this.Model.find({ ...filterKeys })
+    const data = await query
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .sort({ ts: -1 })
+      .sort({ created_at: 'desc' })
       .exec()
 
     return {
@@ -36,13 +37,20 @@ export class TimelineService {
     }
   }
 
-  async deleteById(id: string) {
-    await sleep(1000 * 5)
+  deleteById(id: string) {
     return this.Model.findByIdAndDelete(id).exec()
+  }
+
+  findById(id: string) {
+    return this.Model.findById(id).exec()
   }
 
   create(createDto: CreateTimelineDto): Promise<Timeline> {
     const createdTask = new this.Model(createDto)
     return createdTask.save()
+  }
+
+  update(id: string, updateDto: UpdateTimelineDto) {
+    return this.Model.findByIdAndUpdate(id, updateDto, { new: true }).exec()
   }
 }
