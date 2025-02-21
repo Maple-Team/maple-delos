@@ -58,18 +58,14 @@ export class RequestLoggingMiddleware implements NestMiddleware {
         }
         const method = info.method.toUpperCase()
         const usedTime = performance.now() - t1
+        const infoUser = {
+          id: req.user?.id,
+          username: req.user?.username,
+          phone: req.user?.phone,
+        }
         // TODO 记录响应体
         method.toLowerCase() === 'get'
           ? this.logger.info(
-              '%s %s %s %d %sms %s',
-              method,
-              `\x1b[34m${info.url}\x1b[0m`,
-              info.ip,
-              status,
-              usedTime.toFixed(1),
-              info.ua || 'N/A'
-            )
-          : this.logger.info(
               '%s %s %s %d %sms %s %o',
               method,
               `\x1b[34m${info.url}\x1b[0m`,
@@ -77,7 +73,18 @@ export class RequestLoggingMiddleware implements NestMiddleware {
               status,
               usedTime.toFixed(1),
               info.ua || 'N/A',
-              info.payload
+              infoUser
+            )
+          : this.logger.info(
+              '%s %s %s %d %sms %s %o %o',
+              method,
+              `\x1b[34m${info.url}\x1b[0m`,
+              info.ip,
+              status,
+              usedTime.toFixed(1),
+              info.ua || 'N/A',
+              info.payload,
+              infoUser
             )
         // 用户指纹 https://www.npmjs.com/package/@binance/fingerprint
         // https://www.npmjs.com/package/express-fingerprint
