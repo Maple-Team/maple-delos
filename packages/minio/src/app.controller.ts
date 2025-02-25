@@ -38,4 +38,31 @@ export class AppController {
   getProxy(@Payload() filePath) {
     return this.service.getProxy(filePath)
   }
+
+  @EventPattern('upload-app')
+  async uploadApp(
+    @Payload()
+    {
+      buffer,
+      fileName,
+      packageName,
+      mimetype,
+    }: {
+      fileName: string
+      packageName: string
+      buffer: { type: 'Buffer'; data: Uint8Array }
+      mimetype: string
+    }
+  ) {
+    const data = Buffer.from(buffer.data)
+    // 调用服务层方法上传APK，指定MIME类型
+    return this.service.uploadApp(data, packageName, fileName, mimetype)
+  }
+
+  @EventPattern('upload-app-icon-image')
+  uploadAppIconImage(@Payload() { data, packageName }: { data: string; packageName: string }) {
+    return this.service.uploadAppIconImage(data, packageName).catch((e) => {
+      throw e
+    })
+  }
 }

@@ -47,26 +47,29 @@ export class AppService {
   }
 
   /**
+   * 存储base64格式的图片数据
+   * @param data base64格式的图片数据
+   */
+  private async storeBase64Image(data: string, dir: string, bucketName: string) {
+    const [_, dataStr] = data.split(',')
+    const [str] = data.split(';')
+    const [__, mime] = str.split(':')
+    const [___, ext] = mime.split('/')
+    const file = `${dir}/${uuid()}.${ext}`
+
+    const imageData = Buffer.from(dataStr, 'base64')
+
+    await this.minioClient.putObject(bucketName, file, imageData, { 'Content-Type': mime })
+    return file
+  }
+
+  /**
    * 存储base64截图
    * @param data base64格式的截图
    * @returns
    */
   async uploadLocaleImage(data: string) {
-    try {
-      const [_1, dataStr] = data.split(',')
-      const [str] = data.split(';')
-      const [_2, mime] = str.split(':')
-      const [_3, ext] = mime.split('/')
-      const file = `screenShots/${uuid()}.${ext}`
-
-      const imageData = Buffer.from(dataStr, 'base64')
-
-      await this.minioClient.putObject(bucketName, file, imageData, { 'Content-Type': mime }).catch(console.error)
-
-      return file
-    } catch (error) {
-      throw new BadRequestException(error)
-    }
+    return this.storeBase64Image(data, 'screenShots', bucketName)
   }
 
   padStart(num: number) {
@@ -121,5 +124,26 @@ export class AppService {
     } catch (error) {
       throw new BadRequestException(error)
     }
+  }
+
+  async uploadApp(data: Buffer, packageName: string, fileName: string, mimetype: string) {
+    try {
+      const file = `${packageName}/${fileName}`
+
+      await this.minioClient
+        .putObject('app-bucket', file, data, { 'Content-Type': mimetype })
+        .then((...rest) => {
+          console.log('保存成功', rest)
+        })
+        .catch(console.error)
+
+      return file
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
+  }
+
+  async uploadAppIconImage(data: string, packageName: string) {
+    return this.storeBase64Image(data, packageName, 'app-bucket')
   }
 }
