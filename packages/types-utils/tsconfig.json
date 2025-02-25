@@ -1,0 +1,7 @@
+{
+  "extends": "@liutsing/tsconfig",
+  "compilerOptions": {
+    "rootDir": "src",
+    "baseUrl": "."
+  }
+}

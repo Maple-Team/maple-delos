@@ -1,0 +1,80 @@
+{
+  "versionCode": 7,
+  "versionName": "1.0.6",
+  "compileSdkVersion": 34,
+  "compileSdkVersionCodename": "14",
+  "package": "com.mapleimage.smart_glass_directive",
+  "platformBuildVersionCode": 34,
+  "platformBuildVersionName": 14,
+  "usesPermissions": [{ "name": "android.permission.INTERNET" }, { "name": "android.permission.ACCESS_NETWORK_STATE" }],
+  "usesPermissionsSDK23": [],
+  "permissions": [],
+  "permissionTrees": [],
+  "permissionGroups": [],
+  "instrumentation": null,
+  "usesSdk": { "minSdkVersion": 21, "targetSdkVersion": 34 },
+  "usesConfiguration": null,
+  "usesFeatures": [],
+  "supportsScreens": null,
+  "compatibleScreens": [],
+  "supportsGlTextures": [],
+  "application": {
+    "label": "档位控制",
+    "icon": ["res/u3.png", "res/SD.png", "res/jy.png", "res/D2.png", "res/CG.png"],
+    "name": "android.app.Application",
+    "appComponentFactory": "androidx.core.app.CoreComponentFactory",
+    "activities": [
+      {
+        "name": "com.mapleimage.smart_glass_directive.MainActivity",
+        "exported": true,
+        "taskAffinity": "",
+        "launchMode": 1,
+        "configChanges": 1073758132,
+        "windowSoftInputMode": 16,
+        "hardwareAccelerated": true,
+        "resizeableActivity": false,
+        "intentFilters": [
+          {
+            "actions": [{ "name": "android.intent.action.MAIN" }],
+            "categories": [{ "name": "android.intent.category.LAUNCHER" }],
+            "data": []
+          }
+        ],
+        "metaData": [{ "name": "io.flutter.embedding.android.NormalTheme" }]
+      }
+    ],
+    "activityAliases": [],
+    "launcherActivities": [
+      {
+        "name": "com.mapleimage.smart_glass_directive.MainActivity",
+        "exported": true,
+        "taskAffinity": "",
+        "launchMode": 1,
+        "configChanges": 1073758132,
+        "windowSoftInputMode": 16,
+        "hardwareAccelerated": true,
+        "resizeableActivity": false,
+        "intentFilters": [
+          {
+            "actions": [{ "name": "android.intent.action.MAIN" }],
+            "categories": [{ "name": "android.intent.category.LAUNCHER" }],
+            "data": []
+          }
+        ],
+        "metaData": [{ "name": "io.flutter.embedding.android.NormalTheme" }]
+      }
+    ],
+    "services": [],
+    "receivers": [],
+    "providers": [],
+    "usesLibraries": [
+      { "name": "androidx.window.extensions", "required": false },
+      { "name": "androidx.window.sidecar", "required": false }
+    ],
+    "metaData": [
+      { "name": "flutterEmbedding", "value": 2 },
+      { "name": "io.flutter.network-policy", "resource": ["res/4u.xml"] }
+    ]
+  },
+  "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADXElEQVRo3sVZUVLjMAx9FrkH5hhshyEMyzkWTrLtSYBztEzT6WQ5BuYeJd6Ppq7tuE5suaCfzhTqyNJ7epIiELLtsgaJZwASqSbQQFw84fpOAQD+rdbQqLPO0eIVs/uX+L/59r6W6L4+wDOF2e8rtG9/AT1nnUQXVyYYoT8Pvum6P+CbxPtaAvqRfdKIP9VoFFPMzt5uJ0GHBIunMSgM7AA9oWsAi+kZgJbZ0bJTTWSdo2+Tz9JQ/WfUHwqw4vCDpgCUGu/MFBZvXDhOvYC5sVDZBN7bpXFCo445cQL7x+fvdgkXyCmdYQxIx4lUu3loTDAcOMYu4EbpM+vBAkenq0pZEa0ZwbhNycAwhTnkE5A9qVU2kSdwiDynay+FjKD1D7UzkkvkCIf8DFzysW/ILwcZSRexUSLTSCXJsc/UKI4QGTEiU1DEWGn3lbnjnhXlEAVFTDMu4DvMr0RRIpNHvJopYq7Du12BSiRUDIKE0hbqhwQro5tpvZB9u5EfsbSBk9EABGlKv8Hrh5iVaASClZtuXUbE/KrWdcrMBl1Xo31LTuGUgeayWPwFlNPH3zw0aFdqL276uYBIRkmszoN58cKGJdHr6QwIXUMXFDF/mprdL7BdbkAib+bu9Ctmw+G+Ohk9dj+kT7UGDbbLmlWNghcoIWLDfkgG9k3rvAx8Ae3bHLP7xXmFLNQPmaeJZyYm534Zrqx1SDkRs8umu3KRhpCpXDsgZC9mL+4F7B3OCaxl214gvTPFAr8S90Tt6qMvw7f2BWjQa0fWeFmEO5ztKCpj1vbaEfJErEz0TwVBMLrS46Kr/i4Sq4HCc5q646LLKQxkRKzkJBbqh7hNnT0oWV2pN9CIppjfoWCUWnRZWaUQrs42A3DHyyOHLAiV2MYV6u0nBwWoTy22CnLAzLJyFFrpRDYba3ImsbIiFu6HCi+6qLiIjfVD/EWXsgWSiovYGByLwXTPIWK9Ukrrh4bzdoFFFxkslhaxUD80UOmsRZcDQTJVoqSIjfFJFCJyz4FzQkgFNx4T30BGiGwgWPUPkYCeo13N8S0mNv1LcIl2xZrSqp4Uj2f111+HEDXovvrAMZ7ddYpAF4viJdSN9tOAD9d3qt8TcQacBjcPjcBP2nZZx16hRolcbP35w/YfjJKgsvwhGUcAAAAASUVORK5CYII="
+}
