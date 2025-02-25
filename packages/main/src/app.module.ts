@@ -19,6 +19,8 @@ import { CustomTypeormLogger, winstonConfig } from './logger'
 import {
   Album,
   AlbumModule,
+  App as AppEntity,
+  AppPackageModule,
   BlogModule,
   ControlModule,
   DeviceModule,
@@ -134,7 +136,7 @@ const envFiles = {
               }
         return {
           type: 'mysql',
-          entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale],
+          entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale, AppEntity],
           synchronize: true,
           charset: 'utf8mb4',
           // typeorm 日志
@@ -187,6 +189,7 @@ const envFiles = {
     }),
     RecipesModule,
     ProxyModule,
+    AppPackageModule,
   ],
   controllers: [AppController],
   providers: [
