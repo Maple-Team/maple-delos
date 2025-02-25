@@ -30,6 +30,9 @@ importers:
       '@liutsing/tsconfig':
         specifier: ^0.0.6
         version: 0.0.6
+      '@liutsing/types':
+        specifier: workspace:*
+        version: link:packages/types-utils
       '@liutsing/types-utils':
         specifier: ^1.0.2
         version: 1.0.2
@@ -490,9 +493,6 @@ importers:
       '@liutsing/prettier-config':
         specifier: ^0.0.6
         version: 0.0.6
-      '@liutsing/types':
-        specifier: workspace:*
-        version: link:../types-utils
       '@liutsing/types-utils':
         specifier: ^1.0.2
         version: 1.0.2

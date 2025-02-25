@@ -21,6 +21,7 @@
     "@liutsing/eslint-config": "^0.0.11",
     "@liutsing/prettier-config": "^0.0.6",
     "@liutsing/tsconfig": "^0.0.6",
+    "@liutsing/types": "workspace:*",
     "@liutsing/types-utils": "^1.0.2",
     "@types/jest": "29.5.2",
     "cross-env": "^7.0.3",

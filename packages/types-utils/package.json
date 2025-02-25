@@ -27,6 +27,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
+    "postinstall": "npm run build",
     "new:patch": "npm version patch"
   }
 }
