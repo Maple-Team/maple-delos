@@ -52,4 +52,33 @@ export class MinioService {
       })
     })
   }
+
+  async fetchFileByMinioFilePath(filePath: string) {
+    return new Promise((resolve, reject) => {
+      this.minioClient.send('get-proxy', filePath).subscribe({
+        next: resolve,
+        error: (error: Error) => {
+          reject(error)
+        },
+        complete: () => {},
+      })
+    })
+  }
+
+  async uploadProxy(buffer: Buffer | string, contentType: string) {
+    return new Promise((resolve, reject) => {
+      this.minioClient.send('upload-proxy', { buffer, contentType }).subscribe({
+        next: (filePath: string) => {
+          resolve(filePath)
+        },
+        error: (error: Error) => {
+          console.error(error)
+          reject(error)
+        },
+        complete: () => {
+          // this.logger.debug('Completed')
+        },
+      })
+    })
+  }
 }

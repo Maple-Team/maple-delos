@@ -6,7 +6,7 @@ import type { Request as ExpressRequest, Response as ExpressResponse } from 'exp
 import axios, { AxiosError, AxiosInstance, ResponseType } from 'axios'
 import { Logger } from 'winston'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
-import { ClientProxy } from '@nestjs/microservices'
+import { MinioService } from '../minio/minio.service'
 
 @Injectable()
 export class ProxyService {
@@ -14,7 +14,7 @@ export class ProxyService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheService: Cache,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-    @Inject('MINIO_SERVICE') private minioClient: ClientProxy
+    private readonly minioService: MinioService
   ) {
     this.axiosInstance = axios.create({
       timeout: 1000 * 60,
@@ -30,16 +30,7 @@ export class ProxyService {
   }
 
   async fetchFileByMinioFilePath(filePath: string) {
-    return new Promise((resolve, reject) => {
-      this.minioClient.send('get-proxy', filePath).subscribe({
-        next: resolve,
-        error: (error: Error) => {
-          this.logger.error('oss获取出错: %o', error.stack)
-          reject(error)
-        },
-        complete: () => {},
-      })
-    })
+    return this.minioService.fetchFileByMinioFilePath(filePath)
   }
 
   async getFetch(req: ExpressRequest, res: ExpressResponse) {
@@ -138,19 +129,14 @@ export class ProxyService {
         else if (responseData instanceof ArrayBuffer) buffer = Buffer.from(responseData)
         else buffer = responseData
 
-        // 同步返回
-        this.minioClient.send('upload-proxy', { buffer, contentType }).subscribe({
-          next: (filePath: string) => {
+        this.minioService
+          .uploadProxy(buffer, contentType)
+          .then((filePath) => {
             const cacheKey = `proxy:${JSON.stringify(query)}`
             this.cacheService.set(cacheKey, { filePath, contentType }).catch(this.logger.error)
-          },
-          error: (error: Error) => {
-            this.logger.error('保存错误: %o', error.stack)
-          },
-          complete: () => {
-            // this.logger.debug('Completed')
-          },
-        })
+          })
+          .catch(this.logger.error)
+
         return { data: responseData, contentType }
       })
       .catch((error: AxiosError) => {
