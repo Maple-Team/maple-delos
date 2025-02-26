@@ -1,7 +1,9 @@
 import { AppPlatform } from '@liutsing/enums'
+import { ApiProperty } from '@nestjs/swagger'
 import { IsBoolean, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength, Min } from 'class-validator'
 
 export class CreateAppDto {
+  @ApiProperty({ description: 'app包名', example: 'xxxx' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
