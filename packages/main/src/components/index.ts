@@ -34,3 +34,4 @@ export { upperDirectiveTransformer } from './graphql/common/directives/upper-cas
 export { Image } from './gallery/image/entities/image.entity'
 export { AppPackageModule } from '../components/app/app.module'
 export { App } from '../components/app/entities/app.entity'
+export { ProxyModule } from '../components/proxy/proxy.module'

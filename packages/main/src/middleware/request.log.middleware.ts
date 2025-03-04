@@ -24,7 +24,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
 
     if (process.env.NODE_ENV === 'development') {
       const timestamp = Date.now()
-      console.log(`Request URL: ${url} - ${originalUrl} - Timestamp: ${timestamp} - ${statusCode}`)
+      //   console.log(`Request URL: ${url} - ${originalUrl} - Timestamp: ${timestamp} - ${statusCode}`)
     }
 
     const info: RequestLogInfo = {

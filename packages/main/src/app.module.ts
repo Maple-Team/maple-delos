@@ -56,10 +56,11 @@ import {
   UserModule,
   VideoModule,
   upperDirectiveTransformer,
+  ProxyModule
 } from './components'
 import { TransformInterceptor } from './interceptor/transform.interceptor'
 import { HeaderInterceptor } from './interceptor/header.interceptor'
-import { ProxyModule } from './components/proxy/proxy.module'
+ 
 
 const envFiles = {
   development: '.env.development',
