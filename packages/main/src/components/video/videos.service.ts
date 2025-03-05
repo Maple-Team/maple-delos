@@ -197,16 +197,38 @@ export class VideoService {
   }
 
   async getAllActresses(page: number, pageSize: number) {
-    const condition = {}
-    const total = await this.actressModel.countDocuments(condition)
+    // const total = await this.actressModel.countDocuments().exec()
 
-    const query = this.actressModel.find(condition)
+    // const query = this.actressModel.find()
+    // // @https://github.com/scalablescripts/nest-search-mongo
+    // // https://article.arunangshudas.com/top-10-advanced-pagination-techniques-with-mongoose-2320a6ac49a7
+    // const records = await query
+    //   .skip((page - 1) * pageSize)
+    //   .limit(pageSize)
+    //   .exec()
 
-    const data = await query
-      .skip((page - 1) * pageSize)
-      .limit(pageSize)
-      .sort({ createdAt: -1 })
+    // 第一步：获取所有不重复的演员名称
+    const names = await this.model
+      .distinct('actresses', {
+        hasVideo: true,
+      })
       .exec()
+
+    const query = this.actressModel.find({
+      name: { $in: names },
+    })
+
+    // 第二步：根据名称查询演员详细信息
+    const [total, records] = await Promise.all([
+      this.actressModel.countDocuments({
+        name: { $in: names },
+      }),
+      query
+        .skip((page - 1) * pageSize)
+        .limit(pageSize)
+        .sort({ createdAt: -1 })
+        .exec(),
+    ])
 
     return {
       pagination: {
@@ -214,7 +236,7 @@ export class VideoService {
         current: +page,
         pageSize,
       },
-      records: data,
+      records,
     }
   }
 

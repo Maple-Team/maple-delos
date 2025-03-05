@@ -60,7 +60,10 @@ export class ProxyService {
       responseType: responseType.toLowerCase() as ResponseType,
       query: req.query,
     })
-    if (response instanceof HttpException) throw response
+    if (response instanceof HttpException) {
+      // 错误处理: 分开处理?
+      throw response
+    }
     const { data, contentType } = response
     res.set('Content-Type', contentType)
     res.send(data)
