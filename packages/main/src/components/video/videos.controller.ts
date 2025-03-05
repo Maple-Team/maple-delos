@@ -37,12 +37,12 @@ export class VideoController {
   @Get('actresses')
   getAllActresses(@Query() query: { page?: number; pageSize?: number }) {
     const { page = 1, pageSize = 30 } = query
-    return this.service.getAllActresses(+page, +pageSize)
+    return this.service.getActressesByPagination(+page, +pageSize)
   }
 
   @Get('distinct-actresses')
   getAllDistinctActresses() {
-    return this.service.getAllDistinctActresses()
+    return this.service.getHasVideoActresses()
   }
 
   @Post('actresses-batch-add')

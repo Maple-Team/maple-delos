@@ -18,39 +18,30 @@ interface RestParams {
 @Injectable()
 export class VideoService {
   constructor(
-    @InjectModel(Video.name) private model: Model<VideoDocument>,
+    @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
     @InjectModel(Actress.name) private actressModel: Model<ActressDocument>,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
   ) {}
 
-  async findWithPagination(page: number, pageSize: number, rest: RestParams): Promise<BaseList<Video>> {
-    const filterKeys: RestParams = {}
-    if (rest.code) filterKeys.code = rest.code
-    if (rest.actress) filterKeys.actresses = rest.actress
-
-    const condition = {
-      ...filterKeys,
-      hasDetail: true,
-    }
-
-    const total = await this.model.countDocuments(condition).exec()
-
-    const query = this.model.find(condition)
-    // @https://github.com/scalablescripts/nest-search-mongo
-    // https://article.arunangshudas.com/top-10-advanced-pagination-techniques-with-mongoose-2320a6ac49a7
-    const data = await query
-      .skip((page - 1) * pageSize)
-      .limit(pageSize)
-      .exec()
-
-    return {
-      pagination: {
-        total,
-        current: +page,
-        pageSize,
-      },
-      records: data,
-    }
+  batchAddActress(data: Actress[]): Promise<AnyToFix> {
+    return this.videoModel.bulkWrite(
+      data.map((item) => {
+        const config: AnyBulkWriteOperation<Actress> = {
+          // 这个操作只会更新匹配到的第一个文档。如果查询条件匹配到多个文档，只有第一个文档会被更新
+          updateOne: {
+            // updateMany：这个操作会更新所有匹配到的文档。如果查询条件匹配到多个文档，所有这些文档都会被更新
+            filter: { name: item.name },
+            update: {
+              $set: {
+                ...item,
+              },
+            },
+            upsert: true,
+          },
+        }
+        return config
+      })
+    )
   }
 
   containsJapanese(text?: string): boolean {
@@ -79,7 +70,7 @@ export class VideoService {
           releaseDate: dayjs(releaseDate).toDate(),
         }
       : {}
-    const res = await this.model
+    const res = await this.videoModel
       .findOneAndUpdate(
         { code: data.code }, // 查询条件，根据视频代码查找视频
         [
@@ -102,7 +93,7 @@ export class VideoService {
     this.logger.debug('findOneAndUpdate res: %o', res)
     // 如果没有找到匹配的文档，则创建新文档并保存
     return (
-      await this.model.create({
+      await this.videoModel.create({
         ...data,
         releaseDate: dayjs(data.releaseDate).toDate(), // 将 releaseDate 转换为 Date 类型
         hasDetail: true,
@@ -112,7 +103,7 @@ export class VideoService {
 
   async findAll() {
     // 移除主键_id
-    return this.model
+    return this.videoModel
       .find({
         hasVideo: true,
       })
@@ -175,7 +166,7 @@ export class VideoService {
       return config
     })
 
-    return this.model.bulkWrite(bulkData)
+    return this.videoModel.bulkWrite(bulkData)
   }
 
   /**
@@ -186,7 +177,7 @@ export class VideoService {
   findByCode(code: string) {
     // 使用Mongoose的findOne方法在数据库中查找具有指定代码的视频
     return (
-      this.model
+      this.videoModel
         .findOne({
           // 指定查找条件为视频代码
           code,
@@ -196,37 +187,27 @@ export class VideoService {
     )
   }
 
-  async getAllActresses(page: number, pageSize: number) {
-    // const total = await this.actressModel.countDocuments().exec()
+  // --------------------------------------------------------------
 
-    // const query = this.actressModel.find()
-    // // @https://github.com/scalablescripts/nest-search-mongo
-    // // https://article.arunangshudas.com/top-10-advanced-pagination-techniques-with-mongoose-2320a6ac49a7
-    // const records = await query
-    //   .skip((page - 1) * pageSize)
-    //   .limit(pageSize)
-    //   .exec()
+  async findWithPagination(page: number, pageSize: number, rest: RestParams): Promise<BaseList<Video>> {
+    const filterKeys: RestParams = {}
+    if (rest.code) filterKeys.code = rest.code
+    if (rest.actress) filterKeys.actresses = rest.actress
 
-    // 第一步：获取所有不重复的演员名称
-    const names = await this.model
-      .distinct('actresses', {
-        hasVideo: true,
-      })
-      .exec()
+    const condition = {
+      ...filterKeys,
+      hasDetail: true,
+    }
 
-    const query = this.actressModel.find({
-      name: { $in: names },
-    })
-
-    // 第二步：根据名称查询演员详细信息
+    const query = this.videoModel.find(condition)
     const [total, records] = await Promise.all([
-      this.actressModel.countDocuments({
-        name: { $in: names },
-      }),
+      this.videoModel.countDocuments(condition),
+      // @https://github.com/scalablescripts/nest-search-mongo
+      // https://article.arunangshudas.com/top-10-advanced-pagination-techniques-with-mongoose-2320a6ac49a7
       query
         .skip((page - 1) * pageSize)
         .limit(pageSize)
-        .sort({ createdAt: -1 })
+        .sort({ code: -1 })
         .exec(),
     ])
 
@@ -240,33 +221,65 @@ export class VideoService {
     }
   }
 
-  async getAllDistinctActresses() {
-    const data = await this.model
+  /**
+   * 分页获取所有演员
+   * @param page
+   * @param pageSize
+   * @returns
+   */
+  async getActressesByPagination(page: number, pageSize: number) {
+    // const total = await this.actressModel.countDocuments().exec()
+
+    // const query = this.actressModel.find()
+    // // @https://github.com/scalablescripts/nest-search-mongo
+    // // https://article.arunangshudas.com/top-10-advanced-pagination-techniques-with-mongoose-2320a6ac49a7
+    // const records = await query
+    //   .skip((page - 1) * pageSize)
+    //   .limit(pageSize)
+    //   .exec()
+
+    // 第一步：获取所有不重复的演员名称
+    const names = await this.videoModel
       .distinct('actresses', {
         hasVideo: true,
       })
       .exec()
-    return data
+
+    const condition = {
+      name: { $in: names },
+    }
+
+    // 第二步：根据名称查询演员详细信息
+    const [total, records] = await Promise.all([
+      this.actressModel.countDocuments(condition),
+      // FIXME 这里存在没有查询问题
+      this.actressModel.find(condition, 'name', {
+        sort: { name: -1 },
+        skip: (page - 1) * pageSize,
+        limit: pageSize,
+      }),
+    ])
+
+    return {
+      pagination: {
+        total,
+        current: +page,
+        pageSize,
+      },
+      records,
+    }
   }
 
-  batchAddActress(data: Actress[]): Promise<AnyToFix> {
-    return this.model.bulkWrite(
-      data.map((item) => {
-        const config: AnyBulkWriteOperation<Actress> = {
-          // 这个操作只会更新匹配到的第一个文档。如果查询条件匹配到多个文档，只有第一个文档会被更新
-          updateOne: {
-            // updateMany：这个操作会更新所有匹配到的文档。如果查询条件匹配到多个文档，所有这些文档都会被更新
-            filter: { name: item.name },
-            update: {
-              $set: {
-                ...item,
-              },
-            },
-            upsert: true,
-          },
-        }
-        return config
+  /**
+   * 获取存在视频的所有演员
+   * @returns
+   */
+  async getHasVideoActresses() {
+    const data = await this.videoModel
+      .distinct('actresses', {
+        hasVideo: true,
       })
-    )
+      .exec()
+    return data.map((item) => item.trim()).filter(Boolean)
   }
 }
