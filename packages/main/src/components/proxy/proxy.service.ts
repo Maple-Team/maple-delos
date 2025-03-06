@@ -137,15 +137,15 @@ export class ProxyService {
           .uploadProxy(buffer, contentType)
           .then((filePath) => {
             const cacheKey = `proxy:${JSON.stringify(query)}`
-            this.cacheService.set(cacheKey, { filePath, contentType }).catch(this.logger.error)
+            this.cacheService.set(cacheKey, { filePath, contentType }).catch((e) => this.logger.error(e))
           })
-          .catch(this.logger.error)
+          .catch((e) => this.logger.error(e))
 
         return { data: responseData, contentType }
       })
       .catch((error: AxiosError) => {
         error.status === 502 && console.error('502可能是代理服务器的问题')
-        this.logger.error(error.stack)
+        this.logger.error(error)
         console.error(error.config.url)
         return new HttpException(error.message, error.response.status)
       })

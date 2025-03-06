@@ -39,12 +39,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus()
 
     const exceptionRes = exception.getResponse()
-    this.logger.error(
-      'HttpExceptionFilter url: %s, exception: %o, stack: %s',
-      `\x1b[34m${request.url}\x1b[0m`,
-      exceptionRes,
-      exception.stack
-    ) // NOTE 错误日志->console和文件的输出会有差别
+    this.logger.error(exception)
 
     response
       .status(status)

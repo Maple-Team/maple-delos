@@ -27,7 +27,9 @@ export class TypeORMErrorFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
 
-    this.logger.error('TypeORMErrorFilter error: %o, stack: %s, url: %s', err, err.stack, request.url)
+    response.header('X-Version', process.env.APP_VERSION)
+
+    this.logger.error(err)
 
     if (err instanceof QueryFailedError) {
       if (err.code === 'ER_DUP_ENTRY') {

@@ -71,16 +71,9 @@ export class AppController {
   @Get('403')
   //   @UseFilters(new HttpExceptionFilter()) // method scope
   async findAll() {
-    throw new HttpException(
-      {
-        status: HttpStatus.FORBIDDEN,
-        error: 'This is a custom message',
-      },
-      HttpStatus.FORBIDDEN,
-      {
-        cause: new Error(),
-        description: 'some error',
-      }
-    )
+    throw new HttpException('This is a custom message', HttpStatus.FORBIDDEN, {
+      cause: new Error(),
+      description: 'some error',
+    })
   }
 }

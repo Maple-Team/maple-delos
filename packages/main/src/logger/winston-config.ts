@@ -26,13 +26,13 @@ const baseRotateFileOption: WinstonDailyRotateFile.DailyRotateFileTransportOptio
 }
 
 const formats = [
-  winston.format.timestamp({
-    format: 'YYYY-MM-DD HH:mm:ss SSS',
-  }),
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss SSS' }),
   winston.format.splat(),
   winston.format.errors({ stack: true }),
-  winston.format.printf(({ timestamp, level, message }) => {
-    return `[${timestamp}] [${level}] ${message}`
+  // NOTE @https://stackoverflow.com/questions/70786287/nodejs-winston-logger-not-printing-trace/72975220#72975220
+  winston.format.printf(({ timestamp, level, message, stack }) => {
+    const text = `[${timestamp}] ${level.toUpperCase()} ${message}`
+    return stack ? `${text}\n${stack}` : text
   }),
 ]
 

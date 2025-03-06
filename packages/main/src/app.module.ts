@@ -43,6 +43,7 @@ import {
   ProductsModule,
   Project,
   ProjectsModule,
+  ProxyModule,
   RecipesModule,
   RedisModule,
   ScreenshotModule,
@@ -56,11 +57,9 @@ import {
   UserModule,
   VideoModule,
   upperDirectiveTransformer,
-  ProxyModule
 } from './components'
 import { TransformInterceptor } from './interceptor/transform.interceptor'
 import { HeaderInterceptor } from './interceptor/header.interceptor'
- 
 
 const envFiles = {
   development: '.env.development',
@@ -195,6 +194,7 @@ const envFiles = {
   controllers: [AppController],
   providers: [
     AppService,
+    // NOTE NestJS的全局过滤器按注册的逆序执行？
     {
       provide: APP_FILTER,
       useClass: GlobalErrorFilter,
