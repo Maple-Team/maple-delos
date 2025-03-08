@@ -8,17 +8,13 @@ ENV PATH="$PNPM_HOME:$PATH"
 ENV registry="https://registry.npmmirror.com"
 ENV COREPACK_NPM_REGISTRY=${registry}
 
-RUN npm config set registry ${registry}
-RUN npm install -g corepack@latest
-RUN corepack enable pnpm
+RUN npm config set registry ${registry} && npm install -g corepack@latest && corepack enable pnpm
 ARG APP_VERSION
 
 FROM base AS build
 COPY . /app
 # RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --registry=https://registry.npmmirror.com/  --frozen-lockfile
 RUN pnpm install --registry=${registry} --frozen-lockfile
-# RUN pnpx browserslist@latest --update-db
-# RUN pnpm up caniuse-lite
 
 ENV TZ=Asia/Shanghai
 
