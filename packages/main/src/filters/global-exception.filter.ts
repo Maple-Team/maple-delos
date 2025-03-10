@@ -21,6 +21,7 @@ export class GlobalErrorFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
     this.logger.error(error) // NOTE 错误日志->console和文件的输出会有差别
     response.header('X-Version', process.env.APP_VERSION)
+
     // NOTE 策略模式
     if (error instanceof MongooseError) {
       response.status(HttpStatus.BAD_REQUEST).json({
