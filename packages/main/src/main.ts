@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
@@ -6,6 +7,9 @@ import bodyParser from 'body-parser'
 import { AppModule } from './app.module'
 import { swaggerConfig, swaggerOptions } from './swagger'
 import { validationPipe } from './validator'
+
+const root = resolve(__dirname, '..')
+const version = require(`${root}/package.json`).version
 
 /**
   // httpsOptions = {
@@ -73,7 +77,9 @@ async function bootstrap() {
   const port = configService.get<number>('PORT')
 
   await app.listen(port, '0.0.0.0')
-  console.log(`Application is running on: ${await app.getUrl()}`)
+  console.log(
+    `Application is running on: ${await app.getUrl()}, version: ${version}-${process.env.APP_VERSION || 'dev'}`
+  )
 }
 
 bootstrap().catch(console.error)
