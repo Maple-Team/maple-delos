@@ -3,6 +3,7 @@ import { HttpStatus, Inject, Injectable, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
+import type { JwtPayload } from '@liutsing/types'
 
 declare module 'express' {
   interface Request {
@@ -13,6 +14,22 @@ declare module 'express' {
   }
 }
 
+class ReqUser {
+  id: number
+  username: string
+  phone: string
+  constructor(id?: number, username?: string, phone?: string) {
+    this.id = id
+    this.username = username
+    this.phone = phone
+  }
+
+  toString() {
+    if (!this.id) return 'N/A'
+    return `${this.id}/${this.username ?? ''}/${this.phone ?? '0'}`
+  }
+}
+
 @Injectable()
 export class RequestLoggingMiddleware implements NestMiddleware {
   constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
@@ -20,10 +37,10 @@ export class RequestLoggingMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     // FIXME 输出两次？
     const t1 = performance.now()
-    const { method, ip, originalUrl, headers, url, body: payload, statusCode } = req
+    const { method, ip, originalUrl, headers, body: payload } = req
 
     if (process.env.NODE_ENV === 'development') {
-      const timestamp = Date.now()
+      //   const timestamp = Date.now()
       //   console.log(`Request URL: ${url} - ${originalUrl} - Timestamp: ${timestamp} - ${statusCode}`)
     }
 
@@ -45,46 +62,55 @@ export class RequestLoggingMiddleware implements NestMiddleware {
         try {
           if (body instanceof Buffer) {
             status = HttpStatus.OK
-          } else {
-            // NOTE may be undefined
-            // FIXME 优雅的处理这个响应状态
+          } else if (body instanceof Error) {
+            // 其他异常
+            status = HttpStatus.INTERNAL_SERVER_ERROR
+          } else if (typeof body === 'string') {
             status = JSON.parse(body).status
+          } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR
           }
-          // 业务ok的请求，日志中的状态更新展示为200
-          if (status === 0) status = 200
-          if (status === undefined) status = HttpStatus.INTERNAL_SERVER_ERROR
         } catch (error) {
-          this.logger.debug('error: %o', error)
+          // FIXME 存在未处理的响应状态
+          this.logger.debug('status error: %o, url: %s', error, originalUrl)
         }
+        // 404 接口无用户信息：未走到鉴权中间件
+        const authorization = headers.authorization
+        const jwtPayload: JwtPayload | undefined = authorization
+          ? (JSON.parse(Buffer.from(authorization.split('.')[1], 'base64').toString()) as unknown as JwtPayload)
+          : undefined
+
+        // FIXME /api/auth/login 172.18.0.1 200 48.9ms { phone: '18123845936', password: '5936' } 1 Admin/undefined
         const method = info.method.toUpperCase()
         const usedTime = performance.now() - t1
-        const infoUser = {
-          id: req.user?.id,
-          username: req.user?.username,
-          phone: req.user?.phone,
-        }
+        const infoUser = new ReqUser(
+          req.user?.id || jwtPayload?.sub,
+          req.user?.username || jwtPayload?.username,
+          req.user?.phone
+        )
+
         // TODO 记录响应体
         method.toLowerCase() === 'get'
           ? this.logger.info(
-              '%s %s %s %d %sms %s %o',
+              ' %s %s %s %d %sms %s %s',
               method,
               `\x1b[34m${info.url}\x1b[0m`,
               info.ip,
               status,
               usedTime.toFixed(1),
-              info.ua || 'N/A',
+              info.ua,
               infoUser
             )
           : this.logger.info(
-              '%s %s %s %d %sms %s %o %o',
+              '%s %s %s %d %sms %s %s %o',
               method,
               `\x1b[34m${info.url}\x1b[0m`,
               info.ip,
               status,
               usedTime.toFixed(1),
-              info.ua || 'N/A',
-              info.payload,
-              infoUser
+              info.ua,
+              infoUser,
+              info.payload
             )
         // 用户指纹 https://www.npmjs.com/package/@binance/fingerprint
         // https://www.npmjs.com/package/express-fingerprint

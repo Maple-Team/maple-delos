@@ -1,5 +1,5 @@
 import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common'
-import { Catch, HttpException, Inject } from '@nestjs/common'
+import { Catch, ForbiddenException, HttpException, Inject, UnauthorizedException } from '@nestjs/common'
 import type { Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
@@ -39,6 +39,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus()
 
     const exceptionRes = exception.getResponse()
+
+    if (!(exception instanceof UnauthorizedException || exception instanceof ForbiddenException))
+      this.logger.error(exception)
 
     response
       .status(status)

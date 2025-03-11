@@ -32,6 +32,7 @@
   "dependencies": {
     "@liutsing/utils": "^0.1.5",
     "core-js": "3",
+    "@liutsing/enums": "^1.0.5",
     "winston-daily-rotate-file": "^5.0.0"
   }
 }

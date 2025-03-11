@@ -28,9 +28,9 @@
   "dependencies": {
     "@apollo/server": "^4.10.4",
     "@graphql-tools/utils": "^10.2.2",
-    "@liutsing/enums": "^1.0.5",
     "@liutsing/node-utils": "^0.0.3",
     "@liutsing/utils": "^0.5.1",
+    "@liutsing/enums": "^1.0.5",
     "@nestjs-modules/ioredis": "^2.0.1",
     "@nestjs/apollo": "^12.1.0",
     "@nestjs/axios": "^3.0.1",

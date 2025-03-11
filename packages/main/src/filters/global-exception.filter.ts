@@ -39,11 +39,9 @@ export class GlobalErrorFilter implements ExceptionFilter {
         path: request.url,
       })
     } else {
-      let statusCode = HttpStatus.INTERNAL_SERVER_ERROR
-      try {
-        // @ts-expect-error: xx
-        statusCode = error.statusCode
-      } catch (e) {}
+      // TODO 补充错误类型
+      const statusCode = HttpStatus.INTERNAL_SERVER_ERROR
+
       response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         status: statusCode,
         message: error.message,

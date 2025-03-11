@@ -44,15 +44,18 @@ export const winstonConfig: WinstonModuleOptions = {
   level: 'info',
   format: winston.format.combine(...formats),
   transports: [
-    new winston.transports.Console({
-      level: 'debug',
-      format: winston.format.combine(
-        winston.format.cli({
-          level: true,
-        }),
-        ...formats
-      ),
-    }),
+    process.env.NODE_ENV === 'development'
+      ? new winston.transports.Console({
+          level: 'debug',
+          // 统一格式
+          //   format: winston.format.combine(
+          //     winston.format.cli({
+          //       level: true,
+          //     }),
+          //     ...formats
+          //   ),
+        })
+      : null,
     new WinstonDailyRotateFile({
       ...baseRotateFileOption,
       level: 'info',

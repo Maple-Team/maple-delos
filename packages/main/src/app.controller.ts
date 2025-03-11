@@ -25,11 +25,13 @@ export class AppController {
     return body
   }
 
-  @Get('hello')
-  async json() {
+  @Get('test')
+  async test() {
+    //
     await sleep(500)
     // 400
     if (Math.random() > 0.5) throw new UnauthorizedException('Forbidden')
+    else if (Math.random() > 0.9) throw new Error('Error')
     else return 'ok'
 
     // 502 test
