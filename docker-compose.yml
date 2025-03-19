@@ -14,6 +14,10 @@ services:
     container_name: nestjs-minio
     image: liutsing/delos-minio:${VERSION}
     environment:
+      # PC
+      #   - MINIO_ACCESS_KEY=ve1GAYxfTzNLkDwCRQCs
+      #   - MINIO_SECRET_KEY=2RYflyXUCQf6BTQnxwAbRz1sjmLIqHlDEjvjxss9
+      # mac
       - MINIO_ACCESS_KEY=363wbyRsqOAsWXt7jsWB
       - MINIO_SECRET_KEY=sUjdiu0xgCiGwwdFCsrG4YDR1u1xepC7KxjQqgZg
       - MINIO_I18N_BUCKET=i18n
