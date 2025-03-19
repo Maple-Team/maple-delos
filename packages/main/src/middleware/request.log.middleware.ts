@@ -76,16 +76,17 @@ export class RequestLoggingMiddleware implements NestMiddleware {
         }
         // 404 接口无用户信息：未走到鉴权中间件
         const authorization = headers.authorization
-        const jwtPayload: JwtPayload | undefined = authorization
-          ? (JSON.parse(Buffer.from(authorization.split('.')[1], 'base64').toString()) as unknown as JwtPayload)
+        const token = authorization?.split('.')[1]
+        const jwtPayload: JwtPayload | undefined = token
+          ? (JSON.parse(Buffer.from(token, 'base64').toString()) as unknown as JwtPayload)
           : undefined
 
         // FIXME /api/auth/login 172.18.0.1 200 48.9ms { phone: '18123845936', password: '5936' } 1 Admin/undefined
         const method = info.method.toUpperCase()
         const usedTime = performance.now() - t1
         const infoUser = new ReqUser(
-          req.user?.id || jwtPayload?.sub,
-          req.user?.username || jwtPayload?.username,
+          req.user?.id ?? jwtPayload?.sub,
+          req.user?.username ?? jwtPayload?.username,
           req.user?.phone
         )
 
