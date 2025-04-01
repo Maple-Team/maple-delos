@@ -1,0 +1,27 @@
+services:
+  jmeter:
+    image: justb4/jmeter:5.5
+    container_name: jmeter-master
+    volumes:
+      - ./test-plans:/test
+      - ./results:/results
+    networks:
+      - maple-network
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-Djava.awt.headless=true # 新增headless模式
+      - JVM_ARGS=-Xmx4096m -Xms1024m -XX:MaxMetaspaceSize=512m # 调整内存参数
+    # 关键修改：添加命令行参数
+    command:
+      - -n # 注意每个参数前加 "-"，且缩进到 command 层级
+      - -t
+      - /test/delos-test.jmx # 替换为你的测试文件名
+      - -l
+      - /results/results.jtl
+      - -e
+      - -o
+      - /results/report
+
+networks:
+  maple-network:
+    external: true
