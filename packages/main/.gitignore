@@ -40,3 +40,6 @@ audit.json
 
 # env
 .env.development
+
+# 文档
+documentation

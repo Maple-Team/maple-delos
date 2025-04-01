@@ -12,6 +12,7 @@ import { CacheModule } from '@nestjs/cache-manager'
       isGlobal: true,
       useFactory: async () => {
         // @https://blog.logrocket.com/add-redis-cache-nestjs-app/
+        // 使用 cache-manager-redis-store，然后添加下连接配置
         const store = await redisStore({
           socket: {
             host: process.env.REDIS_HOST,
@@ -30,4 +31,4 @@ import { CacheModule } from '@nestjs/cache-manager'
     }),
   ],
 })
-export class RedisModule {}
+export class CacheRedisModule {}

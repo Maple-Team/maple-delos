@@ -25,13 +25,17 @@ const baseRotateFileOption: WinstonDailyRotateFile.DailyRotateFileTransportOptio
   //   symlinkName: 'request.log',
 }
 
+// 在格式化配置中添加行号解析逻辑
 const formats = [
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss SSS' }),
   winston.format.splat(),
   winston.format.errors({ stack: true }),
+  //   winston.format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'stack'] }), // 新增 metadata 解析
   // NOTE @https://stackoverflow.com/questions/70786287/nodejs-winston-logger-not-printing-trace/72975220#72975220
-  winston.format.printf(({ timestamp, level, message, stack }) => {
-    const text = `[${timestamp}] ${level.toUpperCase()} ${message}`
+  winston.format.printf(({ timestamp, level, message, stack, ...metadata }) => {
+    // 获取调用栈信息
+    const context = metadata.context || 'Application'
+    const text = `[${timestamp}] ${level.toUpperCase()} [${context}] ${message}`
     return stack ? `${text}\n${stack}` : text
   }),
 ]

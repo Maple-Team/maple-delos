@@ -22,7 +22,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:watch": "jest --watch",
-    "auto": "openapi --input http://localhost:4004/api-json --output ./generated --client axios"
+    "auto": "openapi --input http://localhost:4004/api-json --output ./generated --client axios",
+    "compodoc": "pnpx @compodoc/compodoc -p tsconfig.json -s -o"
   },
   "prettier": "@liutsing/prettier-config",
   "dependencies": {

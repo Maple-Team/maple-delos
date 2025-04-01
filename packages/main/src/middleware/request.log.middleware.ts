@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import type { JwtPayload } from '@liutsing/types'
+import { WithContext } from '@/auth/decorators'
 
 declare module 'express' {
   interface Request {
@@ -31,6 +32,7 @@ class ReqUser {
 }
 
 @Injectable()
+@WithContext(RequestLoggingMiddleware.name)
 export class RequestLoggingMiddleware implements NestMiddleware {
   constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
 
@@ -39,10 +41,9 @@ export class RequestLoggingMiddleware implements NestMiddleware {
     const t1 = performance.now()
     const { method, ip, originalUrl, headers, body: payload } = req
 
-    if (process.env.NODE_ENV === 'development') {
-      //   const timestamp = Date.now()
-      //   console.log(`Request URL: ${url} - ${originalUrl} - Timestamp: ${timestamp} - ${statusCode}`)
-    }
+    // if (process.env.NODE_ENV === 'development') console.log('请求日志中间件', originalUrl)
+    //   const timestamp = Date.now()
+    //   console.log(`Request URL: ${url} - ${originalUrl} - Timestamp: ${timestamp} - ${statusCode}`)
 
     const info: RequestLogInfo = {
       method,

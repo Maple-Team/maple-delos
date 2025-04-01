@@ -40,6 +40,7 @@ COPY ./packages/main/.env.production .env.production
 RUN pnpm install --only=production
 
 ENV NODE_ENV=production
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache tzdata
 ENV TZ=Asia/Shanghai
 ENV APP_VERSION=${APP_VERSION}
@@ -61,6 +62,7 @@ COPY ./packages/minio/.env.production .env.production
 RUN pnpm install --only=production
 
 ENV NODE_ENV=production
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache tzdata
 ENV TZ=Asia/Shanghai
 ENV APP_VERSION=${APP_VERSION}

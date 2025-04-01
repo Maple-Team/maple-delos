@@ -7,8 +7,10 @@ import axios, { AxiosError, AxiosInstance, ResponseType } from 'axios'
 import { Logger } from 'winston'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { MinioService } from '../minio/minio.service'
+import { WithContext } from '@/auth/decorators'
 
 @Injectable()
+@WithContext(ProxyService.name)
 export class ProxyService {
   private axiosInstance: AxiosInstance
   constructor(
@@ -40,6 +42,7 @@ export class ProxyService {
     const cachedFilePath: { filePath: string; contentType: string } | undefined = await this.cacheService.get(cacheKey)
     if (cachedFilePath) {
       // url被缓存，使用缓存数据去oss中获取数据
+      // 这里会报错
       const { data, type } = (await this.fetchFileByMinioFilePath(cachedFilePath.filePath)) as {
         data: number[]
         type: string
@@ -92,6 +95,13 @@ export class ProxyService {
     return 'This action returns all proxy'
   }
 
+  /**
+   * 代理请求二进制数据
+   * @param method
+   * @param url
+   * @param param2
+   * @returns
+   */
   async fetch(
     method: string,
     url: string,
@@ -118,7 +128,7 @@ export class ProxyService {
         },
       })
       .then(async (response) => {
-        const contentType = response.headers['content-type']
+        const resContentType = response.headers['content-type']
 
         // this.logger.debug('content-type: %s, responseType: %s', contentType, responseType)
         const responseData = response.data
@@ -131,22 +141,23 @@ export class ProxyService {
         // )
         if (responseData instanceof Blob) buffer = Buffer.from(await responseData.arrayBuffer())
         else if (responseData instanceof ArrayBuffer) buffer = Buffer.from(responseData)
-        else buffer = responseData
+        else if (responseData instanceof Buffer) buffer = responseData
+        else throw new HttpException('proxy返回类型与期望的不符合', HttpStatus.BAD_REQUEST)
 
         this.minioService
-          .uploadProxy(buffer, contentType)
+          .uploadProxy(buffer, resContentType)
           .then((filePath) => {
             const cacheKey = `proxy:${JSON.stringify(query)}`
-            this.cacheService.set(cacheKey, { filePath, contentType }).catch((e) => this.logger.error(e))
+            this.cacheService
+              .set(cacheKey, { filePath, contentType: resContentType })
+              .catch((e) => this.logger.error(e))
           })
           .catch((e) => this.logger.error(e))
-
-        return { data: responseData, contentType }
+        return { data: responseData, contentType: resContentType }
       })
       .catch((error: AxiosError) => {
         error.status === 502 && console.error('502可能是代理服务器的问题')
         this.logger.error(error)
-        console.error(error.config.url)
         return new HttpException(error.message, error.response.status)
       })
   }

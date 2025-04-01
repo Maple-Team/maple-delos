@@ -1,21 +1,54 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Post, UnauthorizedException } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Logger as NestLogger,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import { sleep } from '@liutsing/utils'
+import { RedisClientType } from 'redis'
+import { InjectRedis } from '@nestjs-modules/ioredis'
+import Redis from 'ioredis'
 import { AppService } from './app.service'
-import { Public } from './auth/decorators'
+import { Public, WithContext } from './auth/decorators'
 
 @Public()
 @Controller('app')
+@WithContext(AppController.name)
 // @UseFilters(new HttpExceptionFilter()) controller scope
 export class AppController {
+  @Inject('REDIS_CLIENT')
+  private redisClient: RedisClientType
+
+  private nestLogger = new NestLogger()
   constructor(
     private readonly appService: AppService,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @InjectRedis() private readonly redis: Redis
   ) {}
 
-  @Get()
-  hello(): string {
+  @Get('/logger-test')
+  loggerTest(): string {
+    // 附带metadata信息
+    this.logger.info('hello')
+    this.nestLogger.debug('hello', 'aa', AppController.name)
+    return this.appService.hello()
+  }
+
+  @Get('/redis-test')
+  async redisTest(): Promise<string> {
+    await this.redis.set('key', 'Redis data!')
+    const redisData = await this.redis.get('key')
+    console.log(redisData)
+    await this.redisClient.set('key', 'Redis data!')
+    const redisData2 = await this.redisClient.get('key')
+    console.log(redisData2)
     return this.appService.hello()
   }
 

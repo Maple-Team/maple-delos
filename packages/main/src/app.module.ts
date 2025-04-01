@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule, OnModuleInit, RequestMethod } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { MongooseModule } from '@nestjs/mongoose'
@@ -8,6 +8,8 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { DirectiveLocation, GraphQLDirective } from 'graphql'
+import { createClient } from 'redis'
+import { RedisModule } from '@nestjs-modules/ioredis'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { GatewaysModule } from './gateways/gateways.module'
@@ -22,6 +24,7 @@ import {
   App as AppEntity,
   AppPackageModule,
   BlogModule,
+  CacheRedisModule,
   ControlModule,
   DeviceModule,
   ElectronAppModule,
@@ -45,7 +48,6 @@ import {
   ProjectsModule,
   ProxyModule,
   RecipesModule,
-  RedisModule,
   ScreenshotModule,
   Screenshots,
   SonyoonjooModule,
@@ -79,7 +81,7 @@ const envFiles = {
       },
     }),
     WinstonModule.forRoot(winstonConfig),
-    RedisModule,
+    CacheRedisModule,
     ConfigModule.forRoot({
       envFilePath: envFiles[process.env.NODE_ENV] || '.env',
     }),
@@ -159,12 +161,13 @@ const envFiles = {
     UserModule,
     TypeOrmModule.forFeature([User]),
     WinstonModule,
-    // IoRedisModule.forRootAsync({
-    //   useFactory: () => ({
-    //     type: 'single',
-    //     url: `redis://${process.env.REDIS_HOST}:6379`,
-    //   }),
-    // }),
+    RedisModule.forRootAsync({
+      // 支持单节点和集群模式
+      useFactory: () => ({
+        type: 'single',
+        url: `redis://${process.env.REDIS_HOST}:6379`,
+      }),
+    }),
     MicroserviceTestModule,
     SseTestModule,
     VideoModule,
@@ -216,14 +219,28 @@ const envFiles = {
       provide: APP_INTERCEPTOR,
       useClass: HeaderInterceptor,
     },
+    {
+      provide: 'REDIS_CLIENT',
+      async useFactory() {
+        const client = createClient({
+          socket: {
+            host: 'localhost',
+            port: 6379,
+          },
+          database: 2,
+        })
+        await client.connect()
+        return client
+      },
+    },
   ],
 })
 export class AppModule implements NestModule, OnModuleInit {
   constructor(private readonly service: AppService) {}
 
   configure(consumer: MiddlewareConsumer) {
-    // FIXME exclude不生效 exclude({ path: '/api/proxy', method: RequestMethod.GET })
-    consumer.apply(RequestLoggingMiddleware).forRoutes('*')
+    // NOTE 不用添加/api前缀，会自动添加
+    consumer.apply(RequestLoggingMiddleware).exclude({ path: '/proxy', method: RequestMethod.GET }).forRoutes('*')
   }
 
   async onModuleInit() {
