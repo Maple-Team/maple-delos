@@ -19,7 +19,7 @@ import { AppService } from './app.service'
 import { Public, WithContext } from './auth/decorators'
 
 @Public()
-@Controller('app')
+@Controller('')
 @WithContext(AppController.name)
 // @UseFilters(new HttpExceptionFilter()) controller scope
 export class AppController {
@@ -110,5 +110,11 @@ export class AppController {
       cause: new Error(),
       description: 'some error',
     })
+  }
+
+  @Get()
+  hello(): string {
+    // NOTE 没有走中间件
+    return this.appService.hello()
   }
 }

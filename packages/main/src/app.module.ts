@@ -136,7 +136,6 @@ const envFiles = {
                 database: 'maple',
                 password: 'root',
               }
-        console.log('mysql config', config)
         return {
           type: 'mysql',
           entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale, AppEntity],

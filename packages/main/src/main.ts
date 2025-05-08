@@ -1,5 +1,5 @@
 import { resolve } from 'node:path'
-import { VersioningType } from '@nestjs/common'
+import { RequestMethod, VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
 import { SwaggerModule } from '@nestjs/swagger'
@@ -48,10 +48,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   // NOTE 激活class-validator验证
   app.useGlobalPipes(validationPipe)
-
-  // API配置
   app.setGlobalPrefix('api', {
-    exclude: ['/', '/health'],
+    exclude: [
+      // 排除不需要前缀的路由
+      // NOTE 会影响中间件的执行次数
+      //   { path: '/', method: RequestMethod.GET },
+      { path: '/health', method: RequestMethod.GET },
+    ],
   })
   app.enableVersioning({
     type: VersioningType.HEADER,
@@ -83,3 +86,21 @@ async function bootstrap() {
 }
 
 bootstrap().catch(console.error)
+const getTimeStr = () => {
+  const date = new Date()
+  const timeStr = `${date.toLocaleDateString()} ${date.toLocaleTimeString()} ${date.getMilliseconds()}`
+  return timeStr
+}
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(getTimeStr(), 'unhandledRejection', {
+    type: 'UNHANDLED_REJECTION',
+    promise,
+    reason,
+  })
+})
+
+// 捕获未处理的异常
+process.on('uncaughtException', (err, origin) => {
+  console.error(getTimeStr(), 'Uncaught Exception:', err, origin)
+})
