@@ -47,6 +47,7 @@ import {
   Project,
   ProjectsModule,
   ProxyModule,
+  PuppeteerModule,
   RecipesModule,
   ScreenshotModule,
   Screenshots,
@@ -193,6 +194,7 @@ const envFiles = {
     RecipesModule,
     ProxyModule,
     AppPackageModule,
+    PuppeteerModule,
   ],
   controllers: [AppController],
   providers: [
@@ -239,7 +241,10 @@ export class AppModule implements NestModule, OnModuleInit {
 
   configure(consumer: MiddlewareConsumer) {
     // NOTE 不用添加/api前缀，会自动添加
-    consumer.apply(RequestLoggingMiddleware).exclude({ path: '/proxy', method: RequestMethod.GET }).forRoutes('*')
+    consumer
+      .apply(RequestLoggingMiddleware)
+      .exclude({ path: '/proxy', method: RequestMethod.GET }, { path: '/screenshot', method: RequestMethod.POST })
+      .forRoutes('*')
   }
 
   async onModuleInit() {

@@ -92,13 +92,13 @@ const getTimeStr = () => {
   return timeStr
 }
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error(getTimeStr(), 'unhandledRejection', {
-    type: 'UNHANDLED_REJECTION',
-    promise,
-    reason,
-  })
-})
+// process.on('unhandledRejection', (reason, promise) => {
+//   console.error(getTimeStr(), 'unhandledRejection', {
+//     type: 'UNHANDLED_REJECTION',
+//     promise,
+//     reason,
+//   })
+// })
 
 // 捕获未处理的异常
 process.on('uncaughtException', (err, origin) => {

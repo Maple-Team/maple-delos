@@ -27,6 +27,13 @@ pnpm run docker
   - [compodoc 文档](https://compodoc.app/guides/options.html)
 - swagger 生成文档
 - redis 数据结构和使用
+- https://docs.nestjs.com/techniques/performance 性能优化
+- https://docs.nestjs.com/techniques/versioning 版本控制
+- https://docs.nestjs.com/fundamentals/lifecycle-events 生命周期事件
+- https://docs.nestjs.com/fundamentals/discovery-service 服务发现
+- https://docs.nestjs.com/security/csrf csrf 防御
+- https://api-references-nestjs.netlify.app/api api 文档
+- https://docs.nestjs.com/fundamentals/testing#end-to-end-testing e2e 测试
 
 ### 理解 nestjs 中的各个概念
 
