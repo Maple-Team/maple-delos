@@ -25,6 +25,7 @@ import {
   AppPackageModule,
   BlogModule,
   CacheRedisModule,
+  CheerioCrawleeModule,
   ControlModule,
   DeviceModule,
   ElectronAppModule,
@@ -195,6 +196,7 @@ const envFiles = {
     ProxyModule,
     AppPackageModule,
     PuppeteerModule,
+    CheerioCrawleeModule,
   ],
   controllers: [AppController],
   providers: [

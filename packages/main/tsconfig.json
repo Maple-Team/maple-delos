@@ -12,6 +12,7 @@
     "strictBindCallApply": false,
     "strictNullChecks": false,
     "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "paths": {
       "@/*": ["src/*"]
     },
@@ -25,5 +26,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "global.d.ts"]
+  "include": ["src/**/*", "global.d.ts"],
+  "exclude": ["node_modules"]
 }

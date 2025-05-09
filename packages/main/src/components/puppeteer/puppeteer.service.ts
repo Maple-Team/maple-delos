@@ -1,6 +1,9 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
-// import { ConfigService } from '@nestjs/config'
-import puppeteer, { Browser, Page } from 'puppeteer'
+import puppeteer from 'puppeteer-extra'
+import { Browser, Page } from 'puppeteer'
+import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+
+puppeteer.use(StealthPlugin())
 
 interface ScreenshotTask {
   id: string
@@ -15,17 +18,22 @@ export class PuppeteerService implements OnModuleDestroy {
   private browser: Browser | null = null
   private activeTasks: Map<string, ScreenshotTask> = new Map()
 
-  //   constructor(private configService: ConfigService) {}
-
   // 初始化浏览器实例
   async getBrowser(): Promise<Browser> {
     if (!this.browser || !this.browser.connected) {
       this.browser = await puppeteer.launch({
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-infobars', // 隐藏自动化特征
+          '--window-size=1280,720',
+          '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          '--disable-blink-features=AutomationControlled', // 禁用自动化控制特征
+        ],
         timeout: 30000,
         executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-        // timeout: this.configService.get<number>('PUPPETEER_TIMEOUT', 30000),
+        userDataDir: 'C:\\Users\\liuts\\AppData\\Local\\Google\\Chrome\\User Data\\Default',
       })
     }
     return this.browser
@@ -75,6 +83,10 @@ export class PuppeteerService implements OnModuleDestroy {
 
   // 关闭浏览器实例
   async onModuleDestroy() {
-    if (this.browser) await this.browser.close()
+    if (this.browser) {
+      await this.browser.close()
+      console.log('Browser closed')
+      this.browser = null
+    }
   }
 }
