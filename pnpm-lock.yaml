@@ -45,8 +45,8 @@ importers:
         specifier: workspace:*
         version: link:packages/types-utils
       '@liutsing/types-utils':
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^1.0.5
+        version: 1.0.5
       '@types/jest':
         specifier: 29.5.2
         version: 29.5.2
@@ -2527,6 +2527,9 @@ packages:
 
   '@liutsing/types-utils@1.0.2':
     resolution: {integrity: sha512-uMGtjC81fmMP2b2UonJlc7RS5MGXgn7M52LvPAs04FuwcqMiD2tnOEFvdNkjY3ge5GCGK0AlvwUlVocpchRAuw==}
+
+  '@liutsing/types-utils@1.0.5':
+    resolution: {integrity: sha512-DJkAOyT2LnlHS/+IwB5nixuHp8ieAxEhMvX1huMdzUKUNtpc3rVpJJxhZEa3aggS5DNkAo4kmxnTfqVlI95vzA==}
 
   '@liutsing/utils@0.0.9':
     resolution: {integrity: sha512-F0xiaV/aBlunuyDM2NIYM/2xnnu4fhXHdqe7duT6tsjrutIdZMp1CEbdHDAub66wHmVDdAlsflRj/k0+zYVo/w==}
@@ -11345,6 +11348,8 @@ snapshots:
   '@liutsing/types-utils@0.1.1': {}
 
   '@liutsing/types-utils@1.0.2': {}
+
+  '@liutsing/types-utils@1.0.5': {}
 
   '@liutsing/utils@0.0.9':
     dependencies:
