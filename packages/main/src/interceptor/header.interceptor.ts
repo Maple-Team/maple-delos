@@ -16,7 +16,7 @@ export class HeaderInterceptor implements NestInterceptor<AnyToFix, Token> {
   intercept(context: ExecutionContext, next: CallHandler): Observable<Token> {
     const req: Request = context.switchToHttp().getRequest()
     const url = req.url
-    if (['/api/proxy', '/api/screenshot'].includes(url)) {
+    if (['/api/proxy', '/api/screenshot'].some((u) => url.includes(u))) {
       // 代理请求直接返回
       return next.handle()
     }

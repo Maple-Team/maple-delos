@@ -19,7 +19,9 @@ export class GlobalErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
+    this.logger.error(`[${request.method}] ${request.url} 出错了`)
     this.logger.error(error) // NOTE 错误日志->console和文件的输出会有差别
+
     response.header('X-Version', process.env.APP_VERSION)
 
     // NOTE 策略模式
