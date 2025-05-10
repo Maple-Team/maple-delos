@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule, OnModuleInit, RequestMethod } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { MongooseModule } from '@nestjs/mongoose'
@@ -8,6 +8,8 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { DirectiveLocation, GraphQLDirective } from 'graphql'
+import { createClient } from 'redis'
+import { RedisModule } from '@nestjs-modules/ioredis'
 import { AppService } from './app.service'
 import { AppController } from './app.controller'
 import { GatewaysModule } from './gateways/gateways.module'
@@ -19,7 +21,11 @@ import { CustomTypeormLogger, winstonConfig } from './logger'
 import {
   Album,
   AlbumModule,
+  App as AppEntity,
+  AppPackageModule,
   BlogModule,
+  CacheRedisModule,
+  CheerioCrawleeModule,
   ControlModule,
   DeviceModule,
   ElectronAppModule,
@@ -41,8 +47,9 @@ import {
   ProductsModule,
   Project,
   ProjectsModule,
+  ProxyModule,
+  PuppeteerModule,
   RecipesModule,
-  RedisModule,
   ScreenshotModule,
   Screenshots,
   SonyoonjooModule,
@@ -76,7 +83,7 @@ const envFiles = {
       },
     }),
     WinstonModule.forRoot(winstonConfig),
-    RedisModule,
+    CacheRedisModule,
     ConfigModule.forRoot({
       envFilePath: envFiles[process.env.NODE_ENV] || '.env',
     }),
@@ -133,12 +140,12 @@ const envFiles = {
               }
         return {
           type: 'mysql',
-          entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale],
+          entities: [Product, Fiction, Label, Image, Album, User, Team, Project, Screenshots, Locale, AppEntity],
           synchronize: true,
           charset: 'utf8mb4',
           // typeorm 日志
           maxQueryExecutionTime: 1000,
-          logger: new CustomTypeormLogger(),
+          logger: process.env.NODE_ENV === 'development' ? null : new CustomTypeormLogger(),
           //   debug: true, // 开启debug，太多信息了
           logging: process.env.NODE_ENV === 'development' ? false : 'all',
           ...config,
@@ -155,12 +162,15 @@ const envFiles = {
     UserModule,
     TypeOrmModule.forFeature([User]),
     WinstonModule,
-    // IoRedisModule.forRootAsync({
-    //   useFactory: () => ({
-    //     type: 'single',
-    //     url: `redis://${process.env.REDIS_HOST}:6379`,
-    //   }),
-    // }),
+    RedisModule.forRootAsync({
+      // 支持单节点和集群模式
+      useFactory: async () => {
+        return {
+          type: 'single',
+          url: `redis://${process.env.REDIS_HOST}:6379`,
+        }
+      },
+    }),
     MicroserviceTestModule,
     SseTestModule,
     VideoModule,
@@ -185,10 +195,15 @@ const envFiles = {
       },
     }),
     RecipesModule,
+    ProxyModule,
+    AppPackageModule,
+    PuppeteerModule,
+    CheerioCrawleeModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
+    // NOTE NestJS的全局过滤器按注册的逆序执行？
     {
       provide: APP_FILTER,
       useClass: GlobalErrorFilter,
@@ -209,13 +224,31 @@ const envFiles = {
       provide: APP_INTERCEPTOR,
       useClass: HeaderInterceptor,
     },
+    {
+      provide: 'REDIS_CLIENT',
+      async useFactory() {
+        const client = createClient({
+          socket: {
+            host: process.env.REDIS_HOST,
+            port: 6379,
+          },
+          database: 2,
+        })
+        await client.connect()
+        return client
+      },
+    },
   ],
 })
 export class AppModule implements NestModule, OnModuleInit {
   constructor(private readonly service: AppService) {}
 
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RequestLoggingMiddleware).forRoutes('*')
+    // NOTE 不用添加/api前缀，会自动添加
+    consumer
+      .apply(RequestLoggingMiddleware)
+      .exclude({ path: '/proxy', method: RequestMethod.GET }, { path: '/screenshot', method: RequestMethod.POST })
+      .forRoutes('*')
   }
 
   async onModuleInit() {

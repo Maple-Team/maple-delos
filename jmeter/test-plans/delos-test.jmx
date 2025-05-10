@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2">
+    <hashTree>
+        <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Delos压测计划">
+            <stringProp name="TestPlan.comments">Delos压测计划</stringProp>
+            <boolProp name="TestPlan.functional_mode">false</boolProp>
+            <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+        </TestPlan>
+        <hashTree> <!-- 新增此层hashTree -->
+            <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="线程组">
+                <intProp name="ThreadGroup.num_threads">50</intProp>
+                <intProp name="ThreadGroup.ramp_time">10</intProp>  <!-- 启动时间（秒） -->
+                <longProp name="ThreadGroup.start_time">0</longProp>
+                <longProp name="ThreadGroup.end_time">0</longProp>
+                <boolProp name="ThreadGroup.scheduler">true</boolProp>
+                <longProp name="ThreadGroup.duration">300</longProp> <!-- 持续时间（秒） -->
+            </ThreadGroup>
+            <hashTree> <!-- 新增此层hashTree -->
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy"
+                    testname="HTTP请求">
+                    <stringProp name="HTTPSampler.domain">maple-gateway</stringProp> <!-- Docker容器名称 -->
+                    <stringProp name="HTTPSampler.port">4001</stringProp>
+                    <stringProp name="HTTPSampler.path">/api/sonyoonjoo</stringProp> <!-- 替换实际端点 -->
+                    <stringProp name="HTTPSampler.method">GET</stringProp>
+                </HTTPSamplerProxy>
+                <hashTree> <!-- 新增此层hashTree -->
+                    <ResultCollector guiclass="ViewResultsFullVisualizer"
+                        testclass="ResultCollector" testname="结果树">
+                        <objProp>
+                            <name>save_config</name>
+                            <value class="SaveService" />  <!-- 修改为 SaveService -->
+                        </objProp>
+                        <stringProp name="filename">/results/results.jtl</stringProp>
+                        <boolProp name="ResultCollector.error_logging">false</boolProp>
+                        <objProp>
+                            <name>save_config</name>
+                            <value class="SaveService">
+                                <time>true</time>
+                                <latency>true</latency>
+                                <timestamp>false</timestamp>
+                            </value>
+                        </objProp>
+                    </ResultCollector>
+                    <hashTree /> <!-- 结果树需要空hashTree -->
+                </hashTree>
+            </hashTree>
+        </hashTree>
+    </hashTree>
+</jmeterTestPlan>

@@ -1,6 +1,6 @@
-import * as path from 'path'
+import path from 'path'
 import { FileTransportOptions } from 'winston/lib/winston/transports'
-import * as winston from 'winston'
+import winston from 'winston'
 import { WinstonModuleOptions } from 'nest-winston'
 import WinstonDailyRotateFile from 'winston-daily-rotate-file'
 
@@ -21,16 +21,22 @@ const baseRotateFileOption: WinstonDailyRotateFile.DailyRotateFileTransportOptio
   level: 'info',
   filename: '%DATE%',
   extension: '.log', // 文件后缀
+  //   createSymlink: true,
+  //   symlinkName: 'request.log',
 }
 
+// 在格式化配置中添加行号解析逻辑
 const formats = [
-  winston.format.timestamp({
-    format: 'YYYY-MM-DD HH:mm:ss SSS',
-  }),
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss SSS' }),
   winston.format.splat(),
   winston.format.errors({ stack: true }),
-  winston.format.printf(({ timestamp, level, message }) => {
-    return `[${timestamp}] ${level} ${message}`
+  //   winston.format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'stack'] }), // 新增 metadata 解析
+  // NOTE @https://stackoverflow.com/questions/70786287/nodejs-winston-logger-not-printing-trace/72975220#72975220
+  winston.format.printf(({ timestamp, level, message, stack, ...metadata }) => {
+    // 获取调用栈信息
+    const context = metadata.context || 'Application'
+    const text = `[${timestamp}] ${level.toUpperCase()} [${context}] ${message}`
+    return stack ? `${text}\n${stack}` : text
   }),
 ]
 
@@ -42,18 +48,18 @@ export const winstonConfig: WinstonModuleOptions = {
   level: 'info',
   format: winston.format.combine(...formats),
   transports: [
-    process.env.NODE_ENV !== 'production'
+    process.env.NODE_ENV === 'development'
       ? new winston.transports.Console({
           level: 'debug',
-          format: winston.format.combine(
-            winston.format.cli({
-              level: true,
-            }),
-            ...formats
-          ),
+          // 统一格式
+          //   format: winston.format.combine(
+          //     winston.format.cli({
+          //       level: true,
+          //     }),
+          //     ...formats
+          //   ),
         })
       : null,
-
     new WinstonDailyRotateFile({
       ...baseRotateFileOption,
       level: 'info',

@@ -1,21 +1,54 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Post, UnauthorizedException } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Logger as NestLogger,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import { sleep } from '@liutsing/utils'
+import { RedisClientType } from 'redis'
+import { InjectRedis } from '@nestjs-modules/ioredis'
+import Redis from 'ioredis'
 import { AppService } from './app.service'
-import { Public } from './auth/decorators'
+import { Public, WithContext } from './auth/decorators'
 
 @Public()
-@Controller('app')
+@Controller('')
+@WithContext(AppController.name)
 // @UseFilters(new HttpExceptionFilter()) controller scope
 export class AppController {
+  @Inject('REDIS_CLIENT')
+  private redisClient: RedisClientType
+
+  private nestLogger = new NestLogger()
   constructor(
     private readonly appService: AppService,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @InjectRedis() private readonly redis: Redis
   ) {}
 
-  @Get()
-  hello(): string {
+  @Get('/logger-test')
+  loggerTest(): string {
+    // 附带metadata信息
+    this.logger.info('hello')
+    this.nestLogger.debug('hello', 'aa', AppController.name)
+    return this.appService.hello()
+  }
+
+  @Get('/redis-test')
+  async redisTest(): Promise<string> {
+    await this.redis.set('key', 'Redis data!')
+    const redisData = await this.redis.get('key')
+    console.log(redisData)
+    await this.redisClient.set('key', 'Redis data!')
+    const redisData2 = await this.redisClient.get('key')
+    console.log(redisData2)
     return this.appService.hello()
   }
 
@@ -25,11 +58,13 @@ export class AppController {
     return body
   }
 
-  @Get('hello')
-  async json() {
+  @Get('test')
+  async test() {
+    //
     await sleep(500)
     // 400
     if (Math.random() > 0.5) throw new UnauthorizedException('Forbidden')
+    else if (Math.random() > 0.9) throw new Error('Error')
     else return 'ok'
 
     // 502 test
@@ -71,16 +106,15 @@ export class AppController {
   @Get('403')
   //   @UseFilters(new HttpExceptionFilter()) // method scope
   async findAll() {
-    throw new HttpException(
-      {
-        status: HttpStatus.FORBIDDEN,
-        error: 'This is a custom message',
-      },
-      HttpStatus.FORBIDDEN,
-      {
-        cause: new Error(),
-        description: 'some error',
-      }
-    )
+    throw new HttpException('This is a custom message', HttpStatus.FORBIDDEN, {
+      cause: new Error(),
+      description: 'some error',
+    })
+  }
+
+  @Get()
+  hello(): string {
+    // NOTE 没有走中间件
+    return this.appService.hello()
   }
 }

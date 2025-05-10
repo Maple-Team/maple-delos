@@ -40,3 +40,10 @@ export class Media {
 }
 
 export const MediaSchema = SchemaFactory.createForClass(Media)
+MediaSchema.methods.toJSON = function () {
+  const obj = this.toObject()
+  obj.id = obj._id
+  delete obj._id
+
+  return obj
+}

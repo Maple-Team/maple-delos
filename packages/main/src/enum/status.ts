@@ -1,4 +1,5 @@
 /**
+ * @deprecated
  * 业务状态码
  */
 export enum StatusEnum {

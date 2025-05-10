@@ -1,21 +1,35 @@
 services:
   main:
     container_name: maple-gateway
-    image: liutsing/delos-main:latest
+    image: liutsing/delos-main:${VERSION}
     ports:
-      - 3001:3000
+      - 4001:3000
     restart: always
     networks:
       - maple-network
     environment:
       - MINIO_SERVICE=nestjs-minio
+      - VERSION=${VERSION}
+      - RABBITMQ_URL=amqp://user:bitnami@rabbitmq-server:5672/
+      - PUPPETEER_SERVICE=maple-puppeteer
   minio:
     container_name: nestjs-minio
-    image: liutsing/delos-minio:latest
+    image: liutsing/delos-minio:${VERSION}
     environment:
-      - MINIO_ACCESS_KEY=XpiUE5sGLAXt4EtKgKiH
-      - MINIO_SECRET_KEY=8qnIB6KhE5n5hxpxePeDewWpD47XLTs4K9CsUKKk
+      # PC
+      #   - MINIO_ACCESS_KEY=e68Cu2Fybl0KKJEs5i67
+      #   - MINIO_SECRET_KEY=ztHk5Z4tGLnYaiobFfD5cVfDN5R7pQtmyvc2MaUs
+      # mac
+      - MINIO_ACCESS_KEY=363wbyRsqOAsWXt7jsWB
+      - MINIO_SECRET_KEY=sUjdiu0xgCiGwwdFCsrG4YDR1u1xepC7KxjQqgZg
       - MINIO_I18N_BUCKET=i18n
+      - VERSION=${VERSION}
+    restart: always
+    networks:
+      - maple-network
+  puppeteer:
+    container_name: maple-puppeteer
+    image: liutsing/service-puppeteer:${VERSION}
     restart: always
     networks:
       - maple-network

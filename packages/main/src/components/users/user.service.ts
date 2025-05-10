@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 import { FindOptionsWhere, Like, Not, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import * as bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt'
 import { BaseList, BaseParams } from '@liutsing/types-utils'
 import { OperationType, UserRole } from '@liutsing/enums'
 import type { ChangePwdDto } from '@liutsing/types-utils'
@@ -9,6 +9,8 @@ import { OnEvent } from '@nestjs/event-emitter'
 import { ModifyUser } from 'types'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import type { Cache } from 'cache-manager'
 import { User } from './entities/user.entity'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -21,7 +23,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private repo: Repository<User>,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @Inject(CACHE_MANAGER) private cacheService: Cache
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -209,5 +212,12 @@ export class UserService {
 
   isOnline(feature: string) {
     return this.onlineDevices.includes(feature)
+  }
+
+  async getMenus(id: number) {
+    const baseMenus = ['/dashboard', '/react-demo', '/react-amap', '/react-panel', '/graphql', '/socket-io-chat']
+    // await this.cacheService.set(`user:menus:${id}`, baseMenus)
+    const data = await this.cacheService.get(`user:menus:${id}`)
+    return data || baseMenus
   }
 }

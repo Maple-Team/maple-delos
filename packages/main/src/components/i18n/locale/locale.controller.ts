@@ -6,7 +6,7 @@ import { UpdateLocaleDto } from './dto/update-locale.dto'
 import { Locale } from './entities/locale.entity'
 import { Public } from '@/auth/decorators'
 
-@Controller('locale')
+@Controller('/i18n/locale')
 export class LocaleController {
   constructor(private readonly service: LocaleService) {}
 

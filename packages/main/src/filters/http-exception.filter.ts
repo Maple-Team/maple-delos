@@ -1,5 +1,5 @@
 import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common'
-import { Catch, HttpException, Inject } from '@nestjs/common'
+import { Catch, ForbiddenException, HttpException, Inject, UnauthorizedException } from '@nestjs/common'
 import type { Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
@@ -38,12 +38,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
     const status = exception.getStatus()
 
-    this.logger.error('HttpExceptionFilter error: %o, stack: %s, url: %s', exception, exception.stack, request.url) // NOTE 错误日志->console和文件的输出会有差别
-    response.status(status).header('X-Version', process.env.APP_VERSION).json({
-      status,
-      timestamp: new Date().getTime(),
-      path: request.url,
-      message: exception.message,
-    })
+    const exceptionRes = exception.getResponse()
+
+    if (!(exception instanceof UnauthorizedException || exception instanceof ForbiddenException))
+      this.logger.error(exception)
+
+    response
+      .status(status)
+      .header('X-Version', process.env.APP_VERSION)
+      .json({
+        status,
+        timestamp: new Date().getTime(),
+        path: request.url,
+        message: exception.message,
+        ...(typeof exceptionRes === 'string' ? { errors: [exceptionRes] } : exceptionRes),
+      })
   }
 }

@@ -1,6 +1,6 @@
-import * as path from 'path'
+import path from 'path'
 import { cwd } from 'process'
-import * as fileStreamRotator from 'file-stream-rotator'
+import { getStream } from 'file-stream-rotator'
 
 // 配置日志轮转选项
 const logDirectory = path.join(cwd(), 'logs') // 日志目录
@@ -15,7 +15,7 @@ const logFileDatePattern = 'YYYY-MM-DD' // 日志文件日期格式
 //     at FSReqCallback.wrapper [as oncomplete] (node:fs:824:5)
 
 // 创建日志轮转器
-export const logStream = fileStreamRotator.getStream({
+export const logStream = getStream({
   filename: path.join(logDirectory, logFileName),
   frequency: 'daily',
   date_format: logFileDatePattern,

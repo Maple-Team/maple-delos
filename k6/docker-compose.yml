@@ -1,0 +1,18 @@
+services:
+  k6-runner:
+    image: grafana/k6:0.58.0
+    container_name: k6-runner
+    volumes:
+      - ./scripts:/scripts # 挂载测试脚本目录
+      - ./results:/results # 结果输出目录
+    networks:
+      - maple-network # 复用原有网络
+    command: run /scripts/test.js --out json=/results/results.json
+    # 可选环境变量（按需添加）:
+    environment:
+      - K6_VUS=50 # 并发用户数
+      - K6_DURATION=5m # 测试持续时间
+
+networks:
+  maple-network:
+    external: true # 复用已存在的网络

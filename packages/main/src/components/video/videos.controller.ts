@@ -1,11 +1,9 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { isEmpty } from 'lodash'
-import { UserRole } from '@liutsing/enums'
 import { VideoService } from './videos.service'
 import { Video } from './schemas/video.schema'
-import { Public, Roles } from '@/auth/decorators'
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard'
-import { RolesGuard } from '@/auth/guards/roles.guard'
+import { Actress } from './schemas/actress.schema'
+import { Public } from '@/auth/decorators'
 
 @Public()
 @Controller('videos')
@@ -24,8 +22,6 @@ export class VideoController {
     return this.service.add(data)
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
   @Get('pages')
   findWithPagination(@Query() query: { page: number; pageSize: number }) {
     const { page = 1, pageSize = 30, ...rest } = query
@@ -33,11 +29,29 @@ export class VideoController {
   }
 
   @Post('batch-add')
-  async batchAdd(@Body() data: Partial<Video[]>): Promise<AnyToFix> {
+  async batchAdd(@Body() data: Partial<Video[]>) {
     if (!data || isEmpty(data)) throw new BadRequestException('empty request body')
     return this.service.batchAdd(data)
   }
 
+  @Get('actresses')
+  getAllActresses(@Query() query: { page?: number; pageSize?: number }) {
+    const { page = 1, pageSize = 30 } = query
+    return this.service.getActressesByPagination(+page, +pageSize)
+  }
+
+  @Get('distinct-actresses')
+  getAllDistinctActresses() {
+    return this.service.getHasVideoActresses()
+  }
+
+  @Post('actresses-batch-add')
+  async batchAddActress(@Body() data: Partial<Actress[]>): Promise<AnyToFix> {
+    if (!data || isEmpty(data)) throw new BadRequestException('empty request body')
+    return this.service.batchAddActress(data)
+  }
+
+  // NOTE 保持在最后
   @Get(':code')
   info(@Param() { code }: { code: string }) {
     if (!code) throw new BadRequestException('wrong parameters')

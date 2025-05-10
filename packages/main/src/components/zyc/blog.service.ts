@@ -20,7 +20,7 @@ export class BlogService {
   }
 
   async remove(id: string) {
-    return this.Model.findByIdAndRemove(id)
+    return this.Model.findByIdAndDelete(id)
   }
 
   async insertMany(data: Blog[]) {
@@ -54,7 +54,7 @@ export class BlogService {
 
     // 模糊查找 非空处理
     const [total, records] = await Promise.all([
-      this.Model.find(query).count(),
+      this.Model.countDocuments(query),
       this.Model.find(query, null, { skip: (current - 1) * size, limit: size }),
     ])
     return {

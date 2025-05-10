@@ -19,10 +19,12 @@ export class GlobalErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
-    this.logger.error('GlobalErrorFilter error: %o, stack: %s, url: %s', error, error.stack, request.url) // NOTE 错误日志->console和文件的输出会有差别
+    this.logger.error(error) // NOTE 错误日志->console和文件的输出会有差别
+    response.header('X-Version', process.env.APP_VERSION)
+
     // NOTE 策略模式
     if (error instanceof MongooseError) {
-      response.status(HttpStatus.BAD_REQUEST).header('X-Version', process.env.APP_VERSION).json({
+      response.status(HttpStatus.BAD_REQUEST).json({
         status: HttpStatus.BAD_REQUEST,
         // TODO 国际化
         message: error.message,
@@ -30,19 +32,17 @@ export class GlobalErrorFilter implements ExceptionFilter {
         path: request.url,
       })
     } else if (error instanceof SyntaxError || error instanceof TypeError || error instanceof RangeError) {
-      response.status(HttpStatus.INTERNAL_SERVER_ERROR).header('X-Version', process.env.APP_VERSION).json({
+      response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         // message: error.message, // 屏蔽错误
         timestamp: new Date().getTime(),
         path: request.url,
       })
     } else {
-      let statusCode = HttpStatus.INTERNAL_SERVER_ERROR
-      try {
-        // @ts-expect-error: xx
-        statusCode = error.statusCode
-      } catch (e) {}
-      response.status(HttpStatus.INTERNAL_SERVER_ERROR).header('X-Version', process.env.APP_VERSION).json({
+      // TODO 补充错误类型
+      const statusCode = HttpStatus.INTERNAL_SERVER_ERROR
+
+      response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         status: statusCode,
         message: error.message,
         timestamp: new Date().getTime(),

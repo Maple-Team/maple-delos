@@ -40,3 +40,10 @@ export class Device {
 }
 
 export const DeviceSchema = SchemaFactory.createForClass(Device)
+DeviceSchema.methods.toJSON = function () {
+  const obj = this.toObject()
+  obj.id = obj._id
+  delete obj._id
+
+  return obj
+}

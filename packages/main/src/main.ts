@@ -1,9 +1,15 @@
-import { VersioningType } from '@nestjs/common'
+import { resolve } from 'node:path'
+import { RequestMethod, VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import * as bodyParser from 'body-parser'
+import { SwaggerModule } from '@nestjs/swagger'
+import bodyParser from 'body-parser'
 import { AppModule } from './app.module'
+import { swaggerConfig, swaggerOptions } from './swagger'
+import { validationPipe } from './validator'
+
+const root = resolve(__dirname, '..')
+const version = require(`${root}/package.json`).version
 
 /**
   // httpsOptions = {
@@ -40,23 +46,24 @@ import { AppModule } from './app.module'
  */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-
-  // Swagger配置
-  const config = new DocumentBuilder()
-    .setTitle('MapleImage')
-    .setDescription('The maple admin API description')
-    .setVersion(require('../package.json').version)
-    .build()
-
-  const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api', app, document)
-
-  // API配置
-  app.setGlobalPrefix('api', { exclude: ['/', '/health'] })
+  // NOTE 激活class-validator验证
+  app.useGlobalPipes(validationPipe)
+  app.setGlobalPrefix('api', {
+    exclude: [
+      // 排除不需要前缀的路由
+      // NOTE 会影响中间件的执行次数
+      //   { path: '/', method: RequestMethod.GET },
+      { path: '/health', method: RequestMethod.GET },
+    ],
+  })
   app.enableVersioning({
     type: VersioningType.HEADER,
     header: 'X-API-VERSION',
   })
+
+  const document = SwaggerModule.createDocument(app, swaggerConfig)
+  // swagger api 列表: http://localhost:4003/api/docs
+  SwaggerModule.setup('docs', app, document, swaggerOptions)
 
   // 全局中间件配置
   app.enableCors({
@@ -73,7 +80,27 @@ async function bootstrap() {
   const port = configService.get<number>('PORT')
 
   await app.listen(port, '0.0.0.0')
-  console.log(`Application is running on: ${await app.getUrl()}`)
+  console.log(
+    `Application is running on: ${await app.getUrl()}, version: ${version}-${process.env.APP_VERSION || 'dev'}`
+  )
 }
 
 bootstrap().catch(console.error)
+const getTimeStr = () => {
+  const date = new Date()
+  const timeStr = `${date.toLocaleDateString()} ${date.toLocaleTimeString()} ${date.getMilliseconds()}`
+  return timeStr
+}
+
+// process.on('unhandledRejection', (reason, promise) => {
+//   console.error(getTimeStr(), 'unhandledRejection', {
+//     type: 'UNHANDLED_REJECTION',
+//     promise,
+//     reason,
+//   })
+// })
+
+// 捕获未处理的异常
+process.on('uncaughtException', (err, origin) => {
+  console.error(getTimeStr(), 'Uncaught Exception:', err, origin)
+})

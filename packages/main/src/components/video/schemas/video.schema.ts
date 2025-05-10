@@ -2,40 +2,34 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import type { Document } from 'mongoose'
 
 export type VideoDocument = Video & Document
-export type ActressDocument = Actress & Document
 
-export interface IActress {
-  name: string
-  avatar?: string
-  birthDay?: Date
-  height?: number
-}
+// https://wdk-docs.github.io/nest-docs/techniques/mongo/#_8
+// https://docs.nestjs.com/techniques/mongodb
 
-@Schema({ collection: 'actresses' })
-export class Actress implements IActress {
-  /** 姓名 */
-  @Prop({ required: true })
-  name: string
-
-  /** 头像 */
-  @Prop({ required: false })
-  avatar: string
-
-  /** 出生日期 */
-  @Prop({ required: false })
-  birthDay: Date
-
-  /** 身高 */
-  @Prop({ required: false })
-  height: number
-}
-
-@Schema({ collection: 'adult-videos' })
+@Schema({
+  collection: 'adult-videos',
+  _id: false,
+  id: true,
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+  versionKey: false,
+})
 export class Video implements IVideo {
   @Prop({ required: true })
   title: string
 
-  @Prop({ required: true, index: true })
+  @Prop({ required: false })
+  enTitle: string
+
+  @Prop({
+    required: true,
+    index: true,
+    unique: true,
+    uppercase: true,
+    lowercase: false,
+  })
   code: string
 
   @Prop({ required: true })
@@ -75,10 +69,12 @@ export class Video implements IVideo {
 
   @Prop({ required: false })
   hasDetail: boolean
+  // FIXME 时间戳
 }
 
 export interface IVideo {
   title: string
+  enTitle?: string
   code: string
   actresses: string[]
   tags?: string[]
@@ -96,14 +92,10 @@ export interface IVideo {
 }
 
 export const VideoSchema = SchemaFactory.createForClass<IVideo>(Video)
-export const ActressSchema = SchemaFactory.createForClass<IActress>(Actress)
 
-// @https://docs.nestjs.com/techniques/mongodb
-// FIXME hook
-VideoSchema.post('save', (doc: VideoDocument) => {
-  console.log('post save:', {
-    thumb: doc.thumb,
-    previews: doc.previews,
-    cover: doc.cover,
-  })
-})
+VideoSchema.methods.toJSON = function () {
+  const obj = this.toObject()
+  obj.id = obj._id
+  delete obj._id
+  return obj
+}

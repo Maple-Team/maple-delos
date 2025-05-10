@@ -1,0 +1,15 @@
+diff --git a/package.json b/package.json
+index 621fc1be585c5299d221b08fa397af7dae7aab2f..3020b09de348afc3425e9d28a33487c073476686 100644
+--- a/package.json
++++ b/package.json
+@@ -58,8 +58,8 @@
+     "module_name": "bcrypt_lib",
+     "module_path": "./lib/binding/napi-v{napi_build_version}",
+     "package_name": "{module_name}-v{version}-napi-v{napi_build_version}-{platform}-{arch}-{libc}.tar.gz",
+-    "host": "https://github.com",
+-    "remote_path": "kelektiv/node.bcrypt.js/releases/download/v{version}",
++    "host": "https://static.baynano.com",
++    "remote_path": "bcrypt-binaries",
+     "napi_versions": [
+       3
+     ]
