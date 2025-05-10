@@ -164,10 +164,12 @@ const envFiles = {
     WinstonModule,
     RedisModule.forRootAsync({
       // 支持单节点和集群模式
-      useFactory: () => ({
-        type: 'single',
-        url: `redis://${process.env.REDIS_HOST}:6379`,
-      }),
+      useFactory: async () => {
+        return {
+          type: 'single',
+          url: `redis://${process.env.REDIS_HOST}:6379`,
+        }
+      },
     }),
     MicroserviceTestModule,
     SseTestModule,
@@ -227,7 +229,7 @@ const envFiles = {
       async useFactory() {
         const client = createClient({
           socket: {
-            host: 'localhost',
+            host: process.env.REDIS_HOST,
             port: 6379,
           },
           database: 2,
