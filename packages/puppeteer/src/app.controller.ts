@@ -30,6 +30,7 @@ export class AppController {
   @MessagePattern({ cmd: 'crawleeSyzList' })
   crawleeSyzList(@Payload() payload) {
     const { urls } = payload
-    return this.service.crawlee(urls)
+    console.log(urls)
+    return this.service.crawlee(urls || [])
   }
 }

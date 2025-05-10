@@ -21,10 +21,7 @@ export class SYZCrawleeController {
       }
     )
 
-    const validUrls: string[] = urls
-      .filter((i) => i[0].split(' ').length === 3)
-      .filter(Boolean)
-      .flat()
+    const validUrls: string[] = urls.filter((i) => i[0].split(' ').length === 3).flatMap((i) => i[0])
 
     console.log(`有效链接: ${validUrls.length}`)
 

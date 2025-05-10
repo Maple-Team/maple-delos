@@ -100,5 +100,9 @@ npm_config_sharp_binary_host="https://cdn.npmmirror.com/binaries/sharp"
 npm_config_sharp_libvips_binary_host="https://cdn.npmmirror.com/binaries/sharp-libvips"
 npm_config_robotjs_binary_host="https://cdn.npmmirror.com/binaries/robotj"
 CYPRESS_DOWNLOAD_PATH_TEMPLATE='https://cdn.npmmirror.com/binaries/cypress/${version}/${platform}-${arch}/cypress.zip'
-
 ```
+
+## Temp Reading List
+
+- https://github.com/nailyjs/Nai-Six
+- https://github.com/mx-space/core

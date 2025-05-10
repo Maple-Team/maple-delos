@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import puppeteer from 'puppeteer-extra'
 import { Browser as CoreBrowser, Page } from 'puppeteer'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-import { concatMap, of } from 'rxjs'
+import { Observable, from } from 'rxjs'
+import { catchError, finalize, mergeMap } from 'rxjs/operators'
 
 puppeteer.use(StealthPlugin())
 
@@ -89,63 +91,48 @@ export class AppService implements OnModuleDestroy {
       this.browser = null
     }
   }
+
   /**
    * 抓取syz图片
    * @param list
    * TODO 改造持续返回任务
    * @returns
    */
-  async crawlee(list: string[]) {
-    if (!list || !list.length) return
-    const browser = await this.getBrowser()
-    if (!browser) throw new Error('Browser not found')
-
-    const page: Page = await browser.newPage()
-    console.log(`收到: ${list.length}个链接`)
-    const urls = list
-      .map((i) => i.split(' ').shift())
-      .filter(Boolean)
-      .map((id) => `https://tieba.baidu.com/p/${id}`)
-    // FIXME 添加重试逻辑和错误处理
-    return of(...urls).pipe(
-      // 并发请求
-      concatMap(async (url) => {
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 })
-
-        const tasks = await page.evaluate(() => {
-          const formatName = (name: string) => {
-            return `${name
-              .replace(/\s*\(/g, '_')
-              .replace(/\s*（/g, '_')
-              .replace(/\)/g, '')
-              .replace(/）/g, '')
-              .replace(/"/g, '')
-              .replace(/&/g, '')}`
+  crawlee(list: string[]) {
+    // 移除 async 修饰符，改为同步返回 Observable
+    return new Observable((observer) => {
+      // 将异步初始化逻辑移到 Observable 内部
+      this.getBrowser()
+        .then((browser) => {
+          if (!browser) {
+            observer.error(new Error('Browser not found'))
+            return
           }
-          const dir = document.querySelector('.core_title_txt')?.textContent?.trim()
-          if (!dir) return []
-          const tasks = []
-          Array.from(document.querySelectorAll('.BDE_Image')).forEach((el) => {
-            const url = el.getAttribute('src')
-            // http://tiebapic.baidu.com/forum/w%3D580/sign=a0f0a50e8f3d70cf4cfaaa05c8ddd1ba/dda4293d269759eee2a397fcf4fb43166c22dff2.jpg?tbpicau=2024-01-05-05_575facc80ed93f040dfaeb7e2bdaefd1
-            if (url) {
-              const filename = url.replace(/.*\/([a-z0-9]*\.jpg).*/, (_, f) => f)
-              const task: Task = {
-                url,
-                objectName: filename,
-                galleryName: formatName(dir),
-                personName: '孙允珠',
-              }
-              tasks.push(task)
-            }
-          })
-          return tasks
-        })
-        console.log(`${url} 已完成，获取${tasks.length}个链接}`)
 
-        return tasks
-      })
-    )
+          browser.newPage().then((page) => {
+            console.log(`收到: ${list.length}个链接`)
+
+            const urls = list
+              .map((i) => i.split(' ').shift())
+              .filter(Boolean)
+              .map((id) => `https://tieba.baidu.com/p/${id}`)
+
+            from(urls)
+              .pipe(
+                mergeMap(
+                  (url) => from(this.crawlUrl(url, page)).pipe(catchError((error) => [`错误处理: ${error.message}`])),
+                  3
+                ),
+                finalize(() => {
+                  console.log('== 所有任务完成 ==')
+                  page.close() // 添加页面关闭
+                })
+              )
+              .subscribe(observer) // 订阅内部 observable
+          })
+        })
+        .catch((error) => observer.error(error))
+    })
   }
 
   async fetchList(pageNo = 0) {
@@ -185,5 +172,40 @@ export class AppService implements OnModuleDestroy {
     })
 
     return urls
+  }
+
+  async crawlUrl(url: string, page: Page) {
+    console.log(`开始爬取: ${url}`)
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 })
+    const tasks = await page.evaluate(() => {
+      const formatName = (name: string) => {
+        return `${name
+          .replace(/\s*\(/g, '_')
+          .replace(/\s*（/g, '_')
+          .replace(/\)/g, '')
+          .replace(/）/g, '')
+          .replace(/"/g, '')
+          .replace(/&/g, '')}`
+      }
+      const dir = document.querySelector('.core_title_txt')?.textContent?.trim()
+      if (!dir) return []
+      const tasks = []
+      Array.from(document.querySelectorAll('.BDE_Image')).forEach((el) => {
+        const url = el.getAttribute('src')
+        // http://tiebapic.baidu.com/forum/w%3D580/sign=a0f0a50e8f3d70cf4cfaaa05c8ddd1ba/dda4293d269759eee2a397fcf4fb43166c22dff2.jpg?tbpicau=2024-01-05-05_575facc80ed93f040dfaeb7e2bdaefd1
+        if (url) {
+          const filename = url.replace(/.*\/([a-z0-9]*\.jpg).*/, (_, f) => f)
+          const task: Task = {
+            url,
+            objectName: filename,
+            galleryName: formatName(dir),
+            personName: '孙允珠',
+          }
+          tasks.push(task)
+        }
+      })
+      return tasks
+    })
+    return tasks
   }
 }
