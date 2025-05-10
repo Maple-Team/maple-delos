@@ -75,3 +75,30 @@ pnpm run docker
 - Bus
 
 #### spring boot
+
+## misc
+
+> 下面加了注释的话，会报错： WARN  Issue while reading "C:\Users\liuts\Code\walle\maple-delos\.npmrc". Failed to replace env in config: ${version}
+
+### npmrc 配置代理
+
+```sh
+NODEJS_ORG_MIRROR="https://cdn.npmmirror.com/binaries/node"
+NVM_NODEJS_ORG_MIRROR="https://cdn.npmmirror.com/binaries/node"
+PHANTOMJS_CDNURL="https://cdn.npmmirror.com/binaries/phantomjs"
+CHROMEDRIVER_CDNURL="https://cdn.npmmirror.com/binaries/chromedriver"
+OPERADRIVER_CDNURL="https://cdn.npmmirror.com/binaries/operadriver"
+ELECTRON_MIRROR="https://cdn.npmmirror.com/binaries/electron/"
+ELECTRON_BUILDER_BINARIES_MIRROR="https://cdn.npmmirror.com/binaries/electron-builder-binaries/"
+SASS_BINARY_SITE="https://cdn.npmmirror.com/binaries/node-sass"
+SWC_BINARY_SITE="https://cdn.npmmirror.com/binaries/node-swc"
+NWJS_URLBASE="https://cdn.npmmirror.com/binaries/nwjs/v"
+PUPPETEER_DOWNLOAD_HOST="https://cdn.npmmirror.com/binaries"
+SENTRYCLI_CDNURL="https://cdn.npmmirror.com/binaries/sentry-cli"
+SAUCECTL_INSTALL_BINARY_MIRROR="https://cdn.npmmirror.com/binaries/saucectl"
+npm_config_sharp_binary_host="https://cdn.npmmirror.com/binaries/sharp"
+npm_config_sharp_libvips_binary_host="https://cdn.npmmirror.com/binaries/sharp-libvips"
+npm_config_robotjs_binary_host="https://cdn.npmmirror.com/binaries/robotj"
+CYPRESS_DOWNLOAD_PATH_TEMPLATE='https://cdn.npmmirror.com/binaries/cypress/${version}/${platform}-${arch}/cypress.zip'
+
+```
