@@ -10,6 +10,7 @@ services:
     environment:
       - MINIO_SERVICE=nestjs-minio
       - VERSION=${VERSION}
+      - RABBITMQ_URL=amqp://user:bitnami@rabbitmq-server:5672/
   minio:
     container_name: nestjs-minio
     image: liutsing/delos-minio:${VERSION}
