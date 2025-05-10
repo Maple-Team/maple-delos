@@ -21,11 +21,13 @@ export class SYZCrawleeController {
       }
     )
 
-    const validUrls = urls
+    const validUrls: string[] = urls
       .filter((i) => i[0].split(' ').length === 3)
       .filter(Boolean)
       .flat()
 
-    this.crawleeService.crawlee(validUrls).catch(console.error)
+    console.log(`有效链接: ${validUrls.length}`)
+
+    this.crawleeService.crawlee(validUrls)
   }
 }

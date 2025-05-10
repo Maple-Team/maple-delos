@@ -16,14 +16,14 @@ services:
     container_name: nestjs-minio
     image: liutsing/delos-minio:${VERSION}
     environment:
-      # PC
-      #   - MINIO_ACCESS_KEY=e68Cu2Fybl0KKJEs5i67
-      #   - MINIO_SECRET_KEY=ztHk5Z4tGLnYaiobFfD5cVfDN5R7pQtmyvc2MaUs
-      # mac
-      - MINIO_ACCESS_KEY=363wbyRsqOAsWXt7jsWB
-      - MINIO_SECRET_KEY=sUjdiu0xgCiGwwdFCsrG4YDR1u1xepC7KxjQqgZg
-      - MINIO_I18N_BUCKET=i18n
+      - MINIO_I18N_BUCKET=i18n-bucket
       - VERSION=${VERSION}
+      # PC
+      - MINIO_ACCESS_KEY=e68Cu2Fybl0KKJEs5i67
+      - MINIO_SECRET_KEY=ztHk5Z4tGLnYaiobFfD5cVfDN5R7pQtmyvc2MaUs
+      # mac
+      # - MINIO_ACCESS_KEY=363wbyRsqOAsWXt7jsWB
+      # - MINIO_SECRET_KEY=sUjdiu0xgCiGwwdFCsrG4YDR1u1xepC7KxjQqgZg
     restart: always
     networks:
       - maple-network

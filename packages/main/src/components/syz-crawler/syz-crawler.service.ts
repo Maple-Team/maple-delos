@@ -52,15 +52,26 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
     return firstValueFrom(this.puppeteerService.send({ cmd: 'fetchSyzList' }, pageNo))
   }
 
-  async crawlee(urls: string[]) {
+  crawlee(urls: string[]) {
     if (!urls || urls.length === 0) {
       console.log('无爬取的url链接任务')
       return
     }
-    const tasks = await firstValueFrom(this.puppeteerService.send({ cmd: 'crawleeSyzList' }, urls))
-    tasks.forEach((task: Task) => {
-      this.sendTask(task).catch(console.error)
+    this.puppeteerService.send({ cmd: 'crawleeSyzList' }, urls).subscribe({
+      next: (tasks: Task[]) => {
+        tasks.forEach((task: Task) => {
+          this.sendTask(task).catch((e) => {
+            console.error(`发送任务失败: ${e}`)
+          })
+        })
+        console.log(`已发送${tasks.length}个任务`)
+      },
+      error: (err) => {
+        console.error('爬取失败', err)
+      },
+      complete: () => {
+        console.log('爬取完成')
+      },
     })
-    console.log(`已发送 ${tasks.length} 个任务`)
   }
 }

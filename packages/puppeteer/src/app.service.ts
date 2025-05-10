@@ -2,6 +2,7 @@ import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import puppeteer from 'puppeteer-extra'
 import { Browser as CoreBrowser, Page } from 'puppeteer'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+import { concatMap, of } from 'rxjs'
 
 puppeteer.use(StealthPlugin())
 
@@ -88,67 +89,63 @@ export class AppService implements OnModuleDestroy {
       this.browser = null
     }
   }
-
+  /**
+   * 抓取syz图片
+   * @param list
+   * TODO 改造持续返回任务
+   * @returns
+   */
   async crawlee(list: string[]) {
     if (!list || !list.length) return
     const browser = await this.getBrowser()
     if (!browser) throw new Error('Browser not found')
 
     const page: Page = await browser.newPage()
-
+    console.log(`收到: ${list.length}个链接`)
     const urls = list
       .map((i) => i.split(' ').shift())
       .filter(Boolean)
       .map((id) => `https://tieba.baidu.com/p/${id}`)
+    // FIXME 添加重试逻辑和错误处理
+    return of(...urls).pipe(
+      // 并发请求
+      concatMap(async (url) => {
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 })
 
-    urls
-      .reduce((prev: Promise<void>, url: string) => {
-        return prev.then(async () => {
-          await page.goto(url, {
-            waitUntil: 'networkidle2',
-            timeout: 15000,
-          })
-          const tasks = await page.evaluate(() => {
-            const formatName = (name: string) => {
-              return `${name
-                .replace(/\s*\(/g, '_')
-                .replace(/\s*（/g, '_')
-                .replace(/\)/g, '')
-                .replace(/）/g, '')
-                .replace(/"/g, '')
-                .replace(/&/g, '')}`
-            }
-            const dir = document.querySelector('.core_title_txt')?.textContent?.trim()
-            if (!dir) return []
-            const tasks = []
-            Array.from(document.querySelectorAll('.BDE_Image')).forEach((el) => {
-              const url = el.getAttribute('src')
-              // http://tiebapic.baidu.com/forum/w%3D580/sign=a0f0a50e8f3d70cf4cfaaa05c8ddd1ba/dda4293d269759eee2a397fcf4fb43166c22dff2.jpg?tbpicau=2024-01-05-05_575facc80ed93f040dfaeb7e2bdaefd1
-              if (url) {
-                const filename = url.replace(/.*\/([a-z0-9]*\.jpg).*/, (_, f) => f)
-                const task: Task = {
-                  url,
-                  objectName: filename,
-                  galleryName: formatName(dir),
-                  personName: '孙允珠',
-                }
-                tasks.push(task)
+        const tasks = await page.evaluate(() => {
+          const formatName = (name: string) => {
+            return `${name
+              .replace(/\s*\(/g, '_')
+              .replace(/\s*（/g, '_')
+              .replace(/\)/g, '')
+              .replace(/）/g, '')
+              .replace(/"/g, '')
+              .replace(/&/g, '')}`
+          }
+          const dir = document.querySelector('.core_title_txt')?.textContent?.trim()
+          if (!dir) return []
+          const tasks = []
+          Array.from(document.querySelectorAll('.BDE_Image')).forEach((el) => {
+            const url = el.getAttribute('src')
+            // http://tiebapic.baidu.com/forum/w%3D580/sign=a0f0a50e8f3d70cf4cfaaa05c8ddd1ba/dda4293d269759eee2a397fcf4fb43166c22dff2.jpg?tbpicau=2024-01-05-05_575facc80ed93f040dfaeb7e2bdaefd1
+            if (url) {
+              const filename = url.replace(/.*\/([a-z0-9]*\.jpg).*/, (_, f) => f)
+              const task: Task = {
+                url,
+                objectName: filename,
+                galleryName: formatName(dir),
+                personName: '孙允珠',
               }
-            })
-            return tasks
+              tasks.push(task)
+            }
           })
-          //   console.log(`${url} 已完成，共 ${tasks.length} 个任务}`)
-          tasks.forEach((task) => {
-            // TODO
-            // this.sendTask(task).catch(console.error)
-          })
-          console.log(`${url} 已完成，共发送${tasks.length}个任务}`)
-          return Promise.resolve()
+          return tasks
         })
-      }, Promise.resolve())
-      .catch((e) => {
-        console.error(e)
+        console.log(`${url} 已完成，获取${tasks.length}个链接}`)
+
+        return tasks
       })
+    )
   }
 
   async fetchList(pageNo = 0) {
