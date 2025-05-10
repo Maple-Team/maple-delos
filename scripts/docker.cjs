@@ -29,27 +29,21 @@ exec(
 )
 
 console.time('liutsing/delos-minio')
-exec(
-  `docker build . --target minio --build-arg APP_VERSION=${APP_VERSION} --tag liutsing/delos-minio:${version}`,
-  (err, stdout, stderr) => {
-    if (err) {
-      console.error(stderr)
-      return
-    }
-    console.log(stdout)
-    console.timeEnd('liutsing/delos-minio')
+exec(`docker build . --target minio --tag liutsing/delos-minio:${version}`, (err, stdout, stderr) => {
+  if (err) {
+    console.error(stderr)
+    return
   }
-)
+  console.log(stdout)
+  console.timeEnd('liutsing/delos-minio')
+})
 
 console.time('liutsing/service-puppeteer')
-exec(
-  `docker build . --target puppeteer --build-arg APP_VERSION=${APP_VERSION} --tag liutsing/service-puppeteer:${version}`,
-  (err, stdout, stderr) => {
-    if (err) {
-      console.error(stderr)
-      return
-    }
-    console.log(stdout)
-    console.timeEnd('liutsing/service-puppeteer')
+exec(`docker build . --target puppeteer --tag liutsing/service-puppeteer:${version}`, (err, stdout, stderr) => {
+  if (err) {
+    console.error(stderr)
+    return
   }
-)
+  console.log(stdout)
+  console.timeEnd('liutsing/service-puppeteer')
+})

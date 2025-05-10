@@ -9,7 +9,6 @@ ENV registry="https://registry.npmmirror.com"
 ENV COREPACK_NPM_REGISTRY=${registry}
 
 RUN npm config set registry ${registry} && npm install -g corepack@latest && corepack enable pnpm
-ARG APP_VERSION
 
 FROM base AS build
 COPY . /app
@@ -42,7 +41,10 @@ ENV NODE_ENV=production
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache tzdata
 ENV TZ=Asia/Shanghai
+
+ARG APP_VERSION
 ENV APP_VERSION=${APP_VERSION}
+
 EXPOSE 3000
 
 RUN mkdir -p /app/logs
@@ -65,7 +67,6 @@ ENV NODE_ENV=production
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache tzdata
 ENV TZ=Asia/Shanghai
-ENV APP_VERSION=${APP_VERSION}
 
 RUN mkdir -p /app/logs
 RUN ln -sf /dev/stderr /app/logs/error.log
@@ -100,12 +101,11 @@ ENV NODE_ENV=production
 
 ENV TZ=Asia/Shanghai
 
-ARG APP_VERSION
-ENV APP_VERSION=${APP_VERSION}
-
 EXPOSE 3000
 
 RUN mkdir -p /app/logs
 RUN ln -sf /dev/stderr /app/logs/error.log
 
 CMD [ "sh", "-c", "npm run start:prod"]
+
+# FIXME 每次都要重新构建多个镜像，即使他们的源码没有变化
