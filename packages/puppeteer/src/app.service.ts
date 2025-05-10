@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import puppeteer from 'puppeteer-extra'
-import { Browser as CoreBrowser, Page } from 'puppeteer-core'
+import { Browser as CoreBrowser, Page } from 'puppeteer'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 
 puppeteer.use(StealthPlugin())
@@ -90,7 +90,7 @@ export class AppService implements OnModuleDestroy {
   }
 
   async crawlee(list: string[]) {
-    if (!list.length) return
+    if (!list || !list.length) return
     const browser = await this.getBrowser()
     if (!browser) throw new Error('Browser not found')
 

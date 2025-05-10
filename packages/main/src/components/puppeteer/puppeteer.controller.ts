@@ -1,11 +1,15 @@
 import { Buffer } from 'buffer'
-import { Controller, Get, HttpStatus, Post, Query, Response } from '@nestjs/common'
+import { Controller, Get, HttpStatus, Inject, Post, Query, Response } from '@nestjs/common'
 import type { Response as ExpressResponse } from 'express'
-import { PuppeteerService } from './puppeteer.service'
+import { ClientProxy } from '@nestjs/microservices'
+import { firstValueFrom } from 'rxjs'
 
 @Controller('screenshot')
 export class PuppeteerController {
-  constructor(private readonly puppeteerService: PuppeteerService) {}
+  constructor(@Inject('PUPPETEER_SERVICE') private puppeteerService: ClientProxy) {}
+
+  // send： 发送消息并等待响应
+  // emit： 发送消息但不等待响应
 
   @Post()
   async captureScreenshot(@Query('url') url: string, @Response() res: ExpressResponse) {
@@ -16,7 +20,7 @@ export class PuppeteerController {
     }
 
     try {
-      const task = await this.puppeteerService.generateScreenshot(url)
+      const task = await firstValueFrom(this.puppeteerService.send({ cmd: 'captureScreenshot' }, { url }))
       //   console.log(task)
       if (task.status === 'completed') {
         res
@@ -39,7 +43,7 @@ export class PuppeteerController {
   }
 
   @Get('tasks')
-  getActiveTasks(): AnyToFix[] {
-    return this.puppeteerService.getActiveTasks()
+  getActiveTasks() {
+    return this.puppeteerService.send({ cmd: 'getActiveTasks' }, null)
   }
 }

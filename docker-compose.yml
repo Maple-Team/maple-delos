@@ -11,6 +11,7 @@ services:
       - MINIO_SERVICE=nestjs-minio
       - VERSION=${VERSION}
       - RABBITMQ_URL=amqp://user:bitnami@rabbitmq-server:5672/
+      - PUPPETEER_SERVICE=maple-puppeteer
   minio:
     container_name: nestjs-minio
     image: liutsing/delos-minio:${VERSION}
@@ -23,6 +24,12 @@ services:
       - MINIO_SECRET_KEY=sUjdiu0xgCiGwwdFCsrG4YDR1u1xepC7KxjQqgZg
       - MINIO_I18N_BUCKET=i18n
       - VERSION=${VERSION}
+    restart: always
+    networks:
+      - maple-network
+  puppeteer:
+    container_name: maple-puppeteer
+    image: liutsing/service-puppeteer:${VERSION}
     restart: always
     networks:
       - maple-network

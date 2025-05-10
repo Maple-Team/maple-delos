@@ -1,16 +1,17 @@
 import fs from 'fs'
 import path from 'path'
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import dayjs from 'dayjs'
 import { SYZCrawleeService } from './syz-crawler.service'
 
 @Controller('syz')
 export class SYZCrawleeController {
-  constructor(private readonly cheerioCrawleeService: SYZCrawleeService) {}
+  constructor(private readonly crawleeService: SYZCrawleeService) {}
 
   @Get('start')
-  async startCrawling() {
-    const urls = await this.cheerioCrawleeService.fetchList()
+  async startCrawling(@Query('pageNo') pageNo = 0) {
+    const urls = await this.crawleeService.fetchList(pageNo)
+    console.log(`抓取结果: ${urls[0][0]}`)
     const html = urls[0][1]
     fs.writeFile(
       path.join(path.resolve(process.cwd(), './logs'), `syz-crawler-${dayjs().format('YYYY-MM-DD-HH-mm')}.html`),
@@ -25,6 +26,6 @@ export class SYZCrawleeController {
       .filter(Boolean)
       .flat()
 
-    this.cheerioCrawleeService.crawlee(validUrls).catch(console.error)
+    this.crawleeService.crawlee(validUrls).catch(console.error)
   }
 }
