@@ -64,7 +64,7 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
                 .replace(/"/g, '')
                 .replace(/&/g, '')}`
             }
-            const dir = document.querySelector('.core_title_txt').textContent?.trim()
+            const dir = document.querySelector('.core_title_txt')?.textContent?.trim()
             if (!dir) return []
             const tasks = []
             Array.from(document.querySelectorAll('.BDE_Image')).forEach((el) => {
@@ -82,7 +82,7 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
             })
             return tasks
           })
-          console.log(`${url} 已完成，共 ${tasks.length} 个任务}`)
+        //   console.log(`${url} 已完成，共 ${tasks.length} 个任务}`)
           tasks.forEach((task) => {
             this.sendTask(task).catch(console.error)
           })
@@ -99,6 +99,8 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
     if (!browser) throw new Error('Browser not found')
 
     const page: Page = await browser.newPage()
+    // https://tieba.baidu.com/f?kw=%E5%AD%99%E5%85%81%E7%8F%A0&ie=utf-8&pn=50
+    // https://tieba.baidu.com/f?kw=%E5%AD%99%E5%85%81%E7%8F%A0&ie=utf-8&pn=100
     await page.goto('https://tieba.baidu.com/f?ie=utf-8&kw=%E5%AD%99%E5%85%81%E7%8F%A0', {
       waitUntil: 'networkidle2',
       timeout: 15000,
@@ -125,7 +127,7 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
         })
         .map((i) => [i, html])
 
-      if (!urls.length) return [['可能触发了防爬机制~', html]]
+      if (!urls.length) return [['可能触发了防爬机制~，请稍后再试', html]]
       return urls
     })
 
