@@ -60,7 +60,7 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
     }
     this.puppeteerService.send({ cmd: 'crawleeSyzList' }, { urls }).subscribe({
       next: (tasks: Task[]) => {
-        if (!tasks || tasks.length === 0 || typeof tasks[0] === 'string') {
+        if (!tasks || tasks.length === 0) {
           console.log('上游数据异常', tasks)
           return
         }
@@ -72,7 +72,15 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
         console.log(`已发送${tasks.length}个任务`)
       },
       error: (err) => {
-        console.error('爬取失败', err)
+        const message = err.message
+        console.error('捕获到爬虫错误:', message)
+        if (message.includes('CRAWL_FAILED')) {
+          // 处理特定错误
+          const url = message.split(' ')[1]
+          console.log(`重试爬取任务: ${url}`)
+          // TODO 重试爬取任务
+          //  this.crawlee([url])
+        }
       },
       complete: () => {
         console.log('爬取完成')

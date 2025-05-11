@@ -3,7 +3,7 @@ import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import puppeteer from 'puppeteer-extra'
 import { Browser as CoreBrowser, Page } from 'puppeteer'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-import { Observable, from } from 'rxjs'
+import { Observable, from, throwError } from 'rxjs'
 import { catchError, finalize, mergeMap, retry, tap } from 'rxjs/operators'
 
 puppeteer.use(StealthPlugin())
@@ -129,7 +129,7 @@ export class AppService implements OnModuleDestroy {
                         retry(2), // 失败后重试2次
                         catchError((error) => {
                           console.error(`请求失败: ${url}`, error)
-                          return [`错误处理: ${error.message}`]
+                          return throwError(() => new Error(`CRAWL_FAILED: ${url} ${error.message}`))
                         })
                       )
                     )
@@ -185,7 +185,7 @@ export class AppService implements OnModuleDestroy {
 
   async crawlUrl(url: string, page: Page) {
     console.log(`开始爬取: ${url}`)
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 })
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60 * 1000 })
     const tasks = await page.evaluate(() => {
       const formatName = (name: string) => {
         return `${name
