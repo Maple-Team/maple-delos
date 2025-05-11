@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common'
 import { Ctx, MessagePattern, Payload, TcpContext } from '@nestjs/microservices'
 import { AppService } from './app.service'
+import { getTimeStr } from './utils'
 
 // EventPattern: 忽略返回值
 // MessagePattern: 等待返回值
@@ -24,13 +25,13 @@ export class AppController {
   @MessagePattern({ cmd: 'fetchSyzList' })
   fetchSyzList(@Payload() payload) {
     const { pageNo } = payload
+    console.log(`[${getTimeStr()}] 接收到上游请求的任务fetchSyzList`, pageNo)
     return this.service.fetchList(pageNo)
   }
 
   @MessagePattern({ cmd: 'crawleeSyzList' })
   crawleeSyzList(@Payload() payload) {
     const { urls } = payload
-    console.log(urls)
     return this.service.crawlee(urls || [])
   }
 }

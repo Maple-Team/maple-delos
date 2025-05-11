@@ -7,6 +7,7 @@ import bodyParser from 'body-parser'
 import { AppModule } from './app.module'
 import { swaggerConfig, swaggerOptions } from './swagger'
 import { validationPipe } from './validator'
+import { getTimeStr } from './utils'
 
 const root = resolve(__dirname, '..')
 const version = require(`${root}/package.json`).version
@@ -86,19 +87,14 @@ async function bootstrap() {
 }
 
 bootstrap().catch(console.error)
-const getTimeStr = () => {
-  const date = new Date()
-  const timeStr = `${date.toLocaleDateString()} ${date.toLocaleTimeString()} ${date.getMilliseconds()}`
-  return timeStr
-}
 
-// process.on('unhandledRejection', (reason, promise) => {
-//   console.error(getTimeStr(), 'unhandledRejection', {
-//     type: 'UNHANDLED_REJECTION',
-//     promise,
-//     reason,
-//   })
-// })
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(getTimeStr(), 'unhandledRejection', {
+    type: 'UNHANDLED_REJECTION',
+    promise,
+    reason,
+  })
+})
 
 // 捕获未处理的异常
 process.on('uncaughtException', (err, origin) => {

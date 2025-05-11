@@ -1,12 +1,13 @@
-// import { Buffer } from 'buffer'
+import { Buffer } from 'buffer'
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
 
 import amqp from 'amqplib'
 import { ClientProxy } from '@nestjs/microservices'
 import { firstValueFrom } from 'rxjs'
+import { getTimeStr } from '@/utils'
 
-// const QUEUE_NAME = 'download_tasks'
-// const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://user:bitnami@localhost:5672/'
+const QUEUE_NAME = 'download_tasks'
+const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://user:bitnami@localhost:5672/'
 // FIXME 引入crawlee会报ts类型错误
 
 interface Task {
@@ -24,66 +25,68 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     // 连接RabbitMQ
-    // this.connection = await amqp.connect(RABBITMQ_URL)
-    // this.channel = await this.connection.createChannel()
-    // await this.channel.assertQueue(QUEUE_NAME, { durable: true })
-    // console.log('RabbitMQ connected')
+    this.connection = await amqp.connect(RABBITMQ_URL)
+    this.channel = await this.connection.createChannel()
+    await this.channel.assertQueue(QUEUE_NAME, { durable: true })
   }
 
   async onModuleDestroy() {
     // 关闭连接
     await this.channel.close()
     await this.connection.close()
-    console.log('RabbitMQ disConnected')
   }
 
   async sendTask(task: Task) {
-    console.log('发送任务:', task)
-    // try {
-    //   // 发送任务消息（JSON序列化）
-    //   const message = JSON.stringify(task)
-    //   this.channel.sendToQueue(QUEUE_NAME, Buffer.from(message), { persistent: true })
-    //   //   console.log(`[x] 已发送任务: ${message}`)
-    // } catch (err) {
-    //   console.error('发送任务失败:', err)
-    // }
+    try {
+      // 发送任务消息（JSON序列化）
+      const message = JSON.stringify(task)
+      this.channel.sendToQueue(QUEUE_NAME, Buffer.from(message), { persistent: true })
+      //   console.log(`[${getTimeStr()}] 已发送任务: ${message}`)
+    } catch (err) {
+      console.error(`[${getTimeStr()}] 发送任务失败:`, err)
+    }
   }
 
   async fetchList(pageNo: number) {
-    return firstValueFrom(this.puppeteerService.send({ cmd: 'fetchSyzList' }, pageNo))
+    return firstValueFrom(this.puppeteerService.send({ cmd: 'fetchSyzList' }, { pageNo }))
   }
 
   crawlee(urls: string[]) {
     if (!urls || urls.length === 0) {
-      console.log('无爬取的url链接任务')
+      console.log(`[${getTimeStr()}] 无爬取的url链接任务`)
       return
     }
     this.puppeteerService.send({ cmd: 'crawleeSyzList' }, { urls }).subscribe({
       next: (tasks: Task[]) => {
         if (!tasks || tasks.length === 0) {
-          console.log('上游数据异常', tasks)
+          console.log(`[${getTimeStr()}] 上游页面无爬取的任务`)
           return
         }
         tasks.forEach((task: Task) => {
           this.sendTask(task).catch((e) => {
-            console.error(`发送任务失败: ${e}`)
+            console.error(`[${getTimeStr()}] 发送任务失败: ${e}`)
           })
         })
-        console.log(`已发送${tasks.length}个任务`)
+        console.log(`[${getTimeStr()}] 已发送${tasks.length}个任务`)
       },
       error: (err) => {
         const message = err.message
-        console.error('捕获到爬虫错误:', message)
+        console.error(`[${getTimeStr()}] 捕获到上游错误:`, message)
+        // TODO 更精细的区分
         if (message.includes('CRAWL_FAILED')) {
           // 处理特定错误
           const url = message.split(' ')[1]
-          console.log(`重试爬取任务: ${url}`)
-          // TODO 重试爬取任务
-          //  this.crawlee([url])
+          if (message.includes('Navigation timeout')) console.log(`[${getTimeStr()}] 重试爬取任务: ${url}`)
+          // TODO 重试不生效
+          // sleep(2000)
+          //   .then(() => {
+          //     this.crawlee([url])
+          //   })
+          //   .catch(console.error)
         }
       },
       complete: () => {
-        console.log('爬取完成')
+        console.log(`[${getTimeStr()}] 爬取完成`)
       },
     })
   }

@@ -1,10 +1,12 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import puppeteer from 'puppeteer-extra'
 import { Browser as CoreBrowser, Page } from 'puppeteer'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import { Observable, from, throwError } from 'rxjs'
 import { catchError, finalize, mergeMap, retry, tap } from 'rxjs/operators'
+import dayjs from 'dayjs'
+import { RpcException } from '@nestjs/microservices'
+import { getTimeStr } from './utils'
 
 puppeteer.use(StealthPlugin())
 
@@ -30,7 +32,7 @@ export class AppService implements OnModuleDestroy {
           '--disable-blink-features=AutomationControlled', // 禁用自动化控制特征
         ],
         timeout: 60000, // 从 30000 增加到 60000
-        protocolTimeout: 120000, // 新增协议超时设置（120秒）
+        protocolTimeout: 30 * 60 * 1000, // 新增协议超时设置（120秒）
         ...(process.env.NODE_ENV === 'development'
           ? {
               executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
@@ -38,6 +40,7 @@ export class AppService implements OnModuleDestroy {
             }
           : {}),
       })) as unknown as CoreBrowser
+      console.log(`[启动] 初始内存: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`)
     }
     return this.browser
   }
@@ -69,6 +72,7 @@ export class AppService implements OnModuleDestroy {
 
       task.status = 'completed'
       task.result = `data:image/png;base64,${screenshot}`
+      page.close().catch((e) => console.error('页面关闭失败:', e))
     } catch (error) {
       task.status = 'failed'
       task.error = error instanceof Error ? error.message : '截图生成失败'
@@ -88,22 +92,24 @@ export class AppService implements OnModuleDestroy {
   async onModuleDestroy() {
     if (this.browser) {
       await this.browser.close()
-      console.log('Browser closed')
       this.browser = null
     }
   }
 
+  // TODO page/browser等资源清理
+  // FIXME: 超时重试后，就无法再继续接收新的任务了
   /**
    * 抓取syz图片
    * @param list
-   * TODO 改造持续返回任务
    * @returns
    */
+  // 在 crawlee 方法中添加内存日志
   crawlee(list: string[]) {
+    console.log(`[内存] 启动前: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`)
     const urls = list
       .map((i) => i.split(' ').shift())
       .filter(Boolean)
-      .map((id) => `https://tieba.baidu.com/p/${id}`)
+      .map((id) => `https://tieba.baidu.com/p/${id!}`)
     // 移除 async 修饰符，改为同步返回 Observable
     return new Observable((observer) => {
       // 将异步初始化逻辑移到 Observable 内部
@@ -114,30 +120,63 @@ export class AppService implements OnModuleDestroy {
             return
           }
 
-          console.log(`收到: ${list.length}个链接`)
+          console.log(`[${getTimeStr()}] 收到: ${urls.length}个链接爬取任务`)
 
           from(urls)
             .pipe(
               mergeMap(
                 (url) =>
                   from(browser.newPage()).pipe(
+                    catchError((error) => {
+                      console.error(`[${getTimeStr()}] 页面创建失败: ${url}`, error)
+                      // catchError：
+                      // 1. ProtocolError: Network.enable timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+                      const errorMsg = error.message
+                      if (errorMsg.includes('Network.enable timed out')) {
+                        this.getBrowser()
+                          .then((browser) => {
+                            if (browser) browser.close().catch((e) => console.error('浏览器关闭失败:', e))
+                          })
+                          .catch((e) => console.error('获取浏览器实例:', e))
+                      }
+
+                      return throwError(() => new RpcException(`PAGE_CREATE_FAILED: ${url}`))
+                    }),
                     mergeMap((page) =>
                       from(this.crawlUrl(url, page)).pipe(
-                        tap(() => console.log(`完成: ${url}`)),
+                        tap(() => console.log(`[${getTimeStr()}] 完成爬取: ${url}`)),
                         finalize(() => {
-                          page.close().catch((e) => console.error('页面关闭失败:', e))
+                          page
+                            .close()
+                            .then(() => console.log(`[${getTimeStr()}] 页面关闭成功: ${url}`))
+                            .catch((e) => console.error('页面关闭失败:', e))
                         }),
                         retry(2), // 失败后重试2次
                         catchError((error) => {
-                          console.error(`请求失败: ${url}`, error)
-                          return throwError(() => new Error(`CRAWL_FAILED: ${url} ${error.message}`))
+                          console.error(`[${getTimeStr()}] 出错了: ${url}`, error)
+                          // working
+                          // return throwError(
+                          //   () =>
+                          //     new RpcException({
+                          //       type: 'CRAWL_FAILED',
+                          //       url,
+                          //       message: error.message,
+                          //       retryCount: 2,
+                          //     })
+                          // )
+                          const message: string = error.message
+                          return throwError(() => new RpcException(`CRAWL_FAILED: ${url} ${message}`))
                         })
                       )
                     )
                   ),
                 2 // 设置并发数为5
               ),
-              finalize(() => console.log('== 所有任务完成 =='))
+              // 导致后续服务不可用
+              finalize(() => {
+                console.log(`[${getTimeStr()}] 完成: ${urls.length}个url的爬取`)
+                console.log(`[内存] 任务完成: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`)
+              })
             )
             .subscribe(observer)
         })
@@ -148,14 +187,21 @@ export class AppService implements OnModuleDestroy {
   async fetchList(pageNo = 0) {
     const browser = await this.getBrowser()
     if (!browser) throw new Error('Browser not found')
+    // 添加页面数量统计
+    const pages = await browser.pages()
+    console.log(`[${getTimeStr()}] 启动浏览器实例, 当前页面数量: ${pages.length}`)
 
-    const page: Page = await browser.newPage()
+    const page: Page = await browser.newPage().catch((e) => {
+      console.error('页面创建失败:', e)
+      throw new RpcException(`PAGE_CREATE_FAILED: ${e}`)
+    })
+    console.log(`[${getTimeStr()}] 新建页面成功 ${page.getDefaultNavigationTimeout()}`)
     const url = `https://tieba.baidu.com/f?ie=utf-8&kw=%E5%AD%99%E5%85%81%E7%8F%A0&ie=utf-8&pn=${pageNo * 50}`
     await page.goto(url, {
       waitUntil: 'networkidle2',
-      timeout: 15000,
+      timeout: 60 * 1000,
     })
-    console.log(`开始爬取: ${url}`)
+    console.log(`[${getTimeStr()}] 开始爬取: ${url}`)
     const urls = await page.evaluate(() => {
       const html = document.documentElement.outerHTML
 
@@ -171,7 +217,7 @@ export class AppService implements OnModuleDestroy {
             const arr = el.querySelector('a')?.getAttribute('href')?.split('/')
             pid = arr?.pop() || '0'
           } catch (error) {
-            return `${JSON.stringify(error)} ${tid}`
+            return `${JSON.stringify(error)} ${tid || '0'}`
           }
           return [pid, filename, tid].join(' ')
         })
@@ -180,13 +226,13 @@ export class AppService implements OnModuleDestroy {
       if (!urls.length) return [['可能触发了防爬机制~，请稍后再试', html]]
       return urls
     })
-
+    await page.close().catch((e) => console.error('页面关闭失败:', e))
     return urls
   }
 
   async crawlUrl(url: string, page: Page) {
-    console.log(`开始爬取: ${url}`)
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60 * 1000 })
+    console.log(`[${getTimeStr()}] 开始爬取: ${url}`)
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 2 * 60 * 1000 })
     const tasks = await page.evaluate(() => {
       const formatName = (name: string) => {
         return `${name

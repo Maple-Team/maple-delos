@@ -9,6 +9,7 @@
     "rootDir": ".",
     "noImplicitAny": false,
     "strictBindCallApply": false,
+    "esModuleInterop": true,
     "strictNullChecks": false
   },
   "include": ["src/**/*"]
