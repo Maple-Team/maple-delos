@@ -29,7 +29,8 @@ export class AppService implements OnModuleDestroy {
           '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
           '--disable-blink-features=AutomationControlled', // 禁用自动化控制特征
         ],
-        timeout: 30000,
+        timeout: 60000, // 从 30000 增加到 60000
+        protocolTimeout: 120000, // 新增协议超时设置（120秒）
         ...(process.env.NODE_ENV === 'development'
           ? {
               executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
