@@ -60,13 +60,16 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
     }
     this.puppeteerService.send({ cmd: 'crawleeSyzList' }, { urls }).subscribe({
       next: (tasks: Task[]) => {
-        console.log(tasks)
-        // tasks.forEach((task: Task) => {
-        //   this.sendTask(task).catch((e) => {
-        //     console.error(`发送任务失败: ${e}`)
-        //   })
-        // })
-        // console.log(`已发送${tasks.length}个任务`)
+        if (!tasks || tasks.length === 0 || typeof tasks[0] === 'string') {
+          console.log('上游数据异常', tasks)
+          return
+        }
+        tasks.forEach((task: Task) => {
+          this.sendTask(task).catch((e) => {
+            console.error(`发送任务失败: ${e}`)
+          })
+        })
+        console.log(`已发送${tasks.length}个任务`)
       },
       error: (err) => {
         console.error('爬取失败', err)

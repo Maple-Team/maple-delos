@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer-extra'
 import { Browser as CoreBrowser, Page } from 'puppeteer'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import { Observable, from } from 'rxjs'
-import { catchError, finalize, mergeMap } from 'rxjs/operators'
+import { catchError, finalize, mergeMap, retry, tap } from 'rxjs/operators'
 
 puppeteer.use(StealthPlugin())
 
@@ -99,6 +99,10 @@ export class AppService implements OnModuleDestroy {
    * @returns
    */
   crawlee(list: string[]) {
+    const urls = list
+      .map((i) => i.split(' ').shift())
+      .filter(Boolean)
+      .map((id) => `https://tieba.baidu.com/p/${id}`)
     // 移除 async 修饰符，改为同步返回 Observable
     return new Observable((observer) => {
       // 将异步初始化逻辑移到 Observable 内部
@@ -109,27 +113,32 @@ export class AppService implements OnModuleDestroy {
             return
           }
 
-          browser.newPage().then((page) => {
-            console.log(`收到: ${list.length}个链接`)
+          console.log(`收到: ${list.length}个链接`)
 
-            const urls = list
-              .map((i) => i.split(' ').shift())
-              .filter(Boolean)
-              .map((id) => `https://tieba.baidu.com/p/${id}`)
-
-            from(urls)
-              .pipe(
-                mergeMap(
-                  (url) => from(this.crawlUrl(url, page)).pipe(catchError((error) => [`错误处理: ${error.message}`])),
-                  3
-                ),
-                finalize(() => {
-                  console.log('== 所有任务完成 ==')
-                  page.close() // 添加页面关闭
-                })
-              )
-              .subscribe(observer) // 订阅内部 observable
-          })
+          from(urls)
+            .pipe(
+              mergeMap(
+                (url) =>
+                  from(browser.newPage()).pipe(
+                    mergeMap((page) =>
+                      from(this.crawlUrl(url, page)).pipe(
+                        tap(() => console.log(`完成: ${url}`)),
+                        finalize(() => {
+                          page.close().catch((e) => console.error('页面关闭失败:', e))
+                        }),
+                        retry(2), // 失败后重试2次
+                        catchError((error) => {
+                          console.error(`请求失败: ${url}`, error)
+                          return [`错误处理: ${error.message}`]
+                        })
+                      )
+                    )
+                  ),
+                2 // 设置并发数为5
+              ),
+              finalize(() => console.log('== 所有任务完成 =='))
+            )
+            .subscribe(observer)
         })
         .catch((error) => observer.error(error))
     })
