@@ -20,7 +20,7 @@ export class AppController {
     this.logClient.emit('log', JSON.stringify(params))
     const { vin, instructionDtoList } = params
     const key = `rc_cmd_${vin}`
-    const commandId = uuid(12)
+    const commandId = uuid()
     await this.cacheService.store.set(key, params)
     await this.cacheService.set(commandId, vin)
     const resultKey = `rc_result_${commandId}`
@@ -34,7 +34,7 @@ export class AppController {
       const resultCode = (await this.cacheService.get(resultKey)) as ControlExecuteCode
 
       const ret: RemoteControlResult = {
-        vehicleId: uuid(12),
+        vehicleId: uuid(),
         vin,
         commandId,
         controlResultList: [
@@ -128,7 +128,7 @@ export class AppController {
     const resultCode = (await this.cacheService.get(resultKey)) as ControlExecuteCode // <------ // NOTE 执行状态 MOCK THIS
 
     return {
-      vehicleId: uuid(12),
+      vehicleId: uuid(),
       vin,
       commandId,
       controlResultList: [

@@ -7,6 +7,7 @@ import { catchError, finalize, mergeMap, retry, tap } from 'rxjs/operators'
 import dayjs from 'dayjs'
 import { RpcException } from '@nestjs/microservices'
 import { getTimeStr } from './utils'
+import { PageManager } from './PageManager'
 
 puppeteer.use(StealthPlugin())
 
@@ -14,6 +15,7 @@ puppeteer.use(StealthPlugin())
 export class AppService implements OnModuleDestroy {
   private browser: CoreBrowser | null = null
   private activeTasks: Map<string, ScreenshotTask> = new Map()
+  private pageManager: PageManager = new PageManager(5)
   // TODO： 使用微服务的方式：1.方便部署与nodejs服务隔离 2.方便扩展与维护
   // 初始化浏览器实例
   async getBrowser(): Promise<CoreBrowser> {
@@ -25,12 +27,19 @@ export class AppService implements OnModuleDestroy {
           '--disable-setuid-sandbox',
           '--disable-infobars', // 隐藏自动化特征
           '--disable-gpu', // Docker 中通常不需要 GPU 加速
-          '--single-process', // 优化容器资源使用
-          '--no-zygote', // 减少内存占用
+          // FIXME 下面两个参数会导致browser disconnected
+          //   '--single-process', // 优化容器资源使用
+          //   '--no-zygote', // 减少内存占用
+          '--disable-dev-shm-usage', // 避免 Docker 内存问题
+          '--disable-software-rasterizer', // 禁用冗余渲染
+          '--disable-features=site-per-process,TranslateUI', // 关闭无用功能
           '--window-size=1280,720',
           '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
           '--disable-blink-features=AutomationControlled', // 禁用自动化控制特征
         ],
+        // enableExtensions: false, // 禁用扩展
+        // dumpio: true, // 启用调试日志
+        // devtools: false,
         timeout: 60000, // 从 30000 增加到 60000
         protocolTimeout: 30 * 60 * 1000, // 新增协议超时设置（120秒）
         ...(process.env.NODE_ENV === 'development'
@@ -42,6 +51,12 @@ export class AppService implements OnModuleDestroy {
       })) as unknown as CoreBrowser
       console.log(`[启动] 初始内存: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`)
     }
+    // 监听浏览器断开事件
+    this.browser.on('disconnected', async () => {
+      console.error('Browser disconnected! Attempting restart...')
+      await this.getBrowser() // 自动重新连接
+    })
+
     return this.browser
   }
 
@@ -59,7 +74,7 @@ export class AppService implements OnModuleDestroy {
     try {
       task.status = 'processing'
       const browser = await this.getBrowser()
-      const page: Page = await browser.newPage()
+      const page: Page = await this.pageManager.getPage(browser)
 
       await page.setViewport({ width: 1280, height: 800 })
       await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 })
@@ -72,7 +87,7 @@ export class AppService implements OnModuleDestroy {
 
       task.status = 'completed'
       task.result = `data:image/png;base64,${screenshot}`
-      page.close().catch((e) => console.error('页面关闭失败:', e))
+      this.pageManager.releasePage(page)
     } catch (error) {
       task.status = 'failed'
       task.error = error instanceof Error ? error.message : '截图生成失败'
@@ -90,10 +105,10 @@ export class AppService implements OnModuleDestroy {
 
   // 关闭浏览器实例
   async onModuleDestroy() {
-    if (this.browser) {
-      await this.browser.close()
-      this.browser = null
-    }
+    await this.pageManager?.closeAllPages()
+    this.pageManager = null
+    await this.browser?.close()
+    this.browser = null
   }
 
   // TODO page/browser等资源清理
@@ -126,18 +141,19 @@ export class AppService implements OnModuleDestroy {
             .pipe(
               mergeMap(
                 (url) =>
-                  from(browser.newPage()).pipe(
+                  from(this.pageManager.getPage(browser)).pipe(
                     catchError((error) => {
                       console.error(`[${getTimeStr()}] 页面创建失败: ${url}`, error)
                       // catchError：
                       // 1. ProtocolError: Network.enable timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
                       const errorMsg = error.message
                       if (errorMsg.includes('Network.enable timed out')) {
-                        this.getBrowser()
-                          .then((browser) => {
-                            if (browser) browser.close().catch((e) => console.error('浏览器关闭失败:', e))
-                          })
-                          .catch((e) => console.error('获取浏览器实例:', e))
+                        // FIXME 这里如何操作
+                        // this.getBrowser()
+                        //   .then((browser) => {
+                        //     if (browser) browser.close().catch((e) => console.error('浏览器关闭失败:', e))
+                        //   })
+                        //   .catch((e) => console.error('获取浏览器实例:', e))
                       }
 
                       return throwError(() => new RpcException(`PAGE_CREATE_FAILED: ${url}`))
@@ -146,10 +162,7 @@ export class AppService implements OnModuleDestroy {
                       from(this.crawlUrl(url, page)).pipe(
                         tap(() => console.log(`[${getTimeStr()}] 完成爬取: ${url}`)),
                         finalize(() => {
-                          page
-                            .close()
-                            .then(() => console.log(`[${getTimeStr()}] 页面关闭成功: ${url}`))
-                            .catch((e) => console.error('页面关闭失败:', e))
+                          this.pageManager.releasePage(page)
                         }),
                         retry(2), // 失败后重试2次
                         catchError((error) => {
@@ -189,19 +202,39 @@ export class AppService implements OnModuleDestroy {
     if (!browser) throw new Error('Browser not found')
     // 添加页面数量统计
     const pages = await browser.pages()
-    console.log(`[${getTimeStr()}] 启动浏览器实例, 当前页面数量: ${pages.length}`)
 
-    const page: Page = await browser.newPage().catch((e) => {
-      console.error('页面创建失败:', e)
-      throw new RpcException(`PAGE_CREATE_FAILED: ${e}`)
-    })
-    console.log(`[${getTimeStr()}] 新建页面成功 ${page.getDefaultNavigationTimeout()}`)
+    const page: Page = await this.pageManager.getPage(browser)
+    console.log(`[${getTimeStr()}] 当前页面数量 ${pages.length}/${this.pageManager.pool.length}`)
     const url = `https://tieba.baidu.com/f?ie=utf-8&kw=%E5%AD%99%E5%85%81%E7%8F%A0&ie=utf-8&pn=${pageNo * 50}`
-    await page.goto(url, {
-      waitUntil: 'networkidle2',
-      timeout: 60 * 1000,
+
+    page.on('request', (req) => {
+      const blockResources = ['image', 'stylesheet', 'font', 'media']
+      if (blockResources.includes(req.resourceType())) {
+        // console.log(`[${getTimeStr()}] 拦截资源: ${req.resourceType()} ${req.url()}`)
+        req.abort()
+        // req.continue()
+      } else {
+        req.continue()
+      }
     })
-    console.log(`[${getTimeStr()}] 开始爬取: ${url}`)
+    await page.setBypassCSP(true)
+    // 确保先启用请求拦截，再导航到页面
+    await page.setRequestInterception(true)
+    await page
+      .goto(url, {
+        waitUntil: 'networkidle2',
+        timeout: 60 * 1000,
+      })
+      .catch((e) => {
+        console.error(`[${getTimeStr()}] 页面加载失败: ${url}`, e)
+        throw new RpcException(`PAGE_LOAD_FAILED: ${url}`)
+      })
+    console.log(`[${getTimeStr()}] [${page.id}] 开始爬取: ${url}`)
+
+    // 添加页面生命周期监听
+    page.on('framenavigated', (frame) => {
+      console.log(`[${getTimeStr()}] 页面导航: ${frame.url()}`)
+    })
     const urls = await page.evaluate(() => {
       const html = document.documentElement.outerHTML
 
@@ -226,12 +259,25 @@ export class AppService implements OnModuleDestroy {
       if (!urls.length) return [['可能触发了防爬机制~，请稍后再试', html]]
       return urls
     })
-    await page.close().catch((e) => console.error('页面关闭失败:', e))
+    this.pageManager.releasePage(page)
     return urls
   }
 
   async crawlUrl(url: string, page: Page) {
-    console.log(`[${getTimeStr()}] 开始爬取: ${url}`)
+    console.log(`[${getTimeStr()}] [${page.id}] 开始爬取: ${url}`)
+
+    page.on('request', (req) => {
+      const blockResources = ['image', 'stylesheet', 'font', 'media']
+      if (blockResources.includes(req.resourceType())) {
+        // console.log(`[${getTimeStr()}] 拦截资源: ${req.resourceType()} ${req.url()}`)
+        // req.continue()
+        req.abort()
+      } else {
+        req.continue()
+      }
+    })
+    await page.setBypassCSP(true)
+    await page.setRequestInterception(true)
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 2 * 60 * 1000 })
     const tasks = await page.evaluate(() => {
       const formatName = (name: string) => {

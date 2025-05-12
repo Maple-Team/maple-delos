@@ -17,8 +17,8 @@ importers:
         specifier: ^1.0.5
         version: 1.0.5(@types/babel__core@7.20.0)(ts-node@10.9.1(@types/node@20.3.2)(typescript@5.1.6))
       '@liutsing/utils':
-        specifier: ^0.1.5
-        version: 0.1.5
+        specifier: ^0.5.2
+        version: 0.5.2(js-md5@0.7.3)(lodash-es@4.17.21)
       core-js:
         specifier: '3'
         version: 3.37.0
@@ -321,8 +321,8 @@ importers:
         specifier: ^0.0.3
         version: 0.0.3
       '@liutsing/utils':
-        specifier: ^0.5.1
-        version: 0.5.1(js-md5@0.7.3)(lodash-es@4.17.21)
+        specifier: ^0.5.2
+        version: 0.5.2(js-md5@0.7.3)(lodash-es@4.17.21)
       '@nestjs-modules/ioredis':
         specifier: ^2.0.1
         version: 2.0.1(i5gkgxkl7kw3hcxffaksrt4ohe)
@@ -583,8 +583,8 @@ importers:
   packages/minio:
     dependencies:
       '@liutsing/utils':
-        specifier: ^0.5.1
-        version: 0.5.1(js-md5@0.7.3)(lodash-es@4.17.21)
+        specifier: ^0.5.2
+        version: 0.5.2(js-md5@0.7.3)(lodash-es@4.17.21)
       '@nestjs/common':
         specifier: ^10.3.3
         version: 10.3.3(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)
@@ -761,6 +761,9 @@ importers:
 
   packages/puppeteer:
     dependencies:
+      '@liutsing/utils':
+        specifier: ^0.5.2
+        version: 0.5.2(js-md5@0.7.3)(lodash-es@4.17.21)
       '@nestjs/common':
         specifier: ^10.3.3
         version: 10.3.3(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)
@@ -856,8 +859,8 @@ importers:
   packages/remote-control:
     dependencies:
       '@liutsing/utils':
-        specifier: ^0.0.9
-        version: 0.0.9
+        specifier: ^0.5.2
+        version: 0.5.2(js-md5@0.7.3)(lodash-es@4.17.21)
       '@nestjs/cache-manager':
         specifier: ^2.0.1
         version: 2.0.1(@nestjs/common@10.3.3(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.1.13)(rxjs@7.8.1))(@nestjs/core@10.3.3(@nestjs/common@10.3.3(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.1.13)(rxjs@7.8.1))(@nestjs/microservices@10.3.3)(@nestjs/platform-express@10.3.3)(@nestjs/websockets@10.3.3)(reflect-metadata@0.1.13)(rxjs@7.8.1))(cache-manager@5.2.3)(reflect-metadata@0.1.13)(rxjs@7.8.1)
@@ -2522,23 +2525,14 @@ packages:
   '@liutsing/tsconfig@0.0.6':
     resolution: {integrity: sha512-BlViySuKX3lYsOZx+TaTVdbiRYdtzNGO+MaHE4BFpM+/Fv4BHpz4Y1QaQ/1qXAjhNOnrOrz67rCkevdqM5v5zQ==}
 
-  '@liutsing/types-utils@0.1.1':
-    resolution: {integrity: sha512-a1mNnbtDQzr2bv9ppKkIj8L+Eh7yCxRT1EECxvhNfYjcrijlOEKbxp5UWTbQEc/5l1OlrqDPdzbCMHoIbuhLNQ==}
-
   '@liutsing/types-utils@1.0.2':
     resolution: {integrity: sha512-uMGtjC81fmMP2b2UonJlc7RS5MGXgn7M52LvPAs04FuwcqMiD2tnOEFvdNkjY3ge5GCGK0AlvwUlVocpchRAuw==}
 
   '@liutsing/types-utils@1.0.5':
     resolution: {integrity: sha512-DJkAOyT2LnlHS/+IwB5nixuHp8ieAxEhMvX1huMdzUKUNtpc3rVpJJxhZEa3aggS5DNkAo4kmxnTfqVlI95vzA==}
 
-  '@liutsing/utils@0.0.9':
-    resolution: {integrity: sha512-F0xiaV/aBlunuyDM2NIYM/2xnnu4fhXHdqe7duT6tsjrutIdZMp1CEbdHDAub66wHmVDdAlsflRj/k0+zYVo/w==}
-
-  '@liutsing/utils@0.1.5':
-    resolution: {integrity: sha512-hoAROsxT6SpLE5yujrHkZRJuP+U87magwibZaHz2+HJewNpconREu4EBunoh1Mb/Hpl2nRGAMnCvLdMiOHVlEg==}
-
-  '@liutsing/utils@0.5.1':
-    resolution: {integrity: sha512-uMsr6/mB30cD1yk9Xd5cYNfBrSQqK1DLLBBxR9jJP5IcqgT7NxePr56GUiNlM3xCcClpbvwDUn+hiR4/ohZdHA==}
+  '@liutsing/utils@0.5.2':
+    resolution: {integrity: sha512-2QBU6+ZwZXrtytwPB0NHR+nviycbqBAFN8sP1qnghN9ktyAKX0uk8JNAjFQr8prJv1KuDSLru/gaArvDf+O1BQ==}
     peerDependencies:
       js-md5: ^0.7.3
       lodash-es: ^4.17.21
@@ -11345,24 +11339,11 @@ snapshots:
     dependencies:
       tslib: 2.6.2
 
-  '@liutsing/types-utils@0.1.1': {}
-
   '@liutsing/types-utils@1.0.2': {}
 
   '@liutsing/types-utils@1.0.5': {}
 
-  '@liutsing/utils@0.0.9':
-    dependencies:
-      lodash-es: 4.17.21
-
-  '@liutsing/utils@0.1.5':
-    dependencies:
-      '@liutsing/regexp-utils': 0.0.4
-      '@liutsing/types-utils': 0.1.1
-      js-md5: 0.7.3
-      lodash-es: 4.17.21
-
-  '@liutsing/utils@0.5.1(js-md5@0.7.3)(lodash-es@4.17.21)':
+  '@liutsing/utils@0.5.2(js-md5@0.7.3)(lodash-es@4.17.21)':
     dependencies:
       '@babel/runtime-corejs3': 7.26.0
       '@liutsing/regexp-utils': 0.0.4

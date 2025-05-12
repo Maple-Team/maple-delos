@@ -220,3 +220,17 @@ ProtocolError: Network.enable timed out. Increase the 'protocolTimeout' setting 
 
     at /app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/Target.js:205:4
 ```
+
+```sh
+[RpcExceptionsHandler] Navigating frame was detached
+
+Error: Navigating frame was detached
+
+    at #onFrameDetached (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/LifecycleWatcher.js:103:47)
+
+    at /app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/third_party/mitt/mitt.js:62:7
+
+    at Array.map (<anonymous>)
+
+    at Object.emit (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/third_party/mitt/mitt.js:61:20)
+```

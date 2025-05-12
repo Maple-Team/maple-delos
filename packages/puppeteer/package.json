@@ -27,6 +27,7 @@
     "puppeteer": "^24.8.2",
     "@nestjs/microservices": "^10.3.3",
     "dayjs": "^1.11.10",
+    "@liutsing/utils": "^0.5.2",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "@nestjs/platform-express": "^10.3.3",
