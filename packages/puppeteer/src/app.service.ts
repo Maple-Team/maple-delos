@@ -207,19 +207,6 @@ export class AppService implements OnModuleDestroy {
     console.log(`[${getTimeStr()}] 当前页面数量 ${pages.length}/${this.pageManager.pool.length}`)
     const url = `https://tieba.baidu.com/f?ie=utf-8&kw=%E5%AD%99%E5%85%81%E7%8F%A0&ie=utf-8&pn=${pageNo * 50}`
 
-    page.on('request', (req) => {
-      const blockResources = ['image', 'stylesheet', 'font', 'media']
-      if (blockResources.includes(req.resourceType())) {
-        // console.log(`[${getTimeStr()}] 拦截资源: ${req.resourceType()} ${req.url()}`)
-        req.abort()
-        // req.continue()
-      } else {
-        req.continue()
-      }
-    })
-    await page.setBypassCSP(true)
-    // 确保先启用请求拦截，再导航到页面
-    await page.setRequestInterception(true)
     await page
       .goto(url, {
         waitUntil: 'networkidle2',
@@ -266,18 +253,6 @@ export class AppService implements OnModuleDestroy {
   async crawlUrl(url: string, page: Page) {
     console.log(`[${getTimeStr()}] [${page.id}] 开始爬取: ${url}`)
 
-    page.on('request', (req) => {
-      const blockResources = ['image', 'stylesheet', 'font', 'media']
-      if (blockResources.includes(req.resourceType())) {
-        // console.log(`[${getTimeStr()}] 拦截资源: ${req.resourceType()} ${req.url()}`)
-        // req.continue()
-        req.abort()
-      } else {
-        req.continue()
-      }
-    })
-    await page.setBypassCSP(true)
-    await page.setRequestInterception(true)
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 2 * 60 * 1000 })
     const tasks = await page.evaluate(() => {
       const formatName = (name: string) => {
