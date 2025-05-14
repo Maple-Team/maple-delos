@@ -4,24 +4,23 @@ import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/commo
 import amqp from 'amqplib'
 import { ClientProxy } from '@nestjs/microservices'
 import { firstValueFrom } from 'rxjs'
+import { InjectRedis } from '@nestjs-modules/ioredis'
+import Redis from 'ioredis'
+import { Task } from '@liutsing/common-types'
 import { getTimeStr } from '@/utils'
 
 const QUEUE_NAME = 'download_tasks'
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://user:bitnami@localhost:5672/'
 // FIXME 引入crawlee会报ts类型错误
 
-interface Task {
-  url: string
-  objectName: string
-  galleryName: string
-  personName: string
-}
-
 @Injectable()
 export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
   private channel: amqp.Channel
   private connection: amqp.Connection
-  constructor(@Inject('PUPPETEER_SERVICE') private puppeteerService: ClientProxy) {}
+  constructor(
+    @Inject('PUPPETEER_SERVICE') private puppeteerService: ClientProxy,
+    @InjectRedis() private readonly redis: Redis
+  ) {}
 
   async onModuleInit() {
     // 连接RabbitMQ
@@ -67,6 +66,21 @@ export class SYZCrawleeService implements OnModuleInit, OnModuleDestroy {
             console.error(`[${getTimeStr()}] 发送任务失败: ${e}`)
           })
         })
+        const pageUrls = [
+          ...new Set(
+            tasks.map((t) => ({
+              url: t.pageUrl, // https://tieba.baidu.com/p/9344621227
+              galleryName: t.galleryName,
+            }))
+          ),
+        ]
+        pageUrls.forEach((u) => {
+          // 9056593432 filename 240618_RO更新(xx)
+          const item = `${u.url.replace(/[^\d]*(\d+)+/, (_, $1) => $1)} filename ${u.galleryName}`
+          this.redis.srem('syz/gallery:pending', item).catch(console.log)
+          this.redis.sadd('syz/gallery:completed', item).catch(console.log)
+        })
+
         console.log(`[${getTimeStr()}] 已发送${tasks.length}个任务`)
       },
       error: (err) => {

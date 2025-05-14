@@ -25,7 +25,7 @@ export class AppController {
   @MessagePattern({ cmd: 'fetchSyzList' })
   fetchSyzList(@Payload() payload) {
     const { pageNo } = payload
-    console.log(`[${getTimeStr()}] 接收到上游请求的任务fetchSyzList`, pageNo)
+    console.log(`[${getTimeStr()}] 接收到fetchSyzList任务`)
     return this.service.fetchList(pageNo)
   }
 

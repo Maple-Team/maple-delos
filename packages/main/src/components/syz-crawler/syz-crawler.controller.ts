@@ -2,12 +2,14 @@ import fs from 'fs'
 import path from 'path'
 import { Controller, Get, Query } from '@nestjs/common'
 import dayjs from 'dayjs'
+import { InjectRedis } from '@nestjs-modules/ioredis'
+import Redis from 'ioredis'
 import { SYZCrawleeService } from './syz-crawler.service'
-import { getTimeStr } from '@/utils'
+import { formatName, getTimeStr } from '@/utils'
 
 @Controller('syz')
 export class SYZCrawleeController {
-  constructor(private readonly crawleeService: SYZCrawleeService) {}
+  constructor(private readonly crawleeService: SYZCrawleeService, @InjectRedis() private readonly redis: Redis) {}
 
   @Get('start')
   async startCrawling(@Query('pageNo') pageNo = 0) {
@@ -22,11 +24,21 @@ export class SYZCrawleeController {
         if (err) console.error(err)
       }
     )
-
+    /**
+     *  有效的urls
+     * 每一条的数据：9056593432 filename 240618_RO更新(xx)
+     */
     const validUrls: string[] = urls.filter((i) => i[0].split(' ').length === 3).flatMap((i) => i[0])
+    const existUrls = await this.redis.sunion('syz/gallery:completed', 'syz/gallery:pending')
+    const newUrls = validUrls.filter((url) => {
+      //   const tUrl = `https://tieba.baidu.com/p/${url.split(' ')[0]}`
+      return !existUrls.includes(formatName(url))
+    })
+    if (newUrls.length > 0) await this.redis.sadd('syz/gallery:pending', newUrls)
 
-    console.log(`[${getTimeStr()}] 有效urls: ${validUrls.length}个`)
+    const pendingUrls = await this.redis.smembers('syz/gallery:pending')
+    console.log(`[${getTimeStr()}] 待处理任务数量: ${pendingUrls.length}个`)
 
-    this.crawleeService.crawlee(validUrls)
+    this.crawleeService.crawlee(pendingUrls)
   }
 }
