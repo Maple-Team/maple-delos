@@ -4,6 +4,7 @@ import { Controller, Get, Query } from '@nestjs/common'
 import dayjs from 'dayjs'
 import { InjectRedis } from '@nestjs-modules/ioredis'
 import Redis from 'ioredis'
+import { Interval } from '@nestjs/schedule'
 import { SYZCrawleeService } from './syz-crawler.service'
 import { formatName, getTimeStr } from '@/utils'
 
@@ -28,7 +29,7 @@ export class SYZCrawleeController {
      *  有效的urls
      * 每一条的数据：9056593432 filename 240618_RO更新(xx)
      */
-    const validUrls: string[] = urls.filter((i) => i[0].split(' ').length === 3).flatMap((i) => i[0])
+    const validUrls: string[] = urls.filter((i) => i[0].split(' ').length === 3).flatMap((i) => formatName(i[0]))
     const existUrls = await this.redis.sunion('syz/gallery:completed', 'syz/gallery:pending')
     const newUrls = validUrls.filter((url) => {
       //   const tUrl = `https://tieba.baidu.com/p/${url.split(' ')[0]}`
@@ -40,5 +41,13 @@ export class SYZCrawleeController {
     console.log(`[${getTimeStr()}] 待处理任务数量: ${pendingUrls.length}个`)
 
     this.crawleeService.crawlee(pendingUrls)
+  }
+
+  // @Cron('45 * * * * *')
+  @Interval(5 * 60 * 1000)
+  async handlePendingTasks() {
+    const pendingUrls = await this.redis.smembers('syz/gallery:pending')
+    console.log(`[${getTimeStr()}] 定时任务触发，待处理任务数量: ${pendingUrls.length}个`)
+    if (pendingUrls.length > 0) this.crawleeService.crawlee(pendingUrls)
   }
 }

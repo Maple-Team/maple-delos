@@ -64,6 +64,7 @@ import {
 } from './components'
 import { TransformInterceptor } from './interceptor/transform.interceptor'
 import { HeaderInterceptor } from './interceptor/header.interceptor'
+import { ScheduleModule } from '@nestjs/schedule'
 
 const envFiles = {
   development: '.env.development',
@@ -199,6 +200,7 @@ const envFiles = {
     AppPackageModule,
     PuppeteerModule,
     CheerioCrawleeModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [
