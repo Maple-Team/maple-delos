@@ -175,7 +175,7 @@ ProtocolError: Network.enable timed out. Increase the 'protocolTimeout' setting 
     at #initialize (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/Page.js:291:36)
 ```
 
-```
+```sh
 ProtocolError: Network.enable timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
 
     at <instance_members_initializer> (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/common/CallbackRegistry.js:101:14)
@@ -233,4 +233,58 @@ Error: Navigating frame was detached
     at Array.map (<anonymous>)
 
     at Object.emit (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/third_party/mitt/mitt.js:61:20)
+```
+
+```sh
+[PagePool] 页面 EF00CD6B-4042-4D0C-840A-E2218E7C5A84 重置成功，放回池中
+
+TimeoutError: Navigation timeout of 120000 ms exceeded
+
+    at new Deferred (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/util/Deferred.js:60:34)
+
+    at Deferred.create (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/util/Deferred.js:21:16)
+
+    at new LifecycleWatcher (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/LifecycleWatcher.js:69:60)
+
+    at CdpFrame.goto (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/Frame.js:148:29)
+
+    at CdpFrame.<anonymous> (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/util/decorators.js:109:27)
+
+    at CdpPage.goto (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:574:43)
+
+    at AppService.crawlUrl (/app/dist/app.service.js:219:14)
+
+    at /app/dist/app.service.js:143:79
+
+    at doInnerSub (/app/node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/cjs/internal/operators/mergeInternals.js:22:31)
+
+    at outerNext (/app/node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/cjs/internal/operators/mergeInternals.js:17:70)
+
+[2025-05-14 19:10:14 299] 帖子页加载失败尝试滚动加载: https://tieba.baidu.com/p/9141847085⁠
+
+TimeoutError: Navigation timeout of 120000 ms exceeded
+
+    at new Deferred (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/util/Deferred.js:60:34)
+
+    at Deferred.create (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/util/Deferred.js:21:16)
+
+    at new LifecycleWatcher (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/LifecycleWatcher.js:69:60)
+
+    at CdpFrame.goto (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/Frame.js:148:29)
+
+    at CdpFrame.<anonymous> (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/util/decorators.js:109:27)
+
+    at CdpPage.goto (/app/node_modules/.pnpm/puppeteer-core@24.8.2/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:574:43)
+
+    at AppService.crawlUrl (/app/dist/app.service.js:219:14)
+
+    at /app/dist/app.service.js:143:79
+
+    at doInnerSub (/app/node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/cjs/internal/operators/mergeInternals.js:22:31)
+
+    at outerNext (/app/node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/cjs/internal/operators/mergeInternals.js:17:70)
+
+[2025-05-14 19:10:14 302] 帖子页加载失败尝试滚动加载: https://tieba.baidu.com/p/6146858746⁠
+
+[2025-05-14 19:10:43 787] 出错了: https://tieba.baidu.com/p/9141847085⁠ TimeoutError: Timed out after waiting 30000ms
 ```

@@ -4,7 +4,6 @@ import { Browser as CoreBrowser, Page } from 'puppeteer'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import { Observable, from, throwError } from 'rxjs'
 import { catchError, finalize, mergeMap, retry, tap } from 'rxjs/operators'
-import dayjs from 'dayjs'
 import { RpcException } from '@nestjs/microservices'
 import { getTimeStr } from './utils'
 import { PageManager } from './PageManager'
@@ -16,7 +15,7 @@ export class AppService implements OnModuleDestroy {
   private browser: CoreBrowser | null = null
   private activeTasks: Map<string, ScreenshotTask> = new Map()
   private pageManager: PageManager = new PageManager(5)
-  // TODO： 使用微服务的方式：1.方便部署与nodejs服务隔离 2.方便扩展与维护
+  // NOTE 使用微服务的方式：1.方便部署与nodejs服务隔离 2.方便扩展与维护
   // 初始化浏览器实例
   async getBrowser(): Promise<CoreBrowser> {
     if (!this.browser || !this.browser.connected) {
@@ -52,9 +51,9 @@ export class AppService implements OnModuleDestroy {
       console.log(`[启动] 初始内存: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`)
     }
     // 监听浏览器断开事件
-    this.browser.on('disconnected', async () => {
+    this.browser.on('disconnected', () => {
       console.error('Browser disconnected! Attempting restart...')
-      await this.getBrowser() // 自动重新连接
+      this.getBrowser().catch(console.error) // 自动重新连接
     })
 
     return this.browser
@@ -87,7 +86,7 @@ export class AppService implements OnModuleDestroy {
 
       task.status = 'completed'
       task.result = `data:image/png;base64,${screenshot}`
-      this.pageManager.releasePage(page)
+      this.pageManager.releasePage(page).catch(console.error)
     } catch (error) {
       task.status = 'failed'
       task.error = error instanceof Error ? error.message : '截图生成失败'
@@ -135,7 +134,7 @@ export class AppService implements OnModuleDestroy {
             return
           }
 
-          console.log(`[${getTimeStr()}] 收到: ${urls.length}个链接爬取任务`)
+          console.log(`[${getTimeStr()}] 收到: ${urls.length}个gallery爬取任务`)
 
           from(urls)
             .pipe(
@@ -160,13 +159,13 @@ export class AppService implements OnModuleDestroy {
                     }),
                     mergeMap((page) =>
                       from(this.crawlUrl(url, page)).pipe(
-                        tap(() => console.log(`[${getTimeStr()}] 完成爬取: ${url}`)),
+                        tap(() => console.log(`[${getTimeStr()}] [${page.id}] 完成爬取: ${url}`)),
                         finalize(() => {
-                          this.pageManager.releasePage(page)
+                          this.pageManager.releasePage(page).catch(console.error)
                         }),
                         retry(2), // 失败后重试2次
                         catchError((error) => {
-                          console.error(`[${getTimeStr()}] 出错了: ${url}`, error)
+                          console.error(`[${getTimeStr()}] [${page.id}] 爬取出错: ${url}`, error)
                           // working
                           // return throwError(
                           //   () =>
@@ -187,7 +186,8 @@ export class AppService implements OnModuleDestroy {
               ),
               // 导致后续服务不可用
               finalize(() => {
-                console.log(`[${getTimeStr()}] 完成: ${urls.length}个url的爬取`)
+                // 上层抛错
+                console.log(`[${getTimeStr()}] 完成: ${urls.length}个gallery的任务爬取`)
                 console.log(`[内存] 任务完成: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`)
               })
             )
@@ -206,6 +206,7 @@ export class AppService implements OnModuleDestroy {
     const page: Page = await this.pageManager.getPage(browser)
     console.log(`[${getTimeStr()}] 当前页面数量 ${pages.length}/${this.pageManager.pool.length}`)
     const url = `https://tieba.baidu.com/f?ie=utf-8&kw=%E5%AD%99%E5%85%81%E7%8F%A0&ie=utf-8&pn=${pageNo * 50}`
+    console.log(`[${getTimeStr()}] [${page.id}] 开始爬取列表${url}`)
 
     await page
       .goto(url, {
@@ -216,12 +217,8 @@ export class AppService implements OnModuleDestroy {
         console.error(`[${getTimeStr()}] 页面加载失败: ${url}`, e)
         throw new RpcException(`PAGE_LOAD_FAILED: ${url}`)
       })
-    console.log(`[${getTimeStr()}] [${page.id}] 开始爬取: ${url}`)
+    console.log(`[${getTimeStr()}] [${page.id}] 成功加载页面: ${url}`)
 
-    // 添加页面生命周期监听
-    page.on('framenavigated', (frame) => {
-      console.log(`[${getTimeStr()}] 页面导航: ${frame.url()}`)
-    })
     const urls = await page.evaluate(() => {
       const html = document.documentElement.outerHTML
 
@@ -246,14 +243,27 @@ export class AppService implements OnModuleDestroy {
       if (!urls.length) return [['可能触发了防爬机制~，请稍后再试', html]]
       return urls
     })
-    this.pageManager.releasePage(page)
+    this.pageManager.releasePage(page).catch(console.error)
     return urls
   }
 
   async crawlUrl(url: string, page: Page) {
     console.log(`[${getTimeStr()}] [${page.id}] 开始爬取: ${url}`)
 
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 2 * 60 * 1000 })
+    await page
+      .goto(url, {
+        waitUntil: ['domcontentloaded', 'load'],
+        timeout: 120000,
+      })
+      .catch(async (e) => {
+        console.error(e)
+        console.log(`[${getTimeStr()}] 页面加载失败尝试滚动加载: ${url}`)
+        await page.evaluate(() => window.scrollTo(0, 800))
+        await page.waitForNetworkIdle({ timeout: 30000 })
+      })
+
+    console.log(`[${getTimeStr()}] [${page.id}] 成功加载页面: ${url}`)
+
     const tasks = await page.evaluate(() => {
       const formatName = (name: string) => {
         return `${name
@@ -283,6 +293,7 @@ export class AppService implements OnModuleDestroy {
       })
       return tasks
     })
+    console.log(`[${getTimeStr()}] [${page.id}] 获取图片: ${tasks.length}张`)
     return tasks
   }
 }
