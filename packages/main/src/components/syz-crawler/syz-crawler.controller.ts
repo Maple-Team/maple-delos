@@ -6,7 +6,7 @@ import { InjectRedis } from '@nestjs-modules/ioredis'
 import Redis from 'ioredis'
 import { Interval } from '@nestjs/schedule'
 import { SYZCrawleeService } from './syz-crawler.service'
-import { formatName, getTimeStr } from '@/utils'
+import { getTimeStr, normalizeName } from '@/utils'
 
 @Controller('syz')
 export class SYZCrawleeController {
@@ -29,11 +29,11 @@ export class SYZCrawleeController {
      *  有效的urls
      * 每一条的数据：9056593432 filename 240618_RO更新(xx)
      */
-    const validUrls: string[] = urls.filter((i) => i[0].split(' ').length === 3).flatMap((i) => formatName(i[0]))
+    const validUrls: string[] = urls.filter((i) => i[0].split(' ').length === 3).flatMap((i) => normalizeName(i[0]))
     const existUrls = await this.redis.sunion('syz/gallery:completed', 'syz/gallery:pending')
     const newUrls = validUrls.filter((url) => {
       //   const tUrl = `https://tieba.baidu.com/p/${url.split(' ')[0]}`
-      return !existUrls.includes(formatName(url))
+      return !existUrls.includes(normalizeName(url))
     })
     if (newUrls.length > 0) await this.redis.sadd('syz/gallery:pending', newUrls)
 
