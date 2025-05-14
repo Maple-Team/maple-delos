@@ -3,6 +3,7 @@ import type { UserRole } from '@liutsing/enums'
 
 export * from './apk'
 export * from './ipa'
+export * from './syz'
 
 export type JwtPayload = Omit<JwtPayloadBase, 'sub'> & {
   sub: number

@@ -3,7 +3,7 @@ import { HttpStatus, Inject, Injectable, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
-import type { JwtPayload } from '@liutsing/types'
+import type { JwtPayload } from '@liutsing/common-types'
 import { WithContext } from '@/auth/decorators'
 
 class ReqUser {

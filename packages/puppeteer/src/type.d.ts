@@ -5,9 +5,3 @@ interface ScreenshotTask {
   result?: string // Base64 图片数据
   error?: string
 }
-interface Task {
-  url: string
-  objectName: string
-  galleryName: string
-  personName: string
-}

@@ -1,4 +1,20 @@
 /**
+ #10 8.532 packages/puppeteer build: ../types-utils/src/apk.ts:81:14 - error TS4033: Property 'providers' of exported interface has or is using private name 'AnyToFix'.
+#10 8.533 packages/puppeteer build: 81   providers: AnyToFix[]
+#10 8.533 packages/puppeteer build:                 ~~~~~~~~
+#10 8.533 packages/puppeteer build: ../types-utils/src/apk.ts:102:9 - error TS2304: Cannot find name 'AnyToFix'.
+#10 8.533 packages/puppeteer build: 102   data: AnyToFix[]
+#10 8.533 packages/puppeteer build:             ~~~~~~~~
+#10 8.534 packages/puppeteer build: ../types-utils/src/apk.ts:102:9 - error TS4033: Property 'data' of exported interface has or is using private name 'AnyToFix'.
+#10 8.534 packages/puppeteer build: 102   data: AnyToFix[]
+#10 8.534 packages/puppeteer build:             ~~~~~~~~
+ */
+
+/**
+ * 任意类型
+ */
+type AnyToFix = any
+/**
  *
  * apk文件解析出的结果
  *

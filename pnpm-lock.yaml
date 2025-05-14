@@ -32,6 +32,9 @@ importers:
       '@compodoc/compodoc':
         specifier: ^1.1.26
         version: 1.1.26(typescript@5.3.3)
+      '@liutsing/common-types':
+        specifier: workspace:*
+        version: link:packages/common-types
       '@liutsing/eslint-config':
         specifier: ^0.0.11
         version: 0.0.11(eslint@8.43.0)(prettier@2.8.8)
@@ -41,9 +44,6 @@ importers:
       '@liutsing/tsconfig':
         specifier: ^0.0.6
         version: 0.0.6
-      '@liutsing/types':
-        specifier: workspace:*
-        version: link:packages/types-utils
       '@liutsing/types-utils':
         specifier: ^1.0.5
         version: 1.0.5
@@ -59,6 +59,15 @@ importers:
       rimraf:
         specifier: ^5.0.1
         version: 5.0.1
+
+  packages/common-types:
+    devDependencies:
+      '@types/jsonwebtoken':
+        specifier: ^9.0.5
+        version: 9.0.5
+      typescript:
+        specifier: ^4.9.3
+        version: 4.9.5
 
   packages/delos-logs:
     dependencies:
@@ -982,15 +991,6 @@ importers:
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
-
-  packages/types-utils:
-    devDependencies:
-      '@types/jsonwebtoken':
-        specifier: ^9.0.5
-        version: 9.0.5
-      typescript:
-        specifier: ^4.9.3
-        version: 4.9.5
 
 packages:
 

@@ -1,5 +1,5 @@
 {
   "javascript.format.enable": true,
   "editor.formatOnSave": true,
-  "cSpell.words": ["amritb", "buildx", "meitulu", "pptruser"]
+  "cSpell.words": ["amritb", "buildx", "dumpio", "meitulu", "pptruser"]
 }

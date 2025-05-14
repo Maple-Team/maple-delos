@@ -17,12 +17,12 @@
   },
   "prettier": "@liutsing/prettier-config",
   "devDependencies": {
+    "@liutsing/common-types": "workspace:*",
     "@babel/preset-env": "^7.22.5",
     "@compodoc/compodoc": "^1.1.26",
     "@liutsing/eslint-config": "^0.0.11",
     "@liutsing/prettier-config": "^0.0.6",
     "@liutsing/tsconfig": "^0.0.6",
-    "@liutsing/types": "workspace:*",
     "@liutsing/types-utils": "^1.0.5",
     "@types/jest": "29.5.2",
     "cross-env": "^7.0.3",
